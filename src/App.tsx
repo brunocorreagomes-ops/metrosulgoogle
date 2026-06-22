@@ -17,7 +17,8 @@ import {
   HelpCircle,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  ArrowUp
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { AlbumData } from "./types";
@@ -37,6 +38,7 @@ export default function App() {
   const [timeStr, setTimeStr] = useState<string>("00:00:00 UTC");
   const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [isBooting, setIsBooting] = useState<boolean>(true);
 
   // Set up language selection with auto-detection on mount
@@ -115,6 +117,7 @@ export default function App() {
       if (totalHeight > 0) {
         setScrollProgress((window.scrollY / totalHeight) * 100);
       }
+      setShowScrollTop(window.scrollY > 400);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     // Run initial calculation
@@ -1024,6 +1027,23 @@ export default function App() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-neutral-400 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)] group cursor-pointer lg:bottom-10 lg:right-10"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp size={18} className="group-hover:-translate-y-0.5 transition-transform duration-300" />
+          </motion.button>
         )}
       </AnimatePresence>
 
