@@ -1,6 +1,0 @@
-{
-  "name": "Metro Sul",
-  "description": "Minimalist, immersive conceptual space for Metro Sul electronic music project. Live synthesizer, gravity particles visualizer, and Spotify audio embeds.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
