@@ -41,18 +41,30 @@ export default function App() {
 
   // Set up language selection with auto-detection on mount
   const [lang, setLang] = useState<Language>(() => {
-    const saved = localStorage.getItem("metrosul_lang");
-    if (saved === "pt" || saved === "es" || saved === "en") return saved;
-    if (typeof navigator !== "undefined") {
-      const browserLangs = navigator.languages || [navigator.language];
+    try {
+      const saved = localStorage.getItem("metrosul_lang");
+      if (saved === "pt" || saved === "es" || saved === "en") return saved;
+      
+      const browserLangs = navigator.languages && navigator.languages.length 
+        ? navigator.languages 
+        : [navigator.language || (navigator as any).userLanguage];
+        
       for (const bLang of browserLangs) {
+        if (!bLang) continue;
         const normalized = bLang.toLowerCase();
         if (normalized.startsWith("pt")) return "pt";
         if (normalized.startsWith("es")) return "es";
+        if (normalized.startsWith("en")) return "en";
       }
+    } catch (e) {
+      // Ignore
     }
     return "en";
   });
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const t = translations[lang];
 
