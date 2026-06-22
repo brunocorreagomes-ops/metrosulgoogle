@@ -47,15 +47,15 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
         y: 0,
         r: Math.random() * Math.min(width, height) * 0.45,
         angle: Math.random() * Math.PI * 2,
-        speed: 0.001 + Math.random() * 0.002, // very slow
-        size: Math.random() * 1.5 + 0.5,
-        alpha: Math.random() * 0.4 + 0.1,
+        speed: 0.0005 + Math.random() * 0.001, // extremely slow and elegant
+        size: Math.random() * 1.2 + 0.3, // smaller and softer
+        alpha: Math.random() * 0.2 + 0.05, // very subtle
         color
       });
     };
 
-    // Pre-populate minimal particles
-    for (let i = 0; i < 40; i++) {
+    // Pre-populate even fewer minimal particles for less clutter
+    for (let i = 0; i < 20; i++) {
       spawnParticle(Math.random() > 0.5 ? "blue" : "orange");
     }
 
@@ -64,7 +64,7 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
 
     const draw = () => {
       // Cinematic dark trail backplate
-      ctx.fillStyle = "rgba(1, 2, 4, 0.1)"; // Very deep dark midnight
+      ctx.fillStyle = "rgba(1, 2, 4, 0.08)"; // Slower fade for smooth energy traces
       ctx.fillRect(0, 0, width, height);
 
       const time = Date.now() * 0.001;
@@ -84,12 +84,12 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
         currentAudioVal = 1.0 + (avg / 64) * intensity;
       }
 
-      audioSmoothed += (currentAudioVal - audioSmoothed) * 0.05; // Very smooth ease
-      globalRotation += 0.001 * audioSmoothed; // Slow elegant rotation
+      audioSmoothed += (currentAudioVal - audioSmoothed) * 0.03; // Even smoother ease
+      globalRotation += 0.0008 * audioSmoothed; // Ultra slow elegant rotation
 
       const cx = width / 2;
       const cy = height / 2;
-      const baseRadius = Math.min(width, height) * 0.3;
+      const baseRadius = Math.min(width, height) * 0.32;
 
       // Draw minimal particles
       particles.forEach((p) => {
@@ -99,36 +99,36 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
         
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        const pulseAlpha = p.alpha * (0.6 + 0.4 * Math.sin(time * 2 + p.angle));
+        const pulseAlpha = p.alpha * (0.5 + 0.5 * Math.sin(time + p.angle));
         ctx.fillStyle = p.color === "blue" ? `rgba(0, 157, 255, ${pulseAlpha})` : `rgba(255, 136, 0, ${pulseAlpha})`;
         ctx.fill();
       });
 
       // Subtle rising golden light suggesting abundance
       const goldenGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 1.5);
-      goldenGlow.addColorStop(0, `rgba(255, 170, 0, ${0.03 * audioSmoothed})`); // Very subtle central gold
+      goldenGlow.addColorStop(0, `rgba(255, 170, 0, ${0.04 * audioSmoothed})`); // Very soft breathing gold
       goldenGlow.addColorStop(1, "rgba(255, 170, 0, 0)");
       ctx.fillStyle = goldenGlow;
       ctx.fillRect(0, 0, width, height);
 
       // Elegant arcs (left blue, right amber)
-      ctx.shadowBlur = 10 * audioSmoothed;
+      ctx.shadowBlur = 15 * audioSmoothed;
 
-      // Blue arc
-      ctx.shadowColor = "rgba(0, 157, 255, 0.4)";
-      ctx.strokeStyle = "rgba(0, 157, 255, 0.4)"; // Soft blue line
-      ctx.lineWidth = 1.5;
+      // Blue arc (made more subtle and minimal)
+      ctx.shadowColor = "rgba(0, 157, 255, 0.3)";
+      ctx.strokeStyle = "rgba(0, 157, 255, 0.2)"; // Soft, faint blue line
+      ctx.lineWidth = 1;
       ctx.beginPath();
       // Rotate slowly with the system
-      ctx.arc(cx, cy, baseRadius, Math.PI * 0.6 + globalRotation, Math.PI * 1.4 + globalRotation);
+      ctx.arc(cx, cy, baseRadius, Math.PI * 0.65 + globalRotation, Math.PI * 1.35 + globalRotation);
       ctx.stroke();
 
-      // Amber arc
-      ctx.shadowColor = "rgba(255, 136, 0, 0.4)";
-      ctx.strokeStyle = "rgba(255, 136, 0, 0.4)";
-      ctx.lineWidth = 1.5;
+      // Amber arc (made more subtle and minimal)
+      ctx.shadowColor = "rgba(255, 136, 0, 0.3)";
+      ctx.strokeStyle = "rgba(255, 136, 0, 0.2)"; // Soft, faint amber line
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.arc(cx, cy, baseRadius, -Math.PI * 0.4 + globalRotation, Math.PI * 0.4 + globalRotation);
+      ctx.arc(cx, cy, baseRadius, -Math.PI * 0.35 + globalRotation, Math.PI * 0.35 + globalRotation);
       ctx.stroke();
 
       ctx.shadowBlur = 0; // Reset
@@ -162,40 +162,32 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
         <div className="absolute flex flex-col items-center justify-center pointer-events-none select-none">
 
           {/* Central Logo Symbol: Blue/orange circular arcs with three vertical bars at center */}
-          <div className="relative w-32 h-32 flex items-center justify-center transition-all duration-1000 group-hover:scale-[1.02] mb-4">
-            <svg width="112" height="112" viewBox="0 0 100 100" className="drop-shadow-[0_0_20px_rgba(0,157,255,0.15)] transition-all duration-700 group-hover:drop-shadow-[0_0_30px_rgba(255,136,0,0.2)]">
-              {/* Left blue arc */}
-              <path 
-                d="M 38 10 A 42 42 0 0 0 38 90" 
-                fill="none" 
-                stroke="#009DFF" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                className="opacity-80"
-              />
-              {/* Right orange/amber arc */}
-              <path 
-                d="M 62 10 A 42 42 0 0 1 62 90" 
-                fill="none" 
-                stroke="#FF8800" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                className="opacity-80"
-              />
-              {/* Three vertical bars pulsing softly */}
-              <rect x="42" y="30" width="2" height="40" rx="1" fill="#FFFFFF" className="opacity-70 group-hover:opacity-100 transition-opacity duration-1000" />
-              <rect x="49" y="20" width="2" height="60" rx="1" fill="#FFC000" className="opacity-90 group-hover:opacity-100 transition-opacity duration-1000 drop-shadow-[0_0_8px_rgba(255,192,0,0.5)]" />
-              <rect x="56" y="30" width="2" height="40" rx="1" fill="#FFFFFF" className="opacity-70 group-hover:opacity-100 transition-opacity duration-1000" />
+          <div className="relative w-48 h-48 flex items-center justify-center transition-all duration-1000 group-hover:scale-[1.02]">
+            <svg width="160" height="160" viewBox="0 0 100 100" className="drop-shadow-[0_0_25px_rgba(0,157,255,0.2)] transition-all duration-700 group-hover:drop-shadow-[0_0_40px_rgba(255,136,0,0.3)]">
+               {/* Left blue arc */}
+               <path 
+                 d="M 38 10 A 42 42 0 0 0 38 90" 
+                 fill="none" 
+                 stroke="#009DFF" 
+                 strokeWidth="3.5" 
+                 strokeLinecap="round" 
+                 className="opacity-90"
+               />
+               {/* Right orange/amber arc */}
+               <path 
+                 d="M 62 10 A 42 42 0 0 1 62 90" 
+                 fill="none" 
+                 stroke="#FF8800" 
+                 strokeWidth="3.5" 
+                 strokeLinecap="round" 
+                 className="opacity-90"
+               />
+               {/* Three vertical bars pulsing softly and bright */}
+               <rect x="42.5" y="30" width="2" height="40" rx="1" fill="#FFFFFF" className="opacity-90 group-hover:opacity-100 transition-opacity duration-1000" />
+               <rect x="49" y="20" width="2" height="60" rx="1" fill="#FFD700" className="opacity-100 group-hover:opacity-100 transition-opacity duration-1000 drop-shadow-[0_0_12px_rgba(255,215,0,0.8)]" />
+               <rect x="55.5" y="30" width="2" height="40" rx="1" fill="#FFFFFF" className="opacity-90 group-hover:opacity-100 transition-opacity duration-1000" />
             </svg>
           </div>
-
-          <h2 className="font-display text-2xl sm:text-3xl font-light tracking-[0.45em] pl-[0.45em] uppercase leading-none mt-2 text-white/90">
-            M<span className="text-[#009DFF]/90 font-medium">≡</span>TRO SUL
-          </h2>
-
-          <span className="font-mono text-[8px] text-neutral-500 uppercase tracking-[0.5em] mt-6 group-hover:text-neutral-400 transition-colors duration-1000">
-            FREQUENCY // ABUNDANCE
-          </span>
         </div>
       </div>
     </div>
