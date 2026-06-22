@@ -26,6 +26,7 @@ import SpotifyEmbeds, { ALBUMS } from "./components/SpotifyEmbeds";
 import InteractiveSynth from "./components/InteractiveSynth";
 import AboutProject from "./components/AboutProject";
 import SocialLinks from "./components/SocialLinks";
+import { translations, Language } from "./locales";
 
 export default function App() {
   // Set default initial active album to first album ("Beyond Gravity")
@@ -35,7 +36,25 @@ export default function App() {
   const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isBooting, setIsBooting] = useState<boolean>(true);
-  const [bootText, setBootText] = useState<string>("INITIALIZING SYSTEM REGISTER...");
+
+  // Set up language selection with auto-detection on mount
+  const [lang, setLang] = useState<Language>(() => {
+    const saved = localStorage.getItem("metrosul_lang");
+    if (saved === "pt" || saved === "es" || saved === "en") return saved;
+    if (typeof navigator !== "undefined") {
+      const browserLangs = navigator.languages || [navigator.language];
+      for (const bLang of browserLangs) {
+        const normalized = bLang.toLowerCase();
+        if (normalized.startsWith("pt")) return "pt";
+        if (normalized.startsWith("es")) return "es";
+      }
+    }
+    return "en";
+  });
+
+  const t = translations[lang];
+
+  const [bootText, setBootText] = useState<string>("");
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
@@ -43,15 +62,21 @@ export default function App() {
   const audioOnRef = useRef<HTMLButtonElement>(null);
   const pulseDotRef = useRef<HTMLSpanElement>(null);
 
+  const handleLanguageChange = (selected: Language) => {
+    setLang(selected);
+    localStorage.setItem("metrosul_lang", selected);
+  };
+
   // Retro-cyber system boot simulation sequence
   useEffect(() => {
+    const bootSteps = translations[lang].bootSeq;
     const sequence = [
-      { delay: 0, text: "METRO SUL SYSTEM CHASSIS V0.8B ONLINE" },
-      { delay: 250, text: "INITIALIZING EURORACK SEMI-MODULAR BUS..." },
-      { delay: 550, text: "CALIBRATING QUANTUM GRAVITY PARTICLES..." },
-      { delay: 850, text: "GENERATING SPATIAL ACOUSTIC FREQUENCIES..." },
-      { delay: 1150, text: "ESTABLISHING CLOUD RUN CORE MEMORY INTERFACES..." },
-      { delay: 1400, text: "SIGNAL STEREOPHONIC COUPLING SECURED." }
+      { delay: 0, text: bootSteps[0] },
+      { delay: 250, text: bootSteps[1] },
+      { delay: 550, text: bootSteps[2] },
+      { delay: 850, text: bootSteps[3] },
+      { delay: 1150, text: bootSteps[4] },
+      { delay: 1400, text: bootSteps[5] }
     ];
 
     sequence.forEach((step) => {
@@ -267,7 +292,7 @@ export default function App() {
         />
       </div>
 
-      {/* Dynamic Background Visualizer Particle Field (Warped dynamically based on active album) */}
+      {/* Dynamic Background Visualizer Particle Field */}
       <VisualizerCanvas 
         theme={{
           primary: activeAlbum.colorTheme.primary,
@@ -297,9 +322,9 @@ export default function App() {
 
       {/* Elegant Header/Navigation bar */}
       <header ref={headerRef} className="fixed top-0 left-0 right-0 w-full z-50 border-b border-white/[0.04] bg-neutral-950/80 backdrop-blur-md px-6 md:px-12 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <span 
               ref={pulseDotRef}
               className="h-2 w-2 rounded-full transition-all duration-300 shadow-[0_0_10px_currentColor] shrink-0"
@@ -316,21 +341,46 @@ export default function App() {
           {/* Minimal anchors */}
           <nav className="hidden md:flex items-center gap-8 text-[11px] font-mono tracking-widest text-neutral-400">
             <a href="#music" className="hover:text-white transition-colors uppercase">
-              // Releases
+              {t.navReleases}
             </a>
             <a href="#synthesizer" className="hover:text-white transition-colors uppercase">
-              // Voltage Terminal
+              {t.navSynth}
             </a>
             <a href="#about" className="hover:text-white transition-colors uppercase">
-              // Manifesto
+              {t.navManifesto}
             </a>
             <a href="#contact" className="hover:text-white transition-colors uppercase">
-              // Inquiries
+              {t.navInquiries}
             </a>
           </nav>
 
           {/* Audio output master controller status */}
           <div className="flex items-center gap-2">
+            
+            {/* Elegant Minimal Language Picker */}
+            <div className="hidden sm:flex items-center gap-1.2 font-mono text-[9px] bg-white/[0.02] border border-white/5 py-1.5 px-3 rounded-full text-neutral-400">
+              <button 
+                onClick={() => handleLanguageChange("pt")}
+                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "pt" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+              >
+                PT
+              </button>
+              <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+              <button 
+                onClick={() => handleLanguageChange("en")}
+                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "en" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+              >
+                EN
+              </button>
+              <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+              <button 
+                onClick={() => handleLanguageChange("es")}
+                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "es" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+              >
+                ES
+              </button>
+            </div>
+
             <button
               ref={audioOnRef}
               onClick={() => setIsMuted(prev => !prev)}
@@ -344,22 +394,22 @@ export default function App() {
               {isMuted ? (
                 <>
                   <VolumeX size={11} className="text-red-400 animate-pulse" />
-                  <span>MUTED</span>
+                  <span>{t.muted}</span>
                 </>
               ) : (
                 <>
                   <Volume2 size={11} className="text-neon-blue" />
-                  <span>AUDIO ON</span>
+                  <span>{t.audioOn}</span>
                 </>
               )}
             </button>
 
             {/* Live telemetry metadata clock */}
-            <div className="hidden sm:flex items-center gap-2.5 font-mono text-[10px] text-neutral-400 bg-white/[0.02] border border-white/5 py-1.5 px-3.5 rounded-full">
+            <div className="hidden lg:flex items-center gap-2.5 font-mono text-[10px] text-neutral-400 bg-white/[0.02] border border-white/5 py-1.5 px-3.5 rounded-full">
               <Clock size={11} className="text-neutral-500 animate-pulse" />
               <span>{timeStr}</span>
               <span className="text-neutral-600">|</span>
-              <span className="text-emerald-400">SYS_ONLINE</span>
+              <span className="text-emerald-400">{t.sysOnline}</span>
             </div>
 
             {/* Mobile menu trigger */}
@@ -390,29 +440,54 @@ export default function App() {
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
             >
-              // Releases
+              {t.navReleases}
             </a>
             <a 
               href="#synthesizer" 
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
             >
-              // Voltage Terminal
+              {t.navSynth}
             </a>
             <a 
               href="#about" 
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
             >
-              // Manifesto
+              {t.navManifesto}
             </a>
             <a 
               href="#contact" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors uppercase py-2 block text-left"
+              className="hover:text-white transition-colors uppercase py-2 block text-left border-b border-white/[0.02]"
             >
-              // Inquiries
+              {t.navInquiries}
             </a>
+
+            {/* Mobile language picker */}
+            <div className="flex items-center justify-between pt-3 mt-1 font-mono text-[9px] tracking-widest text-neutral-500 font-bold">
+              <span>// LANGUAGE</span>
+              <div className="flex items-center gap-3 font-semibold text-neutral-400 tracking-normal">
+                <button 
+                  onClick={() => { handleLanguageChange("pt"); setIsMobileMenuOpen(false); }}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "pt" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                >
+                  PT
+                </button>
+                <button 
+                  onClick={() => { handleLanguageChange("en"); setIsMobileMenuOpen(false); }}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "en" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                >
+                  EN
+                </button>
+                <button 
+                  onClick={() => { handleLanguageChange("es"); setIsMobileMenuOpen(false); }}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "es" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                >
+                  ES
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -436,10 +511,10 @@ export default function App() {
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.02] border border-white/5 font-mono text-[10px] tracking-wider text-neutral-400"
               >
                 <Radio size={11} className="text-[#00f0ff] animate-ping" />
-                <span>SOUND VECTORING ACTIVE</span>
+                <span>{t.vectorActive}</span>
                 <span className="text-neutral-600">//</span>
                 <span style={{ color: activeAlbum.colorTheme.primary }} className="transition-colors duration-1000">
-                  THEME: {activeAlbum.title.toUpperCase()}
+                  {t.themeLabel}: {activeAlbum.title.toUpperCase()}
                 </span>
               </motion.div>
 
@@ -459,7 +534,7 @@ export default function App() {
                   transition={{ duration: 0.7, delay: 0.1 }}
                   className="font-display text-lg sm:text-2xl font-light text-neutral-400 tracking-tight"
                 >
-                  Modular synthesizers and cybernetic sound structures.
+                  {t.heroSub}
                 </motion.p>
               </div>
 
@@ -470,7 +545,7 @@ export default function App() {
                 transition={{ duration: 0.8, delay: 0.25 }}
                 className="font-sans text-sm md:text-base text-neutral-400 leading-relaxed font-light"
               >
-                An experimental dark electronic music project merging analog synthesis with deep acoustic atmospheres. Experience custom live-synthesized loops and official releases.
+                {t.heroDesc}
               </motion.p>
 
               {/* Floating anchor call to action */}
@@ -490,7 +565,7 @@ export default function App() {
                     boxShadow: `0 8px 30px -4px ${activeAlbum.colorTheme.glow}`
                   }}
                 >
-                  EXPLORE RELEASES 
+                  {t.btnReleases} 
                   <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform" />
                 </a>
 
@@ -498,7 +573,7 @@ export default function App() {
                   href="#synthesizer" 
                   className="px-6 py-3.5 rounded-xl text-xs font-mono tracking-widest font-semibold text-white border border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/[0.08] flex items-center gap-2 transition-all cursor-pointer"
                 >
-                  ACCESS LIVE OSCILLATORS
+                  {t.btnSynth}
                   <Terminal size={13} className="text-neutral-400" />
                 </a>
               </motion.div>
@@ -534,33 +609,33 @@ export default function App() {
           {/* Analog Dashboard / Space Telemetry box */}
           <div className="w-full mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-b border-white/[0.04] py-6 bg-neutral-950/20 backdrop-blur-sm px-4 rounded-xl">
             <div>
-              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">AUDIO SIGNAL FLOW</span>
+              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">{t.flowLabel}</span>
               <span className="font-display font-medium text-sm text-white flex items-center gap-1.5 mt-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                PROCEDURAL SYNTH
+                {t.flowValue}
               </span>
             </div>
             <div>
-              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">DYNAMIC SCALE</span>
+              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">{t.scaleLabel}</span>
               <span className="font-mono text-xs text-white uppercase mt-1.5 block">
-                C-MINOR PENTATONIC
+                {t.scaleValue}
               </span>
             </div>
             <div>
-              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">KINETIC GRAVITY</span>
+              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">{t.gravityLabel}</span>
               <span className="font-display font-medium text-sm text-white flex items-center gap-1.5 mt-1">
-                WARPING G-CELLS
+                {t.gravityValue}
               </span>
             </div>
             <div>
-              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">ARTIST PORTALS</span>
+              <span className="block font-mono text-[9px] text-neutral-500 tracking-widest uppercase">{t.portalsLabel}</span>
               <a 
                 href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk" 
                 target="_blank" 
                 rel="no-referrer"
                 className="font-mono text-xs text-neon-blue flex items-center gap-1 mt-1 hover:underline group"
               >
-                SPOTIFY VERIFIED <ExternalLink size={10} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                {t.portalsValue} <ExternalLink size={10} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
           </div>
@@ -571,7 +646,7 @@ export default function App() {
               href="#music"
               className="text-neutral-500 hover:text-white transition-colors duration-300 flex flex-col items-center gap-2 font-mono text-[9px] tracking-widest"
             >
-              <span>SCROLL TO SYSTEM INGRESS</span>
+              <span>{t.scrollDown}</span>
               <ChevronDown size={14} className="animate-bounce" />
             </a>
           </div>
@@ -583,14 +658,14 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Disc size={13} style={{ color: activeAlbum.colorTheme.primary }} />
-                <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">OFFICIAL EP & ALBUM VAULT</span>
+                <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">{t.vaultLabel}</span>
               </div>
               <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
-                Soundwave Chronicles
+                {t.vaultTitle}
               </h2>
             </div>
             <p className="font-sans text-sm text-neutral-400 max-w-sm leading-relaxed">
-              Select an album below to shift the visual theme dynamic and hear track previews synchronized from Spotify.
+              {t.vaultDesc}
             </p>
           </div>
 
@@ -602,6 +677,7 @@ export default function App() {
               setSynthIntensity(1.5);
               setTimeout(() => setSynthIntensity(1.0), 800);
             }} 
+            lang={lang}
           />
         </section>
 
@@ -610,22 +686,22 @@ export default function App() {
           <div className="max-w-2xl text-left space-y-3">
             <div className="flex items-center gap-2">
               <Sliders size={13} className="text-neon-sunset" />
-              <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">INTERACTIVE HARDWARE HARMONICS</span>
+              <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">{t.synthLabel}</span>
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
-              Tactile Sound Synthesizer
+              {t.synthTitle}
             </h2>
             <p className="font-sans text-sm text-neutral-400 leading-relaxed">
-              Synthesize loops live on the Web Audio engine. Select grid nodes or orbital controls below to trigger custom techno patterns and shape filters in real-time.
+              {t.synthDesc}
             </p>
           </div>
 
-          <InteractiveSynth isMuted={isMuted} />
+          <InteractiveSynth isMuted={isMuted} lang={lang} />
         </section>
 
         {/* ABOUT THE PROJECT / MANIFESTO */}
         <section id="about" className="scroll-mt-24">
-          <AboutProject />
+          <AboutProject lang={lang} />
         </section>
 
         {/* SOCIAL NETWORKS & INQUIRIES */}
@@ -633,17 +709,17 @@ export default function App() {
           <div className="max-w-xl space-y-3">
             <div className="flex items-center gap-2">
               <Compass size={13} className="text-neon-blue" />
-              <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">DIGITAL SPECTRUM CONTACTS</span>
+              <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">{t.contactLabel}</span>
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
-              Network Terminals
+              {t.contactTitle}
             </h2>
             <p className="font-sans text-sm text-neutral-400 leading-relaxed">
-              Follow tour schedules, studio updates, and project inquiries. Find Metro Sul on all networks at @metrosulofficial.
+              {t.contactDesc}
             </p>
           </div>
 
-          <SocialLinks />
+          <SocialLinks lang={lang} />
         </section>
 
       </main>
@@ -651,14 +727,14 @@ export default function App() {
       {/* Footer credit bar */}
       <footer className="mt-32 border-t border-white/[0.04] pt-8 px-6 text-center max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <span className="font-mono text-[10px] text-neutral-500 tracking-wider">
-          &copy; {new Date().getFullYear()} METRO SUL. CODING PATTERNS COMPLIANT WITH COGNITIVE MINIMALISM.
+          &copy; {new Date().getFullYear()} METRO SUL. {t.footerCredits}
         </span>
         <div className="flex items-center gap-4 text-[10px] font-mono text-neutral-400">
-          <a href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk" target="_blank" rel="no-referrer" className="hover:text-white transition-colors">SPOTIFY ARTIST</a>
+          <a href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk" target="_blank" rel="no-referrer" className="hover:text-white transition-colors">{lang === "pt" ? "ARTISTA SPOTIFY" : lang === "es" ? "ARTISTA SPOTIFY" : "SPOTIFY ARTIST"}</a>
           <span>&middot;</span>
-          <a href="#music" className="hover:text-white transition-colors">VAULT</a>
+          <a href="#music" className="hover:text-white transition-colors">{lang === "pt" ? "COFRE" : lang === "es" ? "CÓDICE" : "VAULT"}</a>
           <span>&middot;</span>
-          <a href="#synthesizer" className="hover:text-white transition-colors">VOLTAGE</a>
+          <a href="#synthesizer" className="hover:text-white transition-colors">{lang === "pt" ? "VOLTAGEM" : lang === "es" ? "VOLTAJE" : "VOLTAGE"}</a>
         </div>
       </footer>
 
@@ -671,7 +747,7 @@ export default function App() {
           className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#0a0a0c]/85 backdrop-blur-md border border-white/5 hover:border-white/15 text-[10px] font-mono text-neutral-400 hover:text-white shadow-[0_15px_30px_-5px_rgba(0,0,0,0.8)] group transition-all cursor-pointer"
         >
           <HelpCircle size={12} className="text-neon-blue animate-pulse" />
-          <span>SYSTEM HOTKEYS</span>
+          <span>{t.hotkeysBtn}</span>
           <kbd className="px-1.5 py-0.5 rounded bg-neutral-950 border border-white/10 text-[9px] font-bold text-neutral-300 group-hover:border-neon-blue group-hover:text-neon-blue transition-colors">
             H
           </kbd>
@@ -705,7 +781,7 @@ export default function App() {
               <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
                 <div className="flex items-center gap-2">
                   <Terminal size={14} className="text-neon-blue animate-pulse" />
-                  <span className="font-mono text-xs tracking-wider text-neutral-400">COGNITIVE TELEMETRY TERMINAL</span>
+                  <span className="font-mono text-xs tracking-wider text-neutral-400">{t.modalTerminal}</span>
                 </div>
                 <button 
                   onClick={() => setShowHelpModal(false)}
@@ -716,20 +792,40 @@ export default function App() {
               </div>
 
               <h3 className="font-display text-xl font-semibold text-white tracking-tight mb-2">
-                Quantum Navigation Vectors
+                {t.modalTitle}
               </h3>
               <p className="font-sans text-xs text-neutral-400 mb-6 leading-relaxed">
-                Metro Sul represents an interactive modular machine. Use your hardware keyboard to instantly teleport across the system coords:
+                {t.modalDesc}
               </p>
 
               {/* Shortcut rows list */}
               <div className="space-y-3 mb-6">
                 {[
-                  { key: "H", desc: "Toggle this system commands guide", target: "" },
-                  { key: "M", desc: "Teleport to Soundwave Chronicles (Music)", target: "music" },
-                  { key: "S", desc: "Engage Tactile Sound Synthesizer (Synth)", target: "synthesizer" },
-                  { key: "A", desc: "Access Metro Sul Sound Manifesto (About)", target: "about" },
-                  { key: "C", desc: "Proceed to Network Contact Hub (Booking)", target: "contact" },
+                  { 
+                    key: "H", 
+                    desc: lang === "pt" ? "Alternar este guia de comandos de sistema" : lang === "es" ? "Alternar esta guía de comandos de sistema" : "Toggle this system commands guide", 
+                    target: "" 
+                  },
+                  { 
+                    key: "M", 
+                    desc: lang === "pt" ? "Teletransportar para Crônicas de Ondas Sonoras (Lançamentos)" : lang === "es" ? "Teletransportarse a Crónicas de Ondas (Lanzamientos)" : "Teleport to Soundwave Chronicles (Music)", 
+                    target: "music" 
+                  },
+                  { 
+                    key: "S", 
+                    desc: lang === "pt" ? "Engajar Sintetizador de Som Tátil (Sintetizador)" : lang === "es" ? "Activar Sintetizador de Sonido Táctil (Sintetizado)" : "Engage Tactile Sound Synthesizer (Synth)", 
+                    target: "synthesizer" 
+                  },
+                  { 
+                    key: "A", 
+                    desc: lang === "pt" ? "Acessar Manifesto do Som Metro Sul (Sobre)" : lang === "es" ? "Acceder al Manifiesto de Sonido Metro Sul (Sobre)" : "Access Metro Sul Sound Manifesto (About)", 
+                    target: "about" 
+                  },
+                  { 
+                    key: "C", 
+                    desc: lang === "pt" ? "Proceder para Hub de Contatos da Rede" : lang === "es" ? "Proceder al Hub de Contacto de Red" : "Proceed to Network Contact Hub (Booking)", 
+                    target: "contact" 
+                  },
                 ].map((item) => (
                   <button
                     key={item.key}
@@ -761,8 +857,8 @@ export default function App() {
               </div>
 
               <div className="text-[9px] font-mono text-center text-neutral-500 border-t border-white/5 pt-4 flex justify-between items-center">
-                <span>SYS LOGS: OK</span>
-                <span>METRO SUL VER_0.8B</span>
+                <span>{t.modalLogStatus}</span>
+                <span>{t.modalLogVersion}</span>
               </div>
             </motion.div>
           </motion.div>

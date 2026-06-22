@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Instagram, Youtube, Mail, Check, Copy, Share2, Compass, Disc } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { Language, translations } from "../locales";
+
+interface SocialLinksProps {
+  lang: Language;
+}
 
 interface SocialItem {
   name: string;
@@ -49,7 +54,7 @@ const METRO_SOCIALS: SocialItem[] = [
   }
 ];
 
-export default function SocialLinks() {
+export default function SocialLinks({ lang }: SocialLinksProps) {
   const [copied, setCopied] = useState<boolean>(false);
   const emailAddress = "brunocorreagomes@gmail.com";
 
@@ -71,14 +76,14 @@ export default function SocialLinks() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Mail size={13} className="text-neon-blue" />
-              <span className="font-mono text-[10px] tracking-[0.25em] text-[#00f0ff] uppercase">INQUIRIES_AND_GIGS // SECURE_COMMS</span>
+              <span className="font-mono text-[10px] tracking-[0.25em] text-[#00f0ff] uppercase">{translations[lang].contactCardLabel}</span>
             </div>
             
             <h3 className="font-display text-2xl font-bold tracking-tight text-white mb-2 uppercase">
-              Establish Direct Signal
+              {translations[lang].contactCardTitle}
             </h3>
             <p className="font-sans text-xs text-neutral-400 max-w-md leading-relaxed mb-6 font-light">
-              For live modular synthesizer showcases, curated remixes, release features, licensings, or raw Eurorack multitrack sequences, initiate terminal correspondence.
+              {translations[lang].contactCardDesc}
             </p>
           </div>
 
@@ -98,12 +103,12 @@ export default function SocialLinks() {
               {copied ? (
                 <>
                   <Check size={12} className="text-green-400" />
-                  COPIED
+                  {translations[lang].contactCardCopied}
                 </>
               ) : (
                 <>
                   <Copy size={12} className="text-neutral-400" />
-                  COPY EMAIL
+                  {translations[lang].contactCardCopy}
                 </>
               )}
             </button>

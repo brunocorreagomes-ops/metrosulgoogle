@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Sliders, Volume2, Sparkles, Radio, Disc, Play, Square, Activity, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { Language, translations } from "../locales";
 
 // Conceptual audio Nodes for Metro Sul modular soundboard
 interface SoundNode {
@@ -157,11 +158,58 @@ const SYNTH_PRESETS: SynthPreset[] = [
   }
 ];
 
+const getNodeName = (id: string, lang: Language) => {
+  switch (id) {
+    case "sub-gravity": return translations[lang].nodeSubPulseTitle;
+    case "chronos-lfo": return translations[lang].nodeChronosTitle;
+    case "kairos-pad": return translations[lang].nodeKairosTitle;
+    case "voltage-lead": return translations[lang].nodeVoltageTitle;
+    case "echo-tree": return translations[lang].nodeBiolumTitle;
+    case "horizon-noise": return translations[lang].nodeHorizonTitle;
+    default: return "";
+  }
+};
+
+const getNodeDesc = (id: string, lang: Language) => {
+  switch (id) {
+    case "sub-gravity": return translations[lang].nodeSubPulseDesc;
+    case "chronos-lfo": return translations[lang].nodeChronosDesc;
+    case "kairos-pad": return translations[lang].nodeKairosDesc;
+    case "voltage-lead": return translations[lang].nodeVoltageDesc;
+    case "echo-tree": return translations[lang].nodeBiolumDesc;
+    case "horizon-noise": return translations[lang].nodeHorizonDesc;
+    default: return "";
+  }
+};
+
+const getPresetName = (idx: number, lang: Language) => {
+  switch (idx) {
+    case 0: return translations[lang].presetPressureTitle;
+    case 1: return translations[lang].presetBeyondTitle;
+    case 2: return translations[lang].presetKairosTitle;
+    case 3: return translations[lang].presetVelvetTitle;
+    case 4: return translations[lang].presetTransitTitle;
+    default: return "";
+  }
+};
+
+const getPresetDesc = (idx: number, lang: Language) => {
+  switch (idx) {
+    case 0: return translations[lang].presetPressureDesc;
+    case 1: return translations[lang].presetBeyondDesc;
+    case 2: return translations[lang].presetKairosDesc;
+    case 3: return translations[lang].presetVelvetDesc;
+    case 4: return translations[lang].presetTransitDesc;
+    default: return "";
+  }
+};
+
 interface InteractiveSynthProps {
   isMuted?: boolean;
+  lang: Language;
 }
 
-export default function InteractiveSynth({ isMuted = false }: InteractiveSynthProps) {
+export default function InteractiveSynth({ isMuted = false, lang }: InteractiveSynthProps) {
   const [audioCtx, setAudioCtx] = useState<AudioContext | null>(null);
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
   const [volume, setVolume] = useState<number>(0.4); // 0 to 1
@@ -421,10 +469,10 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="h-2 w-2 rounded-full bg-neon-blue animate-pulse" />
-            <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">VOLTAGE TERMINAL 0.8B</span>
+            <span className="font-mono text-[10px] tracking-widest text-neutral-400 uppercase">{translations[lang].synthTerminalLabel}</span>
           </div>
           <h3 className="font-display text-2xl font-semibold tracking-tight text-white flex items-center gap-2">
-            Metro Sul Interactive Synth
+            {translations[lang].synthMainTitle}
           </h3>
         </div>
 
@@ -439,7 +487,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
             }`}
           >
             <Radio size={13} />
-            Modular Pads
+            {translations[lang].synthTabPads}
           </button>
           <button
             onClick={() => setActiveTab("matrix")}
@@ -450,7 +498,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
             }`}
           >
             <Sliders size={13} />
-            Orbit Sequencer
+            {translations[lang].synthTabSeq}
           </button>
         </div>
       </div>
@@ -463,7 +511,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           {activeTab === "pads" ? (
             <div>
               <p className="text-sm text-neutral-400 mb-4 tracking-wide font-sans leading-relaxed">
-                Unlock real wave modulations. Click or tap nodes below to sequence high-resonant sub frequencies and ambient chords live.
+                {translations[lang].synthPadsDesc}
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -486,7 +534,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
 
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-display font-medium text-white text-[15px]">{node.name}</h4>
+                        <h4 className="font-display font-medium text-white text-[15px]">{getNodeName(node.id, lang)}</h4>
                         <span className="font-mono text-[10px] text-neutral-400">{node.type.toUpperCase()} / {node.frequency} Hz</span>
                       </div>
                       <div className={`p-1.5 rounded-lg bg-gradient-to-tr ${node.color} opacity-40 shadow-inner`}>
@@ -495,7 +543,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
                     </div>
 
                     <p className="font-sans text-[11px] text-neutral-400 line-clamp-2 leading-relaxed">
-                      {node.desc}
+                      {getNodeDesc(node.id, lang)}
                     </p>
 
                     {/* Accent glowing horizontal strip */}
@@ -508,13 +556,13 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
             <div>
               <div className="mb-4">
                 <p className="text-xs text-neutral-400 tracking-wide font-sans mb-3.5 leading-relaxed">
-                  Orbit Step-Matrix Sequencer. Program custom triggers on the node grid below or fire up pre-programmed sound system beats preset for Metro Sul releases.
+                  {translations[lang].synthSeqDesc}
                 </p>
                 
                 {/* Advanced physical signal presets dock */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.01] p-4 rounded-2xl border border-white/[0.04]">
                   <div>
-                    <span className="block font-mono text-[9px] text-neon-blue uppercase tracking-widest mb-2 font-semibold">SIGNAL PATH OVERRIDES (PRESETS)</span>
+                    <span className="block font-mono text-[9px] text-neon-blue uppercase tracking-widest mb-2 font-semibold">{translations[lang].synthOverridesLabel}</span>
                     <div className="flex flex-wrap gap-1.5">
                       {SYNTH_PRESETS.map((pst, idx) => (
                         <button
@@ -525,9 +573,9 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
                               ? "bg-neon-sunset/20 text-[#ff7961] border border-neon-sunset/40 font-bold shadow-lg shadow-neon-sunset/10"
                               : "bg-white/[0.02] border border-white/5 text-neutral-400 hover:text-white hover:border-white/15"
                           }`}
-                          title={pst.desc}
+                          title={getPresetDesc(idx, lang)}
                         >
-                          {pst.name}
+                          {getPresetName(idx, lang)}
                         </button>
                       ))}
                     </div>
@@ -543,13 +591,13 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
                       }`}
                     >
                       {sequencerOn ? <Square size={11} /> : <Play size={11} />}
-                      {sequencerOn ? "STOP ACTIVE" : "START SEQUENCE"}
+                      {sequencerOn ? translations[lang].synthStopBtn : translations[lang].synthStartBtn}
                     </button>
                     <button
                       onClick={clearGrid}
                       className="text-xs text-neutral-400 hover:text-pink-400 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
-                      Clear Matrix
+                      {translations[lang].synthClearBtn}
                     </button>
                   </div>
                 </div>
@@ -559,8 +607,8 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
                 <div className="mb-4 p-3 rounded-xl bg-white/[0.01] border border-white/[0.03] text-[11px] text-neutral-400 leading-relaxed font-sans flex items-start gap-2.5 animate-fadeIn">
                   <Sparkles size={12} className="text-neon-sunset shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-white font-mono mr-1">Active Pulse:</span>
-                    <span>{SYNTH_PRESETS[selectedPreset].desc}</span>
+                    <span className="font-semibold text-white font-mono mr-1">{translations[lang].synthActivePulseLabel}</span>
+                    <span>{getPresetDesc(selectedPreset, lang)}</span>
                   </div>
                 </div>
               )}
@@ -570,8 +618,8 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
                 {CONSTANT_NODES.map((rowNode, rIndex) => (
                   <div key={rowNode.id} className="grid grid-cols-12 items-center gap-2">
                     {/* Row Label */}
-                    <span className="col-span-3 text-[10px] font-mono text-neutral-400 truncate tracking-tight pr-1" title={rowNode.name}>
-                      {rowNode.name.replace(" Metro", "")}
+                    <span className="col-span-3 text-[10px] font-mono text-neutral-400 truncate tracking-tight pr-1" title={getNodeName(rowNode.id, lang)}>
+                      {getNodeName(rowNode.id, lang)}
                     </span>
                     
                     {/* Col step triggers */}
@@ -610,14 +658,14 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
         <div className="lg:col-span-4 bg-white/[0.01] border border-white/5 p-5 rounded-2xl space-y-5">
           <div className="flex items-center gap-1.5 border-b border-white/5 pb-2">
             <Sliders size={14} className="text-neon-blue" />
-            <h4 className="font-mono text-xs font-semibold tracking-wider text-neutral-200">PATCH CONTROLS</h4>
+            <h4 className="font-mono text-xs font-semibold tracking-wider text-neutral-200">{translations[lang].synthPatchControls}</h4>
           </div>
 
           {/* Master volume knob slider */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono">
               <span className="text-neutral-400 uppercase tracking-widest flex items-center gap-1">
-                <Volume2 size={11} /> Master Level
+                <Volume2 size={11} /> {translations[lang].synthMasterLevel}
               </span>
               <span className="text-neon-blue">{Math.round(volume * 100)}%</span>
             </div>
@@ -635,7 +683,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           {/* Lowpass cutoff slider */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono">
-              <span className="text-neutral-400 uppercase tracking-widest">Filter Cutoff</span>
+              <span className="text-neutral-400 uppercase tracking-widest">{translations[lang].synthFilterCutoff}</span>
               <span className="text-neon-blue">{filterCutoff} Hz</span>
             </div>
             <input
@@ -652,7 +700,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           {/* Filter resonance slider */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono">
-              <span className="text-neutral-400 uppercase tracking-widest">Resonance (Q)</span>
+              <span className="text-neutral-400 uppercase tracking-widest">{translations[lang].synthResonance}</span>
               <span className="text-neon-blue">{resonance}</span>
             </div>
             <input
@@ -669,7 +717,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           {/* Echo feedback */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono">
-              <span className="text-neutral-400 uppercase tracking-widest">Echo Feedback</span>
+              <span className="text-neutral-400 uppercase tracking-widest">{translations[lang].synthEchoFeedback}</span>
               <span className="text-neon-blue">{Math.round(delayFeedback * 100)}%</span>
             </div>
             <input
@@ -686,7 +734,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           {/* LFO Rate selector */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-[11px] font-mono">
-              <span className="text-neutral-400 uppercase tracking-widest">LFO Speed</span>
+              <span className="text-neutral-400 uppercase tracking-widest">{translations[lang].synthLfoSpeed}</span>
               <span className="text-neon-blue">{lfoRate.toFixed(1)} Hz</span>
             </div>
             <input
@@ -704,7 +752,7 @@ export default function InteractiveSynth({ isMuted = false }: InteractiveSynthPr
           <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl flex items-start gap-2 text-[10px] leading-relaxed text-neutral-400 font-mono">
             <HelpCircle size={14} className="text-neon-blue mt-0.5 shrink-0" />
             <span>
-              Real-time calculations construct voltage paths without pre-recorded samples. Dynamic adjustments immediately reshape audio textures.
+              {translations[lang].synthPhysNote}
             </span>
           </div>
         </div>

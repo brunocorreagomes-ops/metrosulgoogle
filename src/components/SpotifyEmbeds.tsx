@@ -2,6 +2,7 @@ import { useState, useTransition } from "react";
 import { Disc, ExternalLink, Music, Sparkles, Orbit, Clock, PlayCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { AlbumData } from "../types";
+import { Language, translations } from "../locales";
 
 export const ALBUMS: AlbumData[] = [
   {
@@ -68,9 +69,10 @@ export const ALBUMS: AlbumData[] = [
 interface SpotifyEmbedsProps {
   activeAlbum: AlbumData;
   onAlbumSelect: (album: AlbumData) => void;
+  lang: Language;
 }
 
-export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmbedsProps) {
+export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect, lang }: SpotifyEmbedsProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleAlbumSelect = (album: AlbumData) => {
@@ -128,7 +130,7 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
               
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/[0.04]">
                 <span className="font-mono text-[9px] text-neutral-400 uppercase tracking-wider truncate max-w-[80%]">
-                  {album.concept}
+                  {album.id === "beyond-gravity" ? translations[lang].albumBeyondConcept : translations[lang].albumVoltaConcept}
                 </span>
                 <Disc 
                   size={12} 
@@ -256,12 +258,11 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
 
               </div>
 
-              {/* Album Metadata & Narrative Description Column */}
               <div className="flex-1 text-center sm:text-left">
                 <div className="flex items-center justify-center sm:justify-start gap-2 mb-2.5">
                   <Music size={13} style={{ color: activeAlbum.colorTheme.primary }} />
                   <span className="font-mono text-[9px] tracking-widest text-[#00f0ff] uppercase" style={{ color: activeAlbum.colorTheme.primary }}>
-                    CONCEPT &amp; NARRATIVE
+                    {translations[lang].embedConceptNarrative}
                   </span>
                 </div>
                 
@@ -270,18 +271,20 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
                 </h3>
 
                 <p className="font-sans text-xs md:text-sm text-neutral-400 leading-relaxed mb-5">
-                  {activeAlbum.description}
+                  {activeAlbum.id === "beyond-gravity" ? translations[lang].albumBeyondDesc : translations[lang].albumVoltaDesc}
                 </p>
 
                 <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
                   <div>
-                    <span className="block font-mono text-[9px] text-neutral-400 tracking-wider">ATMOSPHERE</span>
-                    <span className="text-xs text-white font-medium">{activeAlbum.atmosphere}</span>
+                    <span className="block font-mono text-[9px] text-neutral-400 tracking-wider">{lang === "en" ? "ATMOSPHERE" : lang === "es" ? "ATMÓSFERA" : "ATMOSFERA"}</span>
+                    <span className="text-xs text-white font-medium">
+                      {activeAlbum.id === "beyond-gravity" ? translations[lang].albumBeyondAtmosphere : translations[lang].albumVoltaAtmosphere}
+                    </span>
                   </div>
                   <div>
-                    <span className="block font-mono text-[9px] text-neutral-400 tracking-wider">CORE THEME</span>
+                    <span className="block font-mono text-[9px] text-neutral-400 tracking-wider">{lang === "en" ? "CORE THEME" : lang === "es" ? "TEMA PRINCIPAL" : "TEMA CENTRAL"}</span>
                     <span className="text-xs text-white font-medium font-mono" style={{ color: activeAlbum.colorTheme.primary }}>
-                      {activeAlbum.id === "beyond-gravity" ? "BIOLUMINESCENT TECH" : "TEMPORAL WARP"}
+                      {activeAlbum.id === "beyond-gravity" ? translations[lang].albumBeyondCoreTheme : translations[lang].albumVoltaCoreTheme}
                     </span>
                   </div>
                 </div>
@@ -291,7 +294,7 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
 
             {/* Custom Interactive Tracklist Simulation */}
             <div className="mt-8">
-              <span className="block font-mono text-[10px] text-neutral-400 tracking-wider mb-3">RELEASE SEQUENCE</span>
+              <span className="block font-mono text-[10px] text-neutral-400 tracking-wider mb-3">{translations[lang].embedReleaseSeq}</span>
               <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 {activeAlbum.tracklist.map((track, idx) => {
                   const parts = track.split(" — ");
@@ -324,14 +327,14 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
             
             <div className="flex items-center justify-between mb-4 px-2">
-              <span className="font-mono text-[10px] text-neutral-400 tracking-widest uppercase">OFFICIAL SPOTIFY PLAYER</span>
+              <span className="font-mono text-[10px] text-neutral-400 tracking-widest uppercase">{translations[lang].embedPlayerLabel}</span>
               <a
                 href={activeAlbum.spotifyUrl}
                 target="_blank"
                 rel="no-referrer"
                 className="text-[11px] font-mono text-neutral-400 hover:text-white transition-colors flex items-center gap-1 hover:underline"
               >
-                Open in Spotify <ExternalLink size={10} />
+                {translations[lang].embedOpenSpotify} <ExternalLink size={10} />
               </a>
             </div>
 
@@ -353,7 +356,7 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect }: SpotifyEmb
             <div className="mt-4 px-2 flex justify-between items-center text-[10px] font-mono text-neutral-400">
               <span>FORMAT: 320KBPS / FLAC</span>
               <span className="flex items-center gap-1.5 animate-pulse">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> SPOTIFY SYNCED
+                <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> {translations[lang].embedSynced}
               </span>
             </div>
           </div>
