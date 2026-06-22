@@ -16,7 +16,8 @@ import {
   ExternalLink,
   HelpCircle,
   Menu,
-  X
+  X,
+  Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { AlbumData } from "./types";
@@ -302,18 +303,33 @@ export default function App() {
         intensity={synthIntensity}
       />
 
-      {/* Extreme ambient backplane glowing blobs */}
+      {/* Extreme ambient backplane glowing blobs in absolute blue-left, amber-right symmetry */}
       <div 
-        className="absolute top-[2vh] left-[20vw] w-[45vw] h-[45vw] rounded-full blur-[140px] opacity-40 pointer-events-none transition-all duration-1000 z-0"
+        className="absolute top-[2vh] left-[5vw] w-[45vw] h-[45vw] rounded-full blur-[140px] opacity-[0.22] pointer-events-none transition-all duration-1000 z-0"
         style={{
-          background: `radial-gradient(circle, ${activeAlbum.colorTheme.primary}1a 0%, ${activeAlbum.colorTheme.secondary}0a 70%, transparent 100%)`
+          background: "radial-gradient(circle, #009DFF 0%, transparent 70%)"
         }}
       />
       
       <div 
-        className="absolute top-[120vh] right-[10vw] w-[50vw] h-[50vw] rounded-full blur-[160px] opacity-25 pointer-events-none transition-all duration-1000 z-0"
+        className="absolute top-[10vh] right-[5vw] w-[45vw] h-[45vw] rounded-full blur-[160px] opacity-[0.16] pointer-events-none transition-all duration-1000 z-0"
         style={{
-          background: `radial-gradient(circle, ${activeAlbum.colorTheme.secondary}15 0%, ${activeAlbum.colorTheme.primary}05 70%, transparent 100%)`
+          background: "radial-gradient(circle, #FF8800 0%, transparent 70%)"
+        }}
+      />
+
+      {/* Dynamic scrolling background indicators */}
+      <div 
+        className="absolute top-[120vh] left-[8vw] w-[40vw] h-[40vw] rounded-full blur-[160px] opacity-[0.15] pointer-events-none transition-all duration-1000 z-0"
+        style={{
+          background: "radial-gradient(circle, #009DFF 0%, transparent 70%)"
+        }}
+      />
+      
+      <div 
+        className="absolute top-[130vh] right-[8vw] w-[40vw] h-[40vw] rounded-full blur-[160px] opacity-[0.12] pointer-events-none transition-all duration-1000 z-0"
+        style={{
+          background: "radial-gradient(circle, #FF8800 0%, transparent 70%)"
         }}
       />
 
@@ -559,13 +575,13 @@ export default function App() {
                   transition={{ duration: 0.7 }}
                   className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] !leading-[0.95] text-white uppercase glitch-text"
                 >
-                  METRO SUL
+                  M<span className="text-[#009DFF] drop-shadow-[0_0_12px_rgba(0,157,255,0.4)]">≡</span>TRO SUL
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.1 }}
-                  className="font-display text-lg sm:text-2xl font-light text-neutral-400 tracking-tight"
+                  className="font-display text-lg sm:text-2xl font-light text-neutral-300 tracking-tight font-sans"
                 >
                   {t.heroSub}
                 </motion.p>
@@ -589,25 +605,27 @@ export default function App() {
                 className="flex flex-wrap items-center gap-4 pt-4"
               >
                 <a 
-                  href="#music" 
+                  href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-xl text-xs font-mono tracking-widest font-semibold flex items-center gap-2 group transition-all duration-300 shadow-xl border cursor-pointer"
                   style={{
-                    backgroundColor: activeAlbum.colorTheme.primary,
-                    borderColor: activeAlbum.colorTheme.primary,
+                    backgroundColor: "#009DFF",
+                    borderColor: "#009DFF",
                     color: "#030304",
-                    boxShadow: `0 8px 30px -4px ${activeAlbum.colorTheme.glow}`
+                    boxShadow: "0 8px 30px -4px rgba(0, 157, 255, 0.45)"
                   }}
                 >
                   {t.btnReleases} 
-                  <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform" />
+                  <ExternalLink size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
 
                 <a 
-                  href="#synthesizer" 
+                  href="#music" 
                   className="px-6 py-3.5 rounded-xl text-xs font-mono tracking-widest font-semibold text-white border border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/[0.08] flex items-center gap-2 transition-all cursor-pointer"
                 >
                   {t.btnSynth}
-                  <Terminal size={13} className="text-neutral-400" />
+                  <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform text-neutral-400" />
                 </a>
               </motion.div>
 
@@ -675,6 +693,109 @@ export default function App() {
               <span>{t.scrollDown}</span>
               <ChevronDown size={14} className="animate-bounce" />
             </a>
+          </div>
+        </section>
+
+        {/* UPCOMING RELEASE / LATEST SINGLE SECTION */}
+        <section id="upcoming" className="scroll-mt-24 space-y-12">
+          <div className="relative p-8 md:p-12 rounded-3xl border border-white/5 bg-[#050609]/90 backdrop-blur-md overflow-hidden group">
+            {/* Symmetrical left-blue right-amber ambient gradient background inside the card */}
+            <div className="absolute -left-32 -top-32 w-80 h-80 rounded-full blur-[100px] opacity-20 pointer-events-none bg-[#009DFF]" />
+            <div className="absolute -right-32 -bottom-32 w-80 h-80 rounded-full blur-[100px] opacity-15 pointer-events-none bg-[#FF8800]" />
+            
+            {/* Delicate high-tech technical grid overlay mask */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-60" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+              
+              {/* Text Description column */}
+              <div className="col-span-1 lg:col-span-7 space-y-6 text-left">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFB000]/10 border border-[#FFB000]/20 font-mono text-[9px] tracking-[0.15em] text-[#FFAA00] uppercase font-bold">
+                    <Sparkles size={10} className="animate-pulse text-[#FFCC00]" />
+                    <span>{t.upcomingLabel}</span>
+                  </div>
+                  <h3 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none uppercase">
+                    {t.upcomingTitle}
+                  </h3>
+                  <p className="font-mono text-[10px] text-neutral-400 uppercase tracking-[0.25em] pl-0.5">
+                    // MTS-003 // CONCEPTUAL WAVE
+                  </p>
+                </div>
+
+                <p className="font-sans text-sm md:text-base text-neutral-300 leading-relaxed font-light">
+                  {t.upcomingDesc}
+                </p>
+
+                {/* Micro tech parameters list for tactile/editorial feel */}
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-white/[0.04] max-w-md font-mono text-[10px] text-neutral-400">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-neutral-500 uppercase tracking-widest text-[8px]">// RESONANT BAND</span>
+                    <span className="text-neutral-300">528Hz & 432Hz Alignment</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-neutral-500 uppercase tracking-widest text-[8px] font-semibold">// TEMPORAL SCALE</span>
+                    <span className="text-neutral-300">Kairos Expansion Mode</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex flex-wrap items-center gap-4">
+                  <a 
+                    href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-3 rounded-lg text-[10px] font-mono tracking-widest font-bold bg-[#009DFF] hover:bg-[#37D8FF] text-[#030304] flex items-center gap-2 transition-all duration-300 shadow-[0_4px_20px_rgba(0,157,255,0.25)] hover:shadow-[0_8px_25px_rgba(0,157,255,0.4)] hover:-translate-y-0.5 cursor-pointer"
+                  >
+                    <span>PRE-SAVE ON SPOTIFY</span>
+                    <ExternalLink size={11} />
+                  </a>
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
+                    *EXCLUSIVE IN-PORTAL TRANSMISSION IN PROGRESS
+                  </span>
+                </div>
+              </div>
+
+              {/* Visual artwork column */}
+              <div className="col-span-1 lg:col-span-5 flex justify-center">
+                <div className="relative w-64 h-64 md:w-72 md:h-72 select-none group/art flex items-center justify-center">
+                  
+                  {/* Floating abstract geometrical overflow diagram */}
+                  <div className="absolute inset-0 rounded-3xl border border-white/5 bg-neutral-950/45 p-4 flex flex-col justify-between overflow-hidden shadow-2xl">
+                    {/* Golden circle in center pulsing to represent abundance/alignment */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-28 h-28 rounded-full border border-[#FF8800]/10 animate-ping" style={{ animationDuration: "5s" }} />
+                      <div className="w-20 h-20 rounded-full border border-dashed border-[#009DFF]/15 animate-spin" style={{ animationDuration: "12s" }} />
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFAA00]/20 to-[#009DFF]/20 filter blur-md animate-pulse" />
+                    </div>
+                    
+                    {/* Corner readouts */}
+                    <div className="flex justify-between items-start font-mono text-[8px] text-neutral-500 tracking-wider">
+                      <span>[ OVERFLOW_M≡TR_SYS ]</span>
+                      <span>MTS-003</span>
+                    </div>
+
+                    <div className="w-full flex flex-col items-center justify-center py-10 text-center space-y-1">
+                      <span className="font-display text-sm font-bold text-white tracking-[0.3em] uppercase leading-none">
+                        ARCHITECT
+                      </span>
+                      <span className="font-mono text-[7px] text-neutral-400 uppercase tracking-[0.4em]">
+                        OF OVERFLOW
+                      </span>
+                      <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-white/20 to-transparent my-2" />
+                      <span className="font-mono text-[6px] text-[#FFAA00] uppercase tracking-[0.2em] font-medium leading-none">
+                        FREQUENCY 528Hz
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-end font-mono text-[8px] text-neutral-500 tracking-wider">
+                      <span>PT: NOVO CICLO</span>
+                      <span>EN: NEW CYCLE</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
 

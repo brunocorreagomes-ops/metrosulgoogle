@@ -410,32 +410,53 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
       {/* Futuristic central design overlay representing Metro Sul brand text inside the portal */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 text-center select-none px-4">
         {/* Subtle glowing core */}
-        <div className="w-[110px] h-[110px] rounded-full bg-radial-gradient filter blur-lg opacity-25 animate-pulse pointer-events-none" 
+        <div className="w-[140px] h-[140px] rounded-full bg-radial-gradient absolute filter blur-xl opacity-20 pointer-events-none" 
           style={{
-            background: "radial-gradient(circle, rgba(0, 157, 255, 0.4) 0%, rgba(255, 106, 0, 0.3) 60%, transparent 100%)"
+            background: "radial-gradient(circle, rgba(0, 157, 255, 0.4) 0%, rgba(255, 123, 0, 0.3) 60%, transparent 100%)"
           }}
         />
         
-        {/* METRO SUL logo text elements styled exactly like a beautiful premium album branding */}
+        {/* METRO SUL logo text and symbol elements styled exactly like a beautiful premium album branding */}
         <div className="absolute flex flex-col items-center justify-center pointer-events-none select-none">
           {/* Accent tiny orbital labels */}
-          <span className="font-mono text-[7px] text-neutral-500 uppercase tracking-[0.3em] font-medium mb-1.5 transition-all duration-300 group-hover:text-neutral-400">
-            [ SIGNAL_PORTAL ]
+          <span className="font-mono text-[7px] text-neutral-400 uppercase tracking-[0.35em] font-medium mb-3.5 transition-all duration-300 group-hover:text-neutral-300">
+            [ METRO SUL CORE SYMBOL ]
           </span>
 
-          <h2 className="font-display text-4xl font-extrabold text-white tracking-[0.16em] leading-none mb-1 text-shadow-glow">
-            METRO
-          </h2>
-          <div className="flex items-center gap-3 w-full justify-center">
-            <div className="h-[0.5px] w-6 bg-gradient-to-l from-white/30 to-transparent" />
-            <span className="font-display text-xs font-semibold text-neutral-300 tracking-[0.45em] pl-[0.45em] leading-none uppercase">
-              SUL
-            </span>
-            <div className="h-[0.5px] w-6 bg-gradient-to-r from-white/30 to-transparent" />
+          {/* Central Logo Symbol: Blue/orange circular arcs with three vertical bars at center */}
+          <div className="relative w-20 h-20 flex items-center justify-center transition-all duration-700 group-hover:scale-105">
+            <svg width="76" height="76" viewBox="0 0 100 100" className="drop-shadow-[0_0_12px_rgba(0,157,255,0.35)]">
+              {/* Left blue arc */}
+              <path 
+                d="M 40 15 A 36 36 0 0 0 40 85" 
+                fill="none" 
+                stroke="#009DFF" 
+                strokeWidth="4.5" 
+                strokeLinecap="round" 
+                className="transition-all duration-500 group-hover:stroke-[#37D8FF]"
+              />
+              {/* Right orange/amber arc */}
+              <path 
+                d="M 60 15 A 36 36 0 0 1 60 85" 
+                fill="none" 
+                stroke="#FF8800" 
+                strokeWidth="4.5" 
+                strokeLinecap="round" 
+                className="transition-all duration-500 group-hover:stroke-[#FFAA00]"
+              />
+              {/* Three vertical bars in the center (gold accent + subtle white light) */}
+              <rect x="44" y="32" width="2.5" height="36" rx="1.25" fill="#FFFFFF" opacity="0.95" />
+              <rect x="49" y="24" width="3" height="52" rx="1.5" fill="#FFC000" opacity="1.0" className="drop-shadow-[0_0_6px_rgba(255,192,0,0.8)]" />
+              <rect x="55" y="32" width="2.5" height="36" rx="1.25" fill="#FFFFFF" opacity="0.95" />
+            </svg>
           </div>
 
-          <span className="font-mono text-[6px] text-[#009DFF] group-hover:text-[#FF6A00] transition-colors duration-500 uppercase tracking-[0.25em] mt-3.5">
-            SYS_VOLT_COUPLED
+          <h2 className="font-display text-xl font-bold text-white tracking-[0.45em] pl-[0.45em] uppercase leading-none mt-4 transition-all duration-350">
+            M<span className="text-[#009DFF]">≡</span>TRO SUL
+          </h2>
+
+          <span className="font-mono text-[6px] text-[#009DFF] group-hover:text-[#FFAA00] transition-colors duration-700 uppercase tracking-[0.3em] mt-3 mt-3.5">
+            FREQUENCY // ABUNDANCE
           </span>
         </div>
       </div>

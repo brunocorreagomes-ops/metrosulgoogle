@@ -159,6 +159,11 @@ export interface TranslationSchema {
   modalDesc: string;
   modalLogStatus: string;
   modalLogVersion: string;
+  
+  // Upcoming Release - Architect of Overflow
+  upcomingLabel: string;
+  upcomingTitle: string;
+  upcomingDesc: string;
 }
 
 export const translations: Record<Language, TranslationSchema> = {
@@ -180,10 +185,10 @@ export const translations: Record<Language, TranslationSchema> = {
     sysOnline: "SYS_ONLINE",
     vectorActive: "SOUND VECTORING ACTIVE",
     themeLabel: "THEME",
-    heroSub: "Electronic music for the pressure, escape, and return of urban time.",
-    heroDesc: "Metro Sul turns the modern city cycle into sound — from mechanical workday pressure to nocturnal release, suspended time, and the quiet return after dawn.",
-    btnReleases: "EXPLORE RELEASES",
-    btnSynth: "ACCESS LIVE OSCILLATORS",
+    heroSub: "Electronic music for frequency, abundance and urban night cycles.",
+    heroDesc: "Architecting sound between transit, pressure, blue hour and overflow.",
+    btnReleases: "LISTEN ON SPOTIFY",
+    btnSynth: "EXPLORE RELEASES",
     flowLabel: "AUDIO SIGNAL FLOW",
     flowValue: "PROCEDURAL SYNTH",
     scaleLabel: "DYNAMIC SCALE",
@@ -306,7 +311,10 @@ export const translations: Record<Language, TranslationSchema> = {
     modalTitle: "Quantum Navigation Vectors",
     modalDesc: "Metro Sul represents an interactive modular machine. Use your hardware keyboard to instantly teleport across the system coords:",
     modalLogStatus: "SYS LOGS: OK",
-    modalLogVersion: "METRO SUL VER_0.8B"
+    modalLogVersion: "METRO SUL VER_0.8B",
+    upcomingLabel: "UPCOMING LEVEL // TRANSCENDENCE",
+    upcomingTitle: "Architect of Overflow",
+    upcomingDesc: "Architect of Overflow opens a new phase for Metro Sul — a frequency-driven electronic release about abundance, manifestation, alignment and conscious creation."
   },
   pt: {
     bootSeq: [
@@ -326,10 +334,10 @@ export const translations: Record<Language, TranslationSchema> = {
     sysOnline: "SISTEMA_ONLINE",
     vectorActive: "VETORIZAÇÃO DE SOM ATIVA",
     themeLabel: "TEMA",
-    heroSub: "Música eletrônica para a pressão, o escape e o retorno do tempo urbano.",
-    heroDesc: "Metro Sul transforma o ciclo da cidade moderna em som — da pressão mecânica do dia de trabalho à libertação noturna, ao tempo suspenso e ao retorno silencioso após o amanhecer.",
-    btnReleases: "EXPLORAR LANÇAMENTOS",
-    btnSynth: "ACESSAR OSCILADORES EM VIVO",
+    heroSub: "Música eletrônica para frequência, abundância e ciclos noturnos urbanos.",
+    heroDesc: "Arquitetando som entre trânsito, pressão, blue hour e transbordamento.",
+    btnReleases: "OUVIR NO SPOTIFY",
+    btnSynth: "EXPLORAR LANÇAMENTOS",
     flowLabel: "FLUXO DE SINAL DE ÁUDIO",
     flowValue: "SINTETIZADOR PROCEDURAL",
     scaleLabel: "ESCALA DINÂMICA",
@@ -452,7 +460,10 @@ export const translations: Record<Language, TranslationSchema> = {
     modalTitle: "Vetores de Navegação Quântica",
     modalDesc: "Metro Sul representa uma máquina modular interativa. Use seu teclado físico para se teletransportar instantaneamente pelas coordenadas do sistema:",
     modalLogStatus: "LABS_SYS: OK",
-    modalLogVersion: "METRO SUL VERSÃO_0.8B"
+    modalLogVersion: "METRO SUL VERSÃO_0.8B",
+    upcomingLabel: "PRÓXIMO NÍVEL // TRANSCENDÊNCIA",
+    upcomingTitle: "Architect of Overflow",
+    upcomingDesc: "Architect of Overflow abre uma nova fase para Metro Sul — um lançamento eletrônico focado em frequências sobre abundância, manifestação, alinhamento e criação consciente."
   },
   es: {
     bootSeq: [
@@ -472,10 +483,10 @@ export const translations: Record<Language, TranslationSchema> = {
     sysOnline: "SISTEMA_ONLINE",
     vectorActive: "VECTORIZACIÓN DE SONIDO ACTIVA",
     themeLabel: "TEMA",
-    heroSub: "Música electrónica para la presión, el escape y el retorno del tiempo urbano.",
-    heroDesc: "Metro Sul transforma el ciclo de la ciudad moderna en sonido: de la presión mecánica de la jornada laboral a la liberación nocturna, al tiempo suspendido y al lento retorno tras el amanecer.",
-    btnReleases: "EXPLORAR LANZAMIENTOS",
-    btnSynth: "ACCEDER A OSCILADORES EN VIVO",
+    heroSub: "Música electrónica para la frecuencia, la abundancia y los ciclos nocturnos urbanos.",
+    heroDesc: "Arquitectando el sonido entre el tránsito, la presión, la blue hour y el desbordamiento.",
+    btnReleases: "ESCUCHAR EN SPOTIFY",
+    btnSynth: "EXPLORAR LANZAMIENTOS",
     flowLabel: "FLUJO DE SEÑAL DE AUDIO",
     flowValue: "SINTETIZADOR PROCEDURAL",
     scaleLabel: "ESCALA DINÁMICA",
@@ -598,6 +609,9 @@ export const translations: Record<Language, TranslationSchema> = {
     modalTitle: "Vectores de Navegación Cuántica",
     modalDesc: "Metro Sul representa una máquina modular interactiva. Use su teclado físico para teletransportarse instantáneamente por las coordenadas del sistema:",
     modalLogStatus: "SYS LOGS: OK",
-    modalLogVersion: "METRO SUL VERSION_0.8B"
+    modalLogVersion: "METRO SUL VERSION_0.8B",
+    upcomingLabel: "PRÓXIMO NIVEL // TRANSCENDENCIA",
+    upcomingTitle: "Architect of Overflow",
+    upcomingDesc: "Architect of Overflow abre una nueva fase para Metro Sul: un lanzamiento electrónico centrado en frecuencias lógicas sobre abundancia, de manifestación, alineación y creación consciente."
   }
 };

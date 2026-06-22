@@ -101,9 +101,13 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             <a 
               href={`mailto:${emailAddress}`}
-              className="flex-1 px-5 py-3 rounded-md bg-black/40 border border-white/5 hover:border-white/15 text-xs font-mono text-white flex items-center justify-between group transition-colors"
+              className="flex-1 px-5 py-3 rounded-md bg-black/40 border border-white/5 hover:border-white/15 text-xs text-white flex items-center justify-between group transition-colors"
             >
-              <span className="truncate tracking-wider">{emailAddress}</span>
+              <div className="flex items-center gap-2 truncate">
+                <span className="font-sans font-semibold tracking-wide text-neutral-300 text-xs shrink-0">Bruno Gomes</span>
+                <span className="text-neutral-600 font-mono text-[11px] shrink-0">//</span>
+                <span className="font-mono text-[11px] text-neutral-400 group-hover:text-[#009DFF] transition-colors truncate">{emailAddress}</span>
+              </div>
               <Mail size={12} className="text-neutral-500 group-hover:text-[#009DFF] transition-colors ml-2 shrink-0" />
             </a>
 
