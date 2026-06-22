@@ -711,43 +711,42 @@ export default function App() {
               
               {/* Text Description column */}
               <div className="col-span-1 lg:col-span-7 space-y-6 text-left">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFB000]/10 border border-[#FFB000]/20 font-mono text-[9px] tracking-[0.15em] text-[#FFAA00] uppercase font-bold">
-                    <Sparkles size={10} className="animate-pulse text-[#FFCC00]" />
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-[#FFAA00] uppercase font-bold">
                     <span>{t.upcomingLabel}</span>
                   </div>
-                  <h3 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none uppercase">
+                  <h3 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight leading-none uppercase">
                     {t.upcomingTitle}
                   </h3>
-                  <p className="font-mono text-[10px] text-neutral-400 uppercase tracking-[0.25em] pl-0.5">
-                    // MTS-003 // CONCEPTUAL WAVE
+                  <p className="font-mono text-[10px] text-neutral-500 uppercase tracking-[0.3em]">
+                    // MTS-003 // FREQUENCY OVERFLOW
                   </p>
                 </div>
 
-                <p className="font-sans text-sm md:text-base text-neutral-300 leading-relaxed font-light">
+                <p className="font-sans text-base md:text-lg text-neutral-300 leading-relaxed font-light">
                   {t.upcomingDesc}
                 </p>
 
                 {/* Micro tech parameters list for tactile/editorial feel */}
-                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-white/[0.04] max-w-md font-mono text-[10px] text-neutral-400">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-neutral-500 uppercase tracking-widest text-[8px]">// RESONANT BAND</span>
-                    <span className="text-neutral-300">528Hz & 432Hz Alignment</span>
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/[0.04] max-w-md font-mono text-[10px] text-neutral-400">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-neutral-500 uppercase tracking-[0.2em] text-[9px]">// RESONANT BAND</span>
+                    <span className="text-neutral-300">528Hz Alignment</span>
                   </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-neutral-500 uppercase tracking-widest text-[8px] font-semibold">// TEMPORAL SCALE</span>
-                    <span className="text-neutral-300">Kairos Expansion Mode</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-neutral-500 uppercase tracking-[0.2em] text-[9px] font-semibold">// STATE</span>
+                    <span className="text-neutral-300">Conscious Expansion</span>
                   </div>
                 </div>
 
-                <div className="pt-4 flex flex-wrap items-center gap-4">
+                <div className="pt-6 flex flex-wrap items-center gap-4">
                   <a 
                     href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-5 py-3 rounded-lg text-[10px] font-mono tracking-widest font-bold bg-[#009DFF] hover:bg-[#37D8FF] text-[#030304] flex items-center gap-2 transition-all duration-300 shadow-[0_4px_20px_rgba(0,157,255,0.25)] hover:shadow-[0_8px_25px_rgba(0,157,255,0.4)] hover:-translate-y-0.5 cursor-pointer"
+                    className="px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white text-black hover:bg-neutral-200 flex items-center gap-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 cursor-pointer"
                   >
-                    <span>PRE-SAVE ON SPOTIFY</span>
+                    <span>LISTEN ON SPOTIFY</span>
                     <ExternalLink size={11} />
                   </a>
                   <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">

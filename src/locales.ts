@@ -312,7 +312,7 @@ export const translations: Record<Language, TranslationSchema> = {
     modalDesc: "Metro Sul represents an interactive modular machine. Use your hardware keyboard to instantly teleport across the system coords:",
     modalLogStatus: "SYS LOGS: OK",
     modalLogVersion: "METRO SUL VER_0.8B",
-    upcomingLabel: "UPCOMING LEVEL // TRANSCENDENCE",
+    upcomingLabel: "NEW SIGNAL PHASE",
     upcomingTitle: "Architect of Overflow",
     upcomingDesc: "Architect of Overflow opens a new phase for Metro Sul — a frequency-driven electronic release about abundance, manifestation, alignment and conscious creation."
   },
@@ -461,9 +461,9 @@ export const translations: Record<Language, TranslationSchema> = {
     modalDesc: "Metro Sul representa uma máquina modular interativa. Use seu teclado físico para se teletransportar instantaneamente pelas coordenadas do sistema:",
     modalLogStatus: "LABS_SYS: OK",
     modalLogVersion: "METRO SUL VERSÃO_0.8B",
-    upcomingLabel: "PRÓXIMO NÍVEL // TRANSCENDÊNCIA",
+    upcomingLabel: "NOVA FASE DE SINAL",
     upcomingTitle: "Architect of Overflow",
-    upcomingDesc: "Architect of Overflow abre uma nova fase para Metro Sul — um lançamento eletrônico focado em frequências sobre abundância, manifestação, alinhamento e criação consciente."
+    upcomingDesc: "Architect of Overflow inaugura uma nova fase para Metro Sul — um lançamento eletrônico guiado por frequência sobre abundância, manifestação, alinhamento e criação consciente."
   },
   es: {
     bootSeq: [
@@ -610,8 +610,8 @@ export const translations: Record<Language, TranslationSchema> = {
     modalDesc: "Metro Sul representa una máquina modular interactiva. Use su teclado físico para teletransportarse instantáneamente por las coordenadas del sistema:",
     modalLogStatus: "SYS LOGS: OK",
     modalLogVersion: "METRO SUL VERSION_0.8B",
-    upcomingLabel: "PRÓXIMO NIVEL // TRANSCENDENCIA",
+    upcomingLabel: "NUEVA FASE DE SEÑAL",
     upcomingTitle: "Architect of Overflow",
-    upcomingDesc: "Architect of Overflow abre una nueva fase para Metro Sul: un lanzamiento electrónico centrado en frecuencias lógicas sobre abundancia, de manifestación, alineación y creación consciente."
+    upcomingDesc: "Architect of Overflow inicia una nueva fase para Metro Sul — un lanzamiento electrónico guiado por frecuencia sobre abundancia, manifestación, alineación y creación consciente."
   }
 };
