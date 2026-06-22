@@ -424,38 +424,38 @@ export default function OrbitalPortal({ intensity }: OrbitalPortalProps) {
           </span>
 
           {/* Central Logo Symbol: Blue/orange circular arcs with three vertical bars at center */}
-          <div className="relative w-20 h-20 flex items-center justify-center transition-all duration-700 group-hover:scale-105">
-            <svg width="76" height="76" viewBox="0 0 100 100" className="drop-shadow-[0_0_12px_rgba(0,157,255,0.35)]">
+          <div className="relative w-32 h-32 flex items-center justify-center transition-all duration-700 group-hover:scale-105 mb-2">
+            <svg width="112" height="112" viewBox="0 0 100 100" className="drop-shadow-[0_0_16px_rgba(0,157,255,0.4)]">
               {/* Left blue arc */}
               <path 
-                d="M 40 15 A 36 36 0 0 0 40 85" 
+                d="M 38 10 A 42 42 0 0 0 38 90" 
                 fill="none" 
                 stroke="#009DFF" 
-                strokeWidth="4.5" 
+                strokeWidth="5" 
                 strokeLinecap="round" 
                 className="transition-all duration-500 group-hover:stroke-[#37D8FF]"
               />
               {/* Right orange/amber arc */}
               <path 
-                d="M 60 15 A 36 36 0 0 1 60 85" 
+                d="M 62 10 A 42 42 0 0 1 62 90" 
                 fill="none" 
                 stroke="#FF8800" 
-                strokeWidth="4.5" 
+                strokeWidth="5" 
                 strokeLinecap="round" 
                 className="transition-all duration-500 group-hover:stroke-[#FFAA00]"
               />
               {/* Three vertical bars in the center (gold accent + subtle white light) */}
-              <rect x="44" y="32" width="2.5" height="36" rx="1.25" fill="#FFFFFF" opacity="0.95" />
-              <rect x="49" y="24" width="3" height="52" rx="1.5" fill="#FFC000" opacity="1.0" className="drop-shadow-[0_0_6px_rgba(255,192,0,0.8)]" />
-              <rect x="55" y="32" width="2.5" height="36" rx="1.25" fill="#FFFFFF" opacity="0.95" />
+              <rect x="42" y="30" width="3" height="40" rx="1.5" fill="#FFFFFF" opacity="0.95" />
+              <rect x="48.5" y="20" width="3.5" height="60" rx="1.75" fill="#FFC000" opacity="1.0" className="drop-shadow-[0_0_8px_rgba(255,192,0,0.85)]" />
+              <rect x="55" y="30" width="3" height="40" rx="1.5" fill="#FFFFFF" opacity="0.95" />
             </svg>
           </div>
 
-          <h2 className="font-display text-xl font-bold text-white tracking-[0.45em] pl-[0.45em] uppercase leading-none mt-4 transition-all duration-350">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-[0.45em] pl-[0.45em] uppercase leading-none mt-4 transition-all duration-350">
             M<span className="text-[#009DFF]">≡</span>TRO SUL
           </h2>
 
-          <span className="font-mono text-[6px] text-[#009DFF] group-hover:text-[#FFAA00] transition-colors duration-700 uppercase tracking-[0.3em] mt-3 mt-3.5">
+          <span className="font-mono text-[7px] sm:text-[8px] text-[#009DFF] group-hover:text-[#FFAA00] transition-colors duration-700 uppercase tracking-[0.4em] mt-4">
             FREQUENCY // ABUNDANCE
           </span>
         </div>

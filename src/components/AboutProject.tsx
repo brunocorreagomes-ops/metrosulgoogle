@@ -9,12 +9,12 @@ interface SpecsItem {
 }
 
 const METRO_SPECS: SpecsItem[] = [
-  { label: "Core Synthesis", value: "Eurorack Semi-Modular Loops", category: "Hardware" },
-  { label: "Mastering Level", value: "Dynamic -14 LUFS Clean Analog Desk", category: "Signal" },
-  { label: "Temporal Tempo", value: "125 BPM — 138 BPM Modular Shifts", category: "Timing" },
-  { label: "Space Modulators", value: "Binaural Stereo Delay (Chronos Loop)", category: "Acoustics" },
-  { label: "Vocal Sub-layers", value: "Laser-Processed Formants & Noise", category: "Synthesis" },
-  { label: "Visual Identity", value: "Bioluminescent Dark Cybernetics", category: "Aesthetics" }
+  { label: "Core Synthesis", value: "Hardware & Frequency Formants", category: "Hardware" },
+  { label: "Mastering Stage", value: "Dynamic -14 LUFS Analog Saturation", category: "Signal" },
+  { label: "Temporal Transit", value: "Urban Chronos Loops (125 - 138 BPM)", category: "Timing" },
+  { label: "Spatial Architecture", value: "Binaural Stereo Depth & Kairos Reverb", category: "Acoustics" },
+  { label: "Sub-layer Vocals", value: "Frequency Resonance & Night Breath", category: "Synthesis" },
+  { label: "Visual Identity", value: "Cinematic Blue Hour & Amber Alignment", category: "Aesthetics" }
 ];
 
 // Helper to translate colors safely to rgba for custom chromatic aberration text shadows
@@ -106,14 +106,14 @@ function ScramblerWord({
       }}
       onMouseLeave={() => setHovered(false)}
       onClick={performGlitch}
-      className={`inline-block cursor-pointer font-medium transition-all duration-150 decoration-cyan-400/40 relative select-all selection:bg-cyan-400 selection:text-black ${
+      className={`inline-block cursor-pointer font-medium transition-all duration-150 decoration-[#009DFF]/40 relative select-all selection:bg-[#009DFF] selection:text-black ${
         hovered 
-          ? "text-cyan-400 scale-[1.02] border-b border-cyan-500/30" 
-          : "text-neutral-200 border-b border-transparent hover:text-cyan-300"
+          ? "text-[#009DFF] scale-[1.02] border-b border-[#009DFF]/30" 
+          : "text-neutral-200 border-b border-transparent hover:text-[#37D8FF]"
       }`}
       style={{
         textShadow: hovered 
-          ? `0 0 8px rgba(0,240,255,0.6), -1.5px 0 #ff455b, 1.5px 0 #7000ff` 
+          ? `0 0 8px rgba(0,157,255,0.6), -1.5px 0 #FF8800, 1.5px 0 #009DFF` 
           : "none"
       }}
     >
@@ -200,20 +200,20 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
             </span>
           </div>
           
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight uppercase">
+          <h2 className="font-display text-2xl lg:text-3xl font-bold text-white tracking-widest leading-relaxed uppercase">
             {lang === "pt" 
-              ? "Cenários sonoros eletrônicos minimalistas desenhados para espaços imersivos." 
+              ? "Frequência transformada em movimento. Arquiteturas eletrônicas para espaços imersivos." 
               : lang === "es" 
-              ? "Paisajes sonoros electrónicos minimalistas diseñados para espacios inmersivos." 
-              : "Minimalist electronic soundscapes designed for immersive spaces."}
+              ? "Frecuencia transformada en movimiento. Arquitecturas electrónicas para espacios inmersivos." 
+              : "Frequency transformed into movement. Electronic architectures for immersive spaces."}
           </h2>
 
           {/* Interactive Controller Deck */}
           <div className="p-5 rounded-lg border border-white/10 bg-neutral-950/70 backdrop-blur-md space-y-4">
             <div className="flex items-center justify-between border-b border-white/[0.04] pb-2">
-              <span className="font-mono text-[9px] text-neutral-400 block tracking-widest">
-                {lang === "pt" ? "CONSOLETE DE INTERFERÊNCIA DE SINAL" : lang === "es" ? "CONSOLA DE INTERFERENCIA DE SEÑAL" : "SIGNAL INTERFERENCE CONSOLE"}
-              </span>
+               <span className="font-mono text-[9px] text-neutral-400 block tracking-widest">
+                 {lang === "pt" ? "CONSOLE DE TRANSMISSÃO" : lang === "es" ? "CONSOLA DE TRANSMISIÓN" : "TRANSMISSION CONSOLE"}
+               </span>
               <span className="flex items-center gap-1.5 font-mono text-[8px]">
                 <span className={`h-1.5 w-1.5 rounded-full ${
                   integrityPercent === 100 ? "bg-green-500 animate-pulse" :
@@ -225,10 +225,10 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
             
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs font-mono">
-                <span className="text-neutral-400">DATA_INTEGRITY</span>
+                <span className="text-neutral-400">SIGNAL_RESONANCE</span>
                 <span className={`${
                   integrityPercent > 80 ? "text-[#009DFF]" :
-                  integrityPercent > 40 ? "text-[#FFB000]" : "text-red-500 font-bold"
+                  integrityPercent > 40 ? "text-[#FF8800]" : "text-red-500 font-bold"
                 }`}>
                   {integrityPercent}% {integrityPercent < 100 && (lang === "pt" ? "// COMPROMETIDA" : lang === "es" ? "// COMPROMETIDA" : "// COMPROMISED")}
                 </span>
@@ -240,7 +240,7 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
                   transition={{ type: "spring", stiffness: 100 }}
                   className={`h-full ${
                     integrityPercent > 80 ? "bg-gradient-to-r from-[#009DFF] to-[#37D8FF]" :
-                    integrityPercent > 40 ? "bg-[#FFB000]" : "bg-red-500"
+                    integrityPercent > 40 ? "bg-[#FF8800]" : "bg-red-500"
                   }`}
                 />
               </div>

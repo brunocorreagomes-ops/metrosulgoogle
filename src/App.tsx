@@ -27,6 +27,7 @@ import SpotifyEmbeds, { ALBUMS } from "./components/SpotifyEmbeds";
 import InteractiveSynth from "./components/InteractiveSynth";
 import AboutProject from "./components/AboutProject";
 import SocialLinks from "./components/SocialLinks";
+import { SignalLanguage } from "./components/SignalLanguage";
 import { translations, Language } from "./locales";
 
 export default function App() {
@@ -243,8 +244,8 @@ export default function App() {
             {/* Glowing top label */}
             <div className="flex justify-between items-center z-10">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#00f0ff] animate-pulse" />
-                <span className="font-mono text-xs text-[#00f0ff] tracking-[0.2em]">METROSUL_TELEMETRY_BUS</span>
+                <span className="h-2 w-2 rounded-full bg-[#009DFF] animate-pulse" />
+                <span className="font-mono text-xs text-[#009DFF] tracking-[0.2em]">METROSUL_TELEMETRY_BUS</span>
               </div>
               <span className="font-mono text-xs text-neutral-600">STATE: CONFIG</span>
             </div>
@@ -253,16 +254,16 @@ export default function App() {
             <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-xl mx-auto z-10 my-auto">
               <div className="relative">
                 {/* Simulated retro scopes or modular pulse */}
-                <div className="h-16 w-16 rounded-full border-2 border-dashed border-[#00f0ff]/30 animate-spin flex items-center justify-center mb-6" style={{ animationDuration: "12s" }}>
-                  <div className="h-10 w-10 rounded-full border-2 border-[#ff455b]/20 animate-pulse flex items-center justify-center">
-                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr from-[#00f0ff] to-[#ff455b]" />
+                <div className="h-16 w-16 rounded-full border-2 border-dashed border-[#009DFF]/30 animate-spin flex items-center justify-center mb-6" style={{ animationDuration: "12s" }}>
+                  <div className="h-10 w-10 rounded-full border-2 border-[#FF8800]/20 animate-pulse flex items-center justify-center">
+                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr from-[#009DFF] to-[#FF8800]" />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <p className="font-mono text-[10px] text-[#ff455b] tracking-widest uppercase font-bold">BOOT SEQUENCE IN PROGRESS</p>
-                <h2 className="font-mono text-xs md:text-sm text-[#00f0ff] tracking-wider min-h-[30px] font-medium transition-all duration-150">
+                <p className="font-mono text-[10px] text-[#FF8800] tracking-widest uppercase font-bold">BOOT SEQUENCE IN PROGRESS</p>
+                <h2 className="font-mono text-xs md:text-sm text-[#009DFF] tracking-wider min-h-[30px] font-medium transition-all duration-150">
                   {bootText}
                 </h2>
               </div>
@@ -519,19 +520,19 @@ export default function App() {
               <div className="flex items-center gap-3 font-semibold text-neutral-400 tracking-normal">
                 <button 
                   onClick={() => { handleLanguageChange("pt"); setIsMobileMenuOpen(false); }}
-                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "pt" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "pt" ? "text-neon-blue font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
                 >
                   PT
                 </button>
                 <button 
                   onClick={() => { handleLanguageChange("en"); setIsMobileMenuOpen(false); }}
-                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "en" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "en" ? "text-neon-blue font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
                 >
                   EN
                 </button>
                 <button 
                   onClick={() => { handleLanguageChange("es"); setIsMobileMenuOpen(false); }}
-                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "es" ? "text-[#00f0ff] font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
+                  className={`py-1 px-2.5 rounded transition-all leading-none ${lang === "es" ? "text-neon-blue font-bold bg-white/5 border border-white/5" : "hover:text-white"}`}
                 >
                   ES
                 </button>
@@ -559,7 +560,7 @@ export default function App() {
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.02] border border-white/5 font-mono text-[10px] tracking-wider text-neutral-400"
               >
-                <Radio size={11} className="text-[#00f0ff] animate-ping" />
+                <Radio size={11} className="text-[#009DFF] animate-ping" />
                 <span>{t.vectorActive}</span>
                 <span className="text-neutral-600">//</span>
                 <span style={{ color: activeAlbum.colorTheme.primary }} className="transition-colors duration-1000">
@@ -568,23 +569,23 @@ export default function App() {
               </motion.div>
 
               {/* Colossal Header display typography */}
-              <div className="space-y-1">
-                <motion.h1 
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7 }}
-                  className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] !leading-[0.95] text-white uppercase glitch-text"
-                >
-                  M<span className="text-[#009DFF] drop-shadow-[0_0_12px_rgba(0,157,255,0.4)]">≡</span>TRO SUL
-                </motion.h1>
+              <div className="space-y-4">
                 <motion.p
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="font-display text-xl sm:text-2xl font-bold tracking-[0.2em] text-neutral-400 uppercase"
+                >
+                  M<span className="text-[#009DFF] drop-shadow-[0_0_12px_rgba(0,157,255,0.4)]">≡</span>TRO SUL
+                </motion.p>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.1 }}
-                  className="font-display text-lg sm:text-2xl font-light text-neutral-300 tracking-tight font-sans"
+                  className="font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] !leading-[0.9] text-white uppercase"
                 >
                   {t.heroSub}
-                </motion.p>
+                </motion.h1>
               </div>
 
               {/* Descriptive short intro */}
@@ -592,7 +593,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.25 }}
-                className="font-sans text-sm md:text-base text-neutral-400 leading-relaxed font-light"
+                className="font-sans text-base md:text-lg text-neutral-400 leading-relaxed font-light mt-2"
               >
                 {t.heroDesc}
               </motion.p>
@@ -602,13 +603,13 @@ export default function App() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.35 }}
-                className="flex flex-wrap items-center gap-4 pt-4"
+                className="flex flex-wrap items-center gap-4 pt-6"
               >
                 <a 
                   href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3.5 rounded-xl text-xs font-mono tracking-widest font-semibold flex items-center gap-2 group transition-all duration-300 shadow-xl border cursor-pointer"
+                  className="px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold flex items-center gap-2 group transition-all duration-300 border cursor-pointer"
                   style={{
                     backgroundColor: "#009DFF",
                     borderColor: "#009DFF",
@@ -622,7 +623,7 @@ export default function App() {
 
                 <a 
                   href="#music" 
-                  className="px-6 py-3.5 rounded-xl text-xs font-mono tracking-widest font-semibold text-white border border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/[0.08] flex items-center gap-2 transition-all cursor-pointer"
+                  className="px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold text-white border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/[0.08] flex items-center gap-2 transition-all cursor-pointer"
                 >
                   {t.btnSynth}
                   <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform text-neutral-400" />
@@ -636,7 +637,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
-              className="lg:col-span-5 w-full h-[360px] sm:h-[480px] flex items-center justify-center rounded-3xl border border-white/[0.04] bg-[#03050A]/70 backdrop-blur-md relative overflow-hidden shadow-2xl p-4 group"
+              className="lg:col-span-5 w-full h-[460px] sm:h-[600px] flex items-center justify-center rounded-3xl border border-white/[0.02] bg-[#03050A]/40 backdrop-blur-md relative overflow-hidden shadow-2xl p-4 group"
             >
               {/* Subtle inner grid glow backplate */}
               <div 
@@ -756,38 +757,38 @@ export default function App() {
               </div>
 
               {/* Visual artwork column */}
-              <div className="col-span-1 lg:col-span-5 flex justify-center">
-                <div className="relative w-64 h-64 md:w-72 md:h-72 select-none group/art flex items-center justify-center">
+              <div className="col-span-1 lg:col-span-5 flex justify-center mt-6 lg:mt-0">
+                <div className="relative w-72 h-72 md:w-[340px] md:h-[340px] select-none group/art flex items-center justify-center">
                   
                   {/* Floating abstract geometrical overflow diagram */}
-                  <div className="absolute inset-0 rounded-3xl border border-white/5 bg-neutral-950/45 p-4 flex flex-col justify-between overflow-hidden shadow-2xl">
+                  <div className="absolute inset-0 rounded-3xl border border-white/5 bg-neutral-950/45 p-6 flex flex-col justify-between overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-[0_10px_40px_rgba(0,157,255,0.15)] hover:border-white/10">
                     {/* Golden circle in center pulsing to represent abundance/alignment */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-28 h-28 rounded-full border border-[#FF8800]/10 animate-ping" style={{ animationDuration: "5s" }} />
-                      <div className="w-20 h-20 rounded-full border border-dashed border-[#009DFF]/15 animate-spin" style={{ animationDuration: "12s" }} />
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFAA00]/20 to-[#009DFF]/20 filter blur-md animate-pulse" />
+                      <div className="w-36 h-36 rounded-full border border-[#FF8800]/15 animate-ping" style={{ animationDuration: "5s" }} />
+                      <div className="w-28 h-28 rounded-full border border-dashed border-[#009DFF]/20 animate-spin" style={{ animationDuration: "12s" }} />
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FFAA00]/25 to-[#009DFF]/25 filter blur-lg animate-pulse" />
                     </div>
                     
                     {/* Corner readouts */}
-                    <div className="flex justify-between items-start font-mono text-[8px] text-neutral-500 tracking-wider">
+                    <div className="flex justify-between items-start font-mono text-[9px] text-neutral-500 tracking-wider">
                       <span>[ OVERFLOW_M≡TR_SYS ]</span>
                       <span>MTS-003</span>
                     </div>
 
-                    <div className="w-full flex flex-col items-center justify-center py-10 text-center space-y-1">
-                      <span className="font-display text-sm font-bold text-white tracking-[0.3em] uppercase leading-none">
+                    <div className="w-full flex flex-col items-center justify-center py-12 text-center space-y-2 z-10 scale-105">
+                      <span className="font-display text-lg font-bold text-white tracking-[0.4em] uppercase leading-none">
                         ARCHITECT
                       </span>
-                      <span className="font-mono text-[7px] text-neutral-400 uppercase tracking-[0.4em]">
+                      <span className="font-mono text-[9px] text-neutral-400 uppercase tracking-[0.5em] pl-1">
                         OF OVERFLOW
                       </span>
-                      <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-white/20 to-transparent my-2" />
-                      <span className="font-mono text-[6px] text-[#FFAA00] uppercase tracking-[0.2em] font-medium leading-none">
-                        FREQUENCY 528Hz
+                      <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#009DFF]/40 to-transparent my-3" />
+                      <span className="font-mono text-[7px] text-[#FFAA00] uppercase tracking-[0.3em] font-medium leading-none">
+                        FREQUENCY 528Hz // HIGHER STATE
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-end font-mono text-[8px] text-neutral-500 tracking-wider">
+                    <div className="flex justify-between items-end font-mono text-[9px] text-neutral-500 tracking-wider">
                       <span>PT: NOVO CICLO</span>
                       <span>EN: NEW CYCLE</span>
                     </div>
@@ -798,6 +799,9 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* SIGNAL LANGUAGE MANIFESTO FRAGMENTS */}
+        <SignalLanguage />
 
         {/* SPOTIFY RELEASES SECTION */}
         <section id="music" className="scroll-mt-24 space-y-12">

@@ -21,7 +21,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Gravity Sub-Pulse",
     frequency: 65.41, // C2 deep sub-bass
     type: "sine",
-    color: "from-[#00f0ff] to-[#7000ff]",
+    color: "from-[#009DFF] to-[#37D8FF]",
     desc: "Sub-harmonic gravity wave designed for physical low-ends.",
     delayTime: 0.35,
     filterQ: 8,
@@ -31,7 +31,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Chronos Portal Synth",
     frequency: 130.81, // C3
     type: "sawtooth",
-    color: "from-[#ff455b] to-[#7000ff]",
+    color: "from-[#FF8800] to-[#FFAA00]",
     desc: "Aggressive time-warped saw sweep with resonant bandpass feedback.",
     delayTime: 0.2,
     filterQ: 14,
@@ -41,7 +41,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Kairos Organic Echo",
     frequency: 196.00, // G3 cinematic perfect fifth
     type: "triangle",
-    color: "from-[#00f0ff] to-[#ff455b]",
+    color: "from-[#009DFF] to-[#FF8800]",
     desc: "Serene atmospheric pad with massive depth and dynamic delay.",
     delayTime: 0.6,
     filterQ: 3,
@@ -51,7 +51,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Voltage Solar Lead",
     frequency: 293.66, // D4
     type: "square",
-    color: "from-[#bd00ff] to-[#00f0ff]",
+    color: "from-[#FF8800] to-[#009DFF]",
     desc: "Cybernetic high-voltage melody pulse simulating modular patch wiring.",
     delayTime: 0.4,
     filterQ: 10,
@@ -61,7 +61,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Bioluminescent Sine",
     frequency: 392.00, // G4
     type: "sine",
-    color: "from-[#00f0ff] to-[#7000ff]",
+    color: "from-[#009DFF] to-[#37D8FF]",
     desc: "Crystalline resonant chime referencing organic digital forest sounds.",
     delayTime: 0.5,
     filterQ: 15,
@@ -71,7 +71,7 @@ const CONSTANT_NODES: SoundNode[] = [
     name: "Horizon Resonance Sweep",
     frequency: 87.31, // F2
     type: "sawtooth",
-    color: "from-[#ff455b] to-[#bd00ff]",
+    color: "from-[#FF8800] to-[#FFFFFF]",
     desc: "Dense panoramic pad frequency exploring space-horizon borders.",
     delayTime: 0.8,
     filterQ: 6,
@@ -570,7 +570,7 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
                           onClick={() => applyPreset(idx)}
                           className={`px-3 py-1.5 rounded-lg text-[10px] font-mono tracking-tight transition-all duration-300 cursor-pointer ${
                             selectedPreset === idx
-                              ? "bg-neon-sunset/20 text-[#ff7961] border border-neon-sunset/40 font-bold shadow-lg shadow-neon-sunset/10"
+                              ? "bg-neon-sunset/20 text-neon-sunset border border-neon-sunset/40 font-bold shadow-lg shadow-neon-sunset/10"
                               : "bg-white/[0.02] border border-white/5 text-neutral-400 hover:text-white hover:border-white/15"
                           }`}
                           title={getPresetDesc(idx, lang)}
@@ -586,7 +586,7 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
                       onClick={() => setSequencerOn(!sequencerOn)}
                       className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
                         sequencerOn
-                          ? "bg-red-500/20 border border-red-500/30 text-rose-400 shadow-md shadow-red-950/20"
+                          ? "bg-red-500/20 border border-red-500/30 text-red-500 shadow-md shadow-red-950/20"
                           : "bg-neon-sunset/15 border border-neon-sunset/30 text-neon-sunset hover:bg-neon-sunset/25"
                       }`}
                     >
@@ -595,7 +595,7 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
                     </button>
                     <button
                       onClick={clearGrid}
-                      className="text-xs text-neutral-400 hover:text-pink-400 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                      className="text-xs text-neutral-400 hover:text-neon-sunset border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
                       {translations[lang].synthClearBtn}
                     </button>
@@ -632,7 +632,7 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
                           <button
                             key={cIndex}
                             onClick={() => toggleMatrixCell(rIndex, cIndex)}
-                            className={`h-[28px] rounded-lg border transition-all relative ${
+                            className={`h-[40px] sm:h-[44px] rounded-lg border transition-all relative ${
                               cellOn
                                 ? "bg-neon-sunset/35 border-neon-sunset/60 shadow-lg shadow-neon-sunset/15"
                                 : "bg-white/[0.01] border-white/5 hover:border-white/15"
