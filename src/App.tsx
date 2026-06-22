@@ -699,7 +699,7 @@ export default function App() {
 
         {/* UPCOMING RELEASE / LATEST SINGLE SECTION */}
         <section id="upcoming" className="scroll-mt-24 space-y-12">
-          <div className="relative p-8 md:p-12 rounded-3xl border border-white/5 bg-[#050609]/90 backdrop-blur-md overflow-hidden group">
+          <div className="relative p-8 md:p-12 rounded-3xl border border-white/5 hover:border-[#009DFF]/30 bg-[#050609]/90 backdrop-blur-md overflow-hidden group transition-all duration-700 hover:z-50 hover:shadow-[0_0_60px_rgba(0,157,255,0.15)] cursor-default">
             {/* Symmetrical left-blue right-amber ambient gradient background inside the card */}
             <div className="absolute -left-32 -top-32 w-80 h-80 rounded-full blur-[100px] opacity-20 pointer-events-none bg-[#009DFF]" />
             <div className="absolute -right-32 -bottom-32 w-80 h-80 rounded-full blur-[100px] opacity-15 pointer-events-none bg-[#FF8800]" />
