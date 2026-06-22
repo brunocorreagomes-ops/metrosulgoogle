@@ -163,7 +163,7 @@ export default function AboutProject() {
           </div>
           
           <h2 className="font-display text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight uppercase">
-            Sonic architectures constructed for the deep cybernetic underground.
+            Minimalist electronic soundscapes designed for immersive spaces.
           </h2>
 
           {/* Interactive Controller Deck */}
@@ -223,7 +223,7 @@ export default function AboutProject() {
             </div>
 
             <div className="text-[9px] font-mono text-neutral-500 text-center leading-relaxed">
-              *Interactive: Hover or click words in the bio panel to manifest manual decryption glitches and chromatic aberrations.
+              *Interactive: Hover or click words in the bio panel to manifest manual decryption glitches.
             </div>
           </div>
         </div>
@@ -233,31 +233,28 @@ export default function AboutProject() {
           <p className="border-l-2 border-white/5 pl-4 py-1">
             <strong className="text-white font-medium select-none">
               <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.9}>Metro Sul</ScramblerWord>
-            </strong> is an experimental international electronic music project exploring the micro-thresholds where{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>organic lifeforms</ScramblerWord> collide with{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>sterile machine algorithms</ScramblerWord>. Fusing deep{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>modular techno</ScramblerWord>, high-contrast{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>sub-bass modulations</ScramblerWord>, and cinematic deep-space atmospheres, the core system hosts an{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>auditory bridge</ScramblerWord> between pure{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.2}>digital code</ScramblerWord> and{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>biological gravity cells</ScramblerWord>.
+            </strong> is an experimental electronic music project exploring the space where{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>human intuition</ScramblerWord> meets{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>mechanical algorithms</ScramblerWord>. Fusing deep{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>modular techno</ScramblerWord>, hypnotic{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>sub-bass frequencies</ScramblerWord>, and spatial design, the project bridges{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>digital precision</ScramblerWord> with raw{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>analog warmth</ScramblerWord>.
           </p>
           <p className="border-l-2 border-white/5 pl-4 py-1">
-            Rooted in minimalist{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>dark aesthetics</ScramblerWord> and highly spatialized{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>multiphonic acoustics</ScramblerWord>, the project rejects standard commercial hooks in favor of{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>progressive structural loops</ScramblerWord>. Every wave is crafted to examine physical constraints:{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>weightless atmospheric drift</ScramblerWord>, kinetic machine friction, and the relentless{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>nature of temporal metrics</ScramblerWord> as expressed through{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>linear clock oscillations</ScramblerWord> versus{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>frames of electronic suspension</ScramblerWord>.
+            The sound is rooted in minimalist{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>dark aesthetics</ScramblerWord> and highly immersive{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>acoustics</ScramblerWord>, prioritizing{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>progressive loops</ScramblerWord> over radio hooks. Each pattern is a study of contrast:{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>weightless atmospheric drift</ScramblerWord>, machine tension, and the flow of{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>rhythmic time</ScramblerWord>.
           </p>
           <p className="border-l-2 border-white/5 pl-4 py-1">
-            Through absolute focus on{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>acoustic engineering</ScramblerWord> standards, Metro Sul manifests an interactive sensory terrain where synthesizers aren&apos;t simply activated—they are{" "}
+            By combining interactive web tech with{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>analog synthesis</ScramblerWord>, Metro Sul creates an immersive audio-visual canvas where sounds are{" "}
             <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>warped</ScramblerWord>,{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>distorted</ScramblerWord>, and{" "}
-            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.6}>modularly pressurized</ScramblerWord> to redefine deep electronic spatial storytelling.
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>filtered</ScramblerWord>, and{" "}
+            <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.6}>sculpted</ScramblerWord> live.
           </p>
         </div>
 

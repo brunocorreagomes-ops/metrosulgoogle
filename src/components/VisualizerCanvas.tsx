@@ -38,68 +38,31 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
       height = canvas.height = window.innerHeight;
     };
 
-    // Trace particles array and variables for tracking velocity
-    const traceParticles: Array<{
+    // Minimal elegant autonomous micro-particles array
+    const ambientParticles: Array<{
       x: number;
       y: number;
       vx: number;
       vy: number;
-      alpha: number;
       size: number;
-      life: number;
-      maxLife: number;
+      alpha: number;
+      speedMult: number;
     }> = [];
 
-    let lastMouseX = 0;
-    let lastMouseY = 0;
-    let hasLastMouse = false;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const targetX = e.clientX;
-      const targetY = e.clientY;
-      mouseRef.current.targetX = targetX;
-      mouseRef.current.targetY = targetY;
-      mouseRef.current.active = true;
-
-      // Spawn trace particles with velocity influenced by drag direction
-      let dx = 0;
-      let dy = 0;
-      if (hasLastMouse) {
-        dx = targetX - lastMouseX;
-        dy = targetY - lastMouseY;
-      }
-      lastMouseX = targetX;
-      lastMouseY = targetY;
-      hasLastMouse = true;
-
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      if (speed > 1) {
-        const spawnCount = Math.min(4, Math.ceil(speed / 6));
-        for (let s = 0; s < spawnCount; s++) {
-          const angle = Math.random() * Math.PI * 2;
-          const dispersion = Math.random() * 1.5 + 0.3;
-          traceParticles.push({
-            x: targetX,
-            y: targetY,
-            vx: dx * -0.1 + Math.cos(angle) * dispersion,
-            vy: dy * -0.1 + Math.sin(angle) * dispersion,
-            alpha: 1.0,
-            size: Math.random() * 2.5 + 1.2,
-            life: 0,
-            maxLife: 35 + Math.random() * 25
-          });
-        }
-      }
-    };
-
-    const handleMouseLeave = () => {
-      mouseRef.current.active = false;
-      hasLastMouse = false;
-    };
+    // Pre-populate particles across the outer viewport
+    for (let i = 0; i < 35; i++) {
+      ambientParticles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -0.1 - Math.random() * 0.25,
+        size: Math.random() * 1.0 + 0.4,
+        alpha: Math.random() * 0.25 + 0.1,
+        speedMult: 0.6 + Math.random() * 0.8
+      });
+    }
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseleave", handleMouseLeave);
 
     // Smooth color hex tracker (to prevent immediate snap when color changes)
     let currentPrimary = theme.primary;
@@ -172,69 +135,66 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
       // Dynamic timeline tick
       const time = Date.now() * 0.0004;
 
-      // Smooth mouse coordinate tracking
-      const mouse = mouseRef.current;
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
-
-      // Slowly update continuous rotations (not drawing the globe, but keeping values updated or simplified)
-      // Update and draw mouse trace particles
-      for (let i = traceParticles.length - 1; i >= 0; i--) {
-        const tp = traceParticles[i];
-        tp.life++;
-        if (tp.life >= tp.maxLife) {
-          traceParticles.splice(i, 1);
-          continue;
-        }
-
-        const t = tp.life / tp.maxLife;
-        const tpAlpha = 1.0 - t;
-
-        // Subtle gravitational pull towards smooth coordinates of the mouse
-        const dx = mouse.x - tp.x;
-        const dy = mouse.y - tp.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        let gravityPullX = 0;
-        let gravityPullY = 0;
-        if (dist > 5) {
-          // Gravitational pull reacts dynamically to spatial synth output intensity
-          const pullStrength = 0.06 * audioParamIntensity;
-          gravityPullX = (dx / dist) * pullStrength;
-          gravityPullY = (dy / dist) * pullStrength;
-
-          // Gentle vortex/swirl orbit around mouse pointer
-          const swirlStrength = 0.04 * audioParamIntensity;
-          gravityPullX += (-dy / dist) * swirlStrength;
-          gravityPullY += (dx / dist) * swirlStrength;
-        }
-
-        // Apply friction and integrating physics with synth-enhanced noise vibration
-        tp.vx = tp.vx * 0.94 + gravityPullX + (Math.random() - 0.5) * 0.15 * audioParamIntensity;
-        tp.vy = tp.vy * 0.94 + gravityPullY + (Math.random() - 0.5) * 0.15 * audioParamIntensity;
-        tp.x += tp.vx;
-        tp.y += tp.vy;
-
-        // Render glowing trail node
-        const rad = tp.size * (1 - t * 0.55) * Math.max(0.7, audioParamIntensity * 0.6);
+      // Draw a slow-moving, ultra-thin horizon scan line (futuristic radar scanning)
+      const scanY = (time * 160) % (height + 200) - 100;
+      if (scanY >= 0 && scanY <= height) {
         ctx.beginPath();
-        ctx.arc(tp.x, tp.y, rad * 3, 0, Math.PI * 2);
-        const grad = ctx.createRadialGradient(tp.x, tp.y, 0, tp.x, tp.y, rad * 3);
-        
-        // Safely insert alphas into dynamic color strings
-        const activePrimaryRGBA = activePrimaryColor.replace("rgb", "rgba").replace(")", `, ${tpAlpha * 0.85})`);
-        const activeSecondaryRGBA = activeSecondaryColor.replace("rgb", "rgba").replace(")", `, ${tpAlpha * 0.25})`);
-        
-        grad.addColorStop(0, activePrimaryRGBA);
-        grad.addColorStop(0.5, activeSecondaryRGBA);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.moveTo(0, scanY);
+        ctx.lineTo(width, scanY);
+        ctx.strokeStyle = activePrimaryColor.replace("rgb", "rgba").replace(")", ", 0.04)");
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Also a soft horizontal glowing beam accent
+        const grad = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
+        grad.addColorStop(0, "rgba(0, 0, 0, 0)");
+        grad.addColorStop(0.5, activePrimaryColor.replace("rgb", "rgba").replace(")", ", 0.015)"));
+        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = grad;
-        ctx.fill();
+        ctx.fillRect(0, scanY - 30, width, 60);
+      }
 
-        // Sharp central speck for cosmic trace spark
+      // Draw faint background grid segments coordinates (purely futuristic/minimalist)
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.012)";
+      ctx.lineWidth = 0.5;
+      const gridSize = 160;
+      for (let x = 0; x < width; x += gridSize) {
         ctx.beginPath();
-        ctx.arc(tp.x, tp.y, rad * 0.45, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${tpAlpha * 0.9})`;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Update and draw ultra-subtle autonomous ambient particles
+      for (let i = 0; i < ambientParticles.length; i++) {
+        const tp = ambientParticles[i];
+        
+        // Let them drift and react tiny bit to synthesize amplitude
+        tp.y += tp.vy * tp.speedMult * audioParamIntensity;
+        tp.x += tp.vx * tp.speedMult * (1.0 + (audioParamIntensity - 1.0) * 0.5);
+
+        // Wrap around when escaping viewport edges
+        if (tp.y < -20) {
+          tp.y = height + 10;
+          tp.x = Math.random() * width;
+        }
+        if (tp.x < -20 || tp.x > width + 20) {
+          tp.x = Math.random() * width;
+        }
+
+        // Pulse the speed and alphas with slow trig waves
+        const pulseAlpha = tp.alpha * (0.8 + Math.sin(time + i) * 0.2) * (1.0 + (audioParamIntensity - 1.0) * 0.4);
+
+        // Render delicate micro-speck
+        ctx.beginPath();
+        ctx.arc(tp.x, tp.y, tp.size, 0, Math.PI * 2);
+        ctx.fillStyle = activePrimaryColor.replace("rgb", "rgba").replace(")", `, ${pulseAlpha})`);
         ctx.fill();
       }
 
@@ -245,8 +205,6 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationId);
     };
   }, [theme, intensity]);

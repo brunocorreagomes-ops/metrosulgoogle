@@ -89,8 +89,11 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
     rotX: 0.15,
     mouseX: 0,
     mouseY: 0,
+    mouseXRel: 0,
     isHovered: false,
     audioIntensitySmoother: 1.0,
+    smoothScannerX: 0,
+    scannerAlpha: 0,
   });
 
   useEffect(() => {
@@ -114,8 +117,12 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
     const handleMouseMove = (e: MouseEvent) => {
       if (!container) return;
       const rect = container.getBoundingClientRect();
-      stateRef.current.mouseX = e.clientX - rect.left - rect.width / 2;
-      stateRef.current.mouseY = e.clientY - rect.top - rect.height / 2;
+      const mouseXRaw = e.clientX - rect.left;
+      const mouseYRaw = e.clientY - rect.top;
+      
+      stateRef.current.mouseXRel = mouseXRaw;
+      stateRef.current.mouseX = mouseXRaw - rect.width / 2;
+      stateRef.current.mouseY = mouseYRaw - rect.height / 2;
       stateRef.current.isHovered = true;
     };
 
@@ -162,13 +169,26 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
       const autoRotSpeed = 0.005 + (state.audioIntensitySmoother - 1.0) * 0.012;
       state.rotY += autoRotSpeed;
       
-      const targetTiltY = state.rotY + (state.isHovered ? (state.mouseX / width) * 0.45 : 0);
-      const targetTiltX = state.rotX + (state.isHovered ? (state.mouseY / height) * 0.35 : 0);
+      const targetTiltY = state.rotY + (state.isHovered ? (state.mouseX / width) * 0.18 : 0);
+      const targetTiltX = state.rotX + (state.isHovered ? (state.mouseY / height) * 0.12 : 0);
 
       // Define 3D wireframe head parameters
       const baseRadius = Math.min(width, height) * 0.32;
       const cx = width * 0.52; // Push slightly right to align perfectly
       const cy = height * 0.45;
+
+      // Interpolate scanner sweeping position and visibility autonomously and elegantly
+      const targetAlpha = 0.72 + Math.sin(time * 3.5) * 0.12;
+      state.scannerAlpha += (targetAlpha - state.scannerAlpha) * 0.15;
+
+      // Automatically oscillate scanner position horizontally across the face
+      const sweepRange = baseRadius * 1.15;
+      const targetSweepX = cx + Math.sin(time * 1.8) * sweepRange;
+      if (state.smoothScannerX === 0) {
+        state.smoothScannerX = targetSweepX;
+      } else {
+        state.smoothScannerX += (targetSweepX - state.smoothScannerX) * 0.15;
+      }
 
       const cosY = Math.cos(targetTiltY);
       const sinY = Math.sin(targetTiltY);
@@ -291,13 +311,27 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
           const p1 = vPoints[i];
           const p2 = vPoints[i + 1];
           const avgZ = (p1.z + p2.z) * 0.5;
+          const avgX = (p1.x + p2.x) * 0.5;
 
           // Fade wireframe grid lines based on 3D depth position to create realistic lighting
           const normalizedZ = Math.max(0, Math.min(1.0, (avgZ + baseRadius) / (2.0 * baseRadius)));
           const alphaFactor = 0.04 + 0.35 * normalizedZ;
-          const strokeAlpha = alphaFactor * (0.8 + (intensity - 1.0) * 0.35);
-          ctx.strokeStyle = hexToRgba(colorTheme.secondary, strokeAlpha);
-          ctx.lineWidth = 0.5 + normalizedZ * 0.6;
+          let strokeAlpha = alphaFactor * (0.8 + (intensity - 1.0) * 0.35);
+          
+          let strokeColor = hexToRgba(colorTheme.secondary, strokeAlpha);
+          let currentLineWidth = 0.5 + normalizedZ * 0.6;
+
+          if (state.scannerAlpha > 0.05) {
+            const distToScanner = Math.abs(avgX - state.smoothScannerX);
+            if (distToScanner < 25) {
+              const factor = (1.0 - distToScanner / 25) * state.scannerAlpha;
+              strokeColor = hexToRgba(colorTheme.primary, strokeAlpha + 0.45 * factor);
+              currentLineWidth += factor * 1.0;
+            }
+          }
+
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = currentLineWidth;
 
           ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
@@ -316,12 +350,26 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
           const p1 = ringPoints[i];
           const p2 = ringPoints[i + 1];
           const avgZ = (p1.z + p2.z) * 0.5;
+          const avgX = (p1.x + p2.x) * 0.5;
 
           const normalizedZ = Math.max(0, Math.min(1.0, (avgZ + baseRadius) / (2.0 * baseRadius)));
           const alphaFactor = 0.05 + 0.42 * normalizedZ;
-          const strokeAlpha = alphaFactor * (0.8 + (intensity - 1.0) * 0.35);
-          ctx.strokeStyle = hexToRgba(colorTheme.primary, strokeAlpha);
-          ctx.lineWidth = 0.6 + normalizedZ * 0.8;
+          let strokeAlpha = alphaFactor * (0.8 + (intensity - 1.0) * 0.35);
+          
+          let strokeColor = hexToRgba(colorTheme.primary, strokeAlpha);
+          let currentLineWidth = 0.6 + normalizedZ * 0.8;
+
+          if (state.scannerAlpha > 0.05) {
+            const distToScanner = Math.abs(avgX - state.smoothScannerX);
+            if (distToScanner < 25) {
+              const factor = (1.0 - distToScanner / 25) * state.scannerAlpha;
+              strokeColor = hexToRgba(colorTheme.glow || "#ffffff", strokeAlpha + 0.6 * factor);
+              currentLineWidth += factor * 1.4;
+            }
+          }
+
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = currentLineWidth;
 
           ctx.beginPath();
           ctx.moveTo(p1.x, p1.y);
@@ -330,35 +378,50 @@ export const FaceVisualizer: React.FC<FaceVisualizerProps> = ({ colorTheme, inte
         }
       }
 
-      // 3. RENDER SUBTLE CYBERNETIC FLOATING POINTS (Glow particles around the face)
-      const numNodes = 6;
-      for (let n = 0; n < numNodes; n++) {
-        const pointPhase = time * 0.4 + n * (Math.PI * 2 / numNodes);
-        
-        // Target random key facial coordinates
-        const faceYRatio = Math.sin(pointPhase) * 0.7;
-        const faceX = getProfileX(faceYRatio) * baseRadius + 14 * Math.sin(pointPhase * 2.5);
-        const faceZ = Math.cos(pointPhase * 1.5) * baseRadius * 0.3;
+      // 3. DRAW ELEGANT HORIZONTALLY SWEEPING LIGHT-BEAM SCANNER
+      if (state.scannerAlpha > 0.01) {
+        const scanX = state.smoothScannerX;
+        const currentAlpha = state.scannerAlpha;
 
-        const projectedPoint = project(faceX, faceYRatio * baseRadius * 1.15, faceZ);
-        const pointZFactor = Math.max(0.1, Math.min(1.0, (projectedPoint.z + baseRadius) / (2 * baseRadius)));
+        // Soft vertical glowing beam column
+        const beamWidth = 60 + (state.audioIntensitySmoother - 1.0) * 30; // subtly breathes with modular audio output
+        const beamGrad = ctx.createLinearGradient(scanX - beamWidth / 2, 0, scanX + beamWidth / 2, 0);
+        beamGrad.addColorStop(0, "rgba(0, 0, 0, 0)");
+        beamGrad.addColorStop(0.5, hexToRgba(colorTheme.primary, 0.12 * currentAlpha));
+        beamGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+        ctx.fillStyle = beamGrad;
+        ctx.fillRect(scanX - beamWidth / 2, 0, beamWidth, height);
+
+        // Ultra-sharp laser scanning line
+        ctx.beginPath();
+        ctx.moveTo(scanX, 0);
+        ctx.lineTo(scanX, height);
+        ctx.strokeStyle = hexToRgba(colorTheme.primary, 0.65 * currentAlpha);
+        ctx.lineWidth = 1.0;
+        ctx.stroke();
+
+        // Elegant geometric HUD sweep brackets/telemetry tags
+        ctx.fillStyle = hexToRgba(colorTheme.primary, 0.5 * currentAlpha);
+        ctx.font = "7px var(--font-mono), monospace";
+        ctx.fillText(
+          `SYS_SCAN: ${Math.round((scanX / width) * 100)}%`,
+          Math.max(12, Math.min(width - 80, scanX + 8)),
+          22
+        );
+
+        ctx.fillText(
+          `VAL: ${(state.audioIntensitySmoother * 4.2).toFixed(2)} dB`,
+          Math.max(12, Math.min(width - 80, scanX + 8)),
+          32
+        );
 
         ctx.beginPath();
-        const nodeRadius = (2.5 + 2 * Math.sin(time + n)) * pointZFactor * (1.0 + (state.audioIntensitySmoother - 1.0) * 0.5);
-        ctx.arc(projectedPoint.x, projectedPoint.y, nodeRadius * 2.5, 0, Math.PI * 2);
-        
-        const grad = ctx.createRadialGradient(projectedPoint.x, projectedPoint.y, 0, projectedPoint.x, projectedPoint.y, nodeRadius * 2.5);
-        grad.addColorStop(0, hexToRgba(colorTheme.primary, 0.65 * pointZFactor));
-        grad.addColorStop(0.5, hexToRgba(colorTheme.secondary, 0.15 * pointZFactor));
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-        
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(projectedPoint.x, projectedPoint.y, nodeRadius * 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.43 + 0.5 * pointZFactor})`;
-        ctx.fill();
+        ctx.moveTo(scanX - 5, 8);
+        ctx.lineTo(scanX + 5, 8);
+        ctx.strokeStyle = hexToRgba(colorTheme.primary, 0.5 * currentAlpha);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
       }
 
       animationId = requestAnimationFrame(draw);

@@ -459,7 +459,7 @@ export default function App() {
                   transition={{ duration: 0.7, delay: 0.1 }}
                   className="font-display text-lg sm:text-2xl font-light text-neutral-400 tracking-tight"
                 >
-                  Fusing sub-harmonic gravity waves with deep mechanical temporal loops.
+                  Modular synthesizers and cybernetic sound structures.
                 </motion.p>
               </div>
 
@@ -470,7 +470,7 @@ export default function App() {
                 transition={{ duration: 0.8, delay: 0.25 }}
                 className="font-sans text-sm md:text-base text-neutral-400 leading-relaxed font-light"
               >
-                A progressive dark electronic music project exploring the margins where modular synthesizers generate kinetic weightlessness and cybernetic structures. Designed to challenge normal landing page frameworks through physical audio matrices.
+                An experimental dark electronic music project merging analog synthesis with deep acoustic atmospheres. Experience custom live-synthesized loops and official releases.
               </motion.p>
 
               {/* Floating anchor call to action */}
@@ -590,7 +590,7 @@ export default function App() {
               </h2>
             </div>
             <p className="font-sans text-sm text-neutral-400 max-w-sm leading-relaxed">
-              Toggle the releases below to adapt the atmosphere matrix and listen to real track previews synchronized from Spotify.
+              Select an album below to shift the visual theme dynamic and hear track previews synchronized from Spotify.
             </p>
           </div>
 
@@ -616,7 +616,7 @@ export default function App() {
               Tactile Sound Synthesizer
             </h2>
             <p className="font-sans text-sm text-neutral-400 leading-relaxed">
-              No static audio files downloaded. Tap individual orbital nodes or program the matrix grid below to synthesize techno patterns live on the Web Audio engine. Adjust delay feedback and resonance filters in real-time.
+              Synthesize loops live on the Web Audio engine. Select grid nodes or orbital controls below to trigger custom techno patterns and shape filters in real-time.
             </p>
           </div>
 
@@ -639,7 +639,7 @@ export default function App() {
               Network Terminals
             </h2>
             <p className="font-sans text-sm text-neutral-400 leading-relaxed">
-              Keep updated with performance schedules, Eurorack modular patch breakdowns, and direct studio inquiries. All networks map to @metrosulofficial.
+              Follow tour schedules, studio updates, and project inquiries. Find Metro Sul on all networks at @metrosulofficial.
             </p>
           </div>
 
