@@ -1,3 +1,11 @@
+export interface TrackItem {
+  title: string;
+  duration: string;
+  description?: string;
+  descriptionPt?: string;
+  descriptionEs?: string;
+}
+
 export interface AlbumData {
   id: string;
   title: string;
@@ -15,7 +23,7 @@ export interface AlbumData {
   description: string;
   trackCount: number;
   atmosphere: string;
-  tracklist: string[];
+  tracklist: (string | TrackItem)[];
 }
 
 export interface SynthParameter {

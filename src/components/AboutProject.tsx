@@ -159,34 +159,29 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
 
   const getMetroSpecs = () => [
     { 
-      label: lang === "pt" ? "Síntese Principal" : lang === "es" ? "Síntesis Núcleo" : "Core Synthesis", 
-      value: lang === "pt" ? "Loops Semi-Modulares Eurorack" : lang === "es" ? "Bucles Semimodulares Eurorack" : "Eurorack Semi-Modular Loops", 
-      category: lang === "pt" ? "Hardware" : lang === "es" ? "Hardware" : "Hardware" 
+      label: lang === "pt" ? "O Relógio Mecânico" : lang === "es" ? "El Reloj Mecánico" : "The Mechanical Clock", 
+      value: lang === "pt" ? "Pressão do trabalho, repetição, prazos rígidos e o ritmo seco da máquina." : lang === "es" ? "Presión laboral, repetición, plazos rígidos y el ritmo seco de la máquina." : "Work pressure, repetition, deadlines and dry machine rhythm.", 
+      category: lang === "pt" ? "01 // CHRONOS / PRESSÃO" : lang === "es" ? "01 // CHRONOS / PRESIÓN" : "01 // CHRONOS / PRESSURE" 
     },
     { 
-      label: lang === "pt" ? "Nível de Masterização" : lang === "es" ? "Nivel de Masterización" : "Mastering Level", 
-      value: lang === "pt" ? "Mesa Analógica Limpa Dinâmica -14 LUFS" : lang === "es" ? "Consola Analógica Limpia Dinámica -14 LUFS" : "Dynamic -14 LUFS Clean Analog Desk", 
-      category: lang === "pt" ? "Sinal" : lang === "es" ? "Señal" : "Signal" 
+      label: lang === "pt" ? "A Rota de Saída" : lang === "es" ? "La Ruta de Escape" : "The Route Out", 
+      value: lang === "pt" ? "Acústica do metrô, luzes borradas da cidade, síncope nervosa e movimento urbano." : lang === "es" ? "Acústica del metro, luces borrosas de la ciudad, síncopa nerviosa y movimiento." : "Subway acoustics, blurred city lights, nervous syncopation and movement.", 
+      category: lang === "pt" ? "02 // TRÂNSITO / ESCAPE" : lang === "es" ? "02 // TRÁNSITO / ESCAPE" : "02 // TRANSIT / ESCAPE" 
     },
     { 
-      label: lang === "pt" ? "Tempo Temporal" : lang === "es" ? "Tempo Temporal" : "Temporal Tempo", 
-      value: lang === "pt" ? "Alterações Modulares de 125 BPM — 138 BPM" : lang === "es" ? "Cambios Modulares de 125 BPM — 138 BPM" : "125 BPM — 138 BPM Modular Shifts", 
-      category: lang === "pt" ? "Medição" : lang === "es" ? "Alineación" : "Timing" 
+      label: lang === "pt" ? "O Momento Suspenso" : lang === "es" ? "El Momento Suspendido" : "The Suspended Moment", 
+      value: lang === "pt" ? "A energia da pista, frequências sub-graves e o tempo perdendo sua autoridade." : lang === "es" ? "La energía de la pista, frecuencias profundas de subgrave y el tiempo perdiendo su autoridad." : "Dance floor energy, deep frequencies and time losing authority.", 
+      category: lang === "pt" ? "03 // KAIROS / LIBERTAÇÃO" : lang === "es" ? "03 // KAIROS / LIBERACIÓN" : "03 // KAIROS / RELEASE" 
     },
     { 
-      label: lang === "pt" ? "Moduladores Espaciais" : lang === "es" ? "Moduladores Espaciales" : "Space Modulators", 
-      value: lang === "pt" ? "Delay Estéreo Binaural (Chronos Loop)" : lang === "es" ? "Retraso Estéreo Binaural (Bucle Chronos)" : "Binaural Stereo Delay (Chronos Loop)", 
-      category: lang === "pt" ? "Acústica" : lang === "es" ? "Acústica" : "Acoustics" 
+      label: lang === "pt" ? "Distorção da Madrugada" : lang === "es" ? "La Distorsión de la Madrugada" : "The After-Hours Shift", 
+      value: lang === "pt" ? "Chuva, fumaça, texturas ácidas, corpos exaustos e a elasticidade do after." : lang === "es" ? "Lluvia, humo, texturas ácidas, cuerpos agotados y la extraña elasticidad de la madrugada." : "Rain, smoke, acid textures, tired bodies and the strange elasticity of the madrugada.", 
+      category: lang === "pt" ? "04 // AFTER-HOURS / DISTORÇÃO" : lang === "es" ? "04 // AFTER-HOURS / DISTORSIÓN" : "04 // AFTER-HOURS / DISTORTION" 
     },
     { 
-      label: lang === "pt" ? "Subcamadas Vocais" : lang === "es" ? "Subcapas Vocales" : "Vocal Sub-layers", 
-      value: lang === "pt" ? "Formantes e Ruído Processados a Laser" : lang === "es" ? "Formantes y Ruido Procesados con Láser" : "Laser-Processed Formants & Noise", 
-      category: lang === "pt" ? "Síntese" : lang === "es" ? "Síntesis" : "Synthesis" 
-    },
-    { 
-      label: lang === "pt" ? "Identidade Visual" : lang === "es" ? "Identidad Visual" : "Visual Identity", 
-      value: lang === "pt" ? "Cibernética Dark Bioluminescente" : lang === "es" ? "Cibernética Oscura Bioluminiscente" : "Bioluminescent Dark Cybernetics", 
-      category: lang === "pt" ? "Estética" : lang === "es" ? "Estética" : "Aesthetics" 
+      label: lang === "pt" ? "A Luz da Blue Hour" : lang === "es" ? "La Luz del Amanecer" : "Blue Hour Melancholy", 
+      value: lang === "pt" ? "Luz suave do amanhecer, nostalgia lo-fi, o descanso necessário e o recomeço do relógio." : lang === "es" ? "Luz tenue, nostalgia lo-fi, descanso y el inevitable reinicio del reloj." : "Blue hour, soft light, lo-fi nostalgia, rest and the clock starting again.", 
+      category: lang === "pt" ? "05 // RETORNO / CICLO" : lang === "es" ? "05 // RETORNO / CICLO" : "05 // RETURN / CYCLE" 
     }
   ];
 
@@ -199,8 +194,8 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
         {/* Left side: short, high-impact intro statement & Signal Simulator Deck */}
         <div className="lg:col-span-5 space-y-5">
           <div className="flex items-center gap-2">
-            <span className="h-[1px] w-8 bg-neon-blue" />
-            <span className="font-mono text-xs tracking-wider text-neon-blue uppercase">
+            <span className="h-[1px] w-8 bg-gradient-to-r from-[#009DFF] to-[#FF6A00]" />
+            <span className="font-mono text-xs tracking-[0.2em] text-[#009DFF] uppercase font-bold">
               {lang === "pt" ? "MANIFESTO METRO SUL" : lang === "es" ? "MANIFESTO METRO SUL" : "METRO SUL MANIFESTO"}
             </span>
           </div>
@@ -232,8 +227,8 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <div className="flex justify-between items-center text-xs font-mono">
                 <span className="text-neutral-400">DATA_INTEGRITY</span>
                 <span className={`${
-                  integrityPercent > 80 ? "text-[#00f0ff]" :
-                  integrityPercent > 40 ? "text-amber-400" : "text-red-500 font-bold"
+                  integrityPercent > 80 ? "text-[#009DFF]" :
+                  integrityPercent > 40 ? "text-[#FFB000]" : "text-red-500 font-bold"
                 }`}>
                   {integrityPercent}% {integrityPercent < 100 && (lang === "pt" ? "// COMPROMETIDA" : lang === "es" ? "// COMPROMETIDA" : "// COMPROMISED")}
                 </span>
@@ -244,8 +239,8 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
                   animate={{ width: `${integrityPercent}%` }}
                   transition={{ type: "spring", stiffness: 100 }}
                   className={`h-full ${
-                    integrityPercent > 80 ? "bg-gradient-to-r from-cyan-500 to-indigo-500" :
-                    integrityPercent > 40 ? "bg-amber-500" : "bg-red-500"
+                    integrityPercent > 80 ? "bg-gradient-to-r from-[#009DFF] to-[#37D8FF]" :
+                    integrityPercent > 40 ? "bg-[#FFB000]" : "bg-red-500"
                   }`}
                 />
               </div>
@@ -254,17 +249,17 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
             <div className="grid grid-cols-2 gap-2 pt-2">
               <button
                 onClick={destabilizeSignal}
-                className="px-3 py-2 rounded border border-white/10 hover:border-white/20 bg-neutral-900/60 hover:bg-neutral-900 text-[10px] font-mono tracking-widest text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="px-3 py-2 rounded border border-white/10 hover:border-white/20 bg-neutral-900/60 hover:bg-neutral-900 text-[10px] font-mono tracking-widest text-[#FF6A00] hover:text-[#FFB000] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Activity size={10} className="text-cyan-400 animate-pulse" />
+                <Activity size={10} className="text-[#FF6A00] animate-pulse" />
                 {lang === "pt" ? "DESESTABILIZAR" : lang === "es" ? "DESESTABILIZAR" : "DEGRADE SIGNAL"}
               </button>
               
               <button
                 onClick={resetSignal}
-                className="px-3 py-2 rounded border border-white/10 hover:border-white/20 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/10 text-[10px] font-mono tracking-widest text-[#00f0ff] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="px-3 py-2 rounded border border-white/10 hover:border-white/20 bg-[#009DFF]/10 hover:bg-[#009DFF]/20 text-[#009DFF] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <RotateCcw size={10} />
+                <RotateCcw size={10} className="text-[#009DFF]" />
                 {lang === "pt" ? "REINICIAR" : lang === "es" ? "REINICIAR" : "RESET MATRIX"}
               </button>
             </div>
@@ -286,27 +281,13 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 <strong className="text-white font-medium select-none">
                   <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.9}>Metro Sul</ScramblerWord>
-                </strong> é um projeto de música eletrônica experimental que explora o espaço onde a{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>intuição humana</ScramblerWord> se encontra com os{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>algoritmos mecânicos</ScramblerWord>. Mesclando{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>techno modular</ScramblerWord> profundo, frequências hipnóticas de{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>sub-graves</ScramblerWord> e design espacial, o projeto estabelece uma ponte entre a{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>precisão digital</ScramblerWord> e o puro{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>calor analógico</ScramblerWord>.
+                </strong> transforma a pressão do tempo urbano em movimento eletrônico — da rigidez da jornada de trabalho ao pulso suspenso da noite. O projeto é um espaço em que o relógio mecânico perde a autoridade sobre o corpo, guiando canais de descompressão, trânsito urbano e <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>libertação noturna</ScramblerWord> por meio de batidas analógicas puras e <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>sintetizadores modulares</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                O som está enraizado em uma estética{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>dark minimalista</ScramblerWord> e acústica altamente{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>imersiva</ScramblerWord>, priorizando progressões cíclicas sobre ganchos de rádio. Cada padrão é um estudo do contraste:{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>flutuações atmosféricas</ScramblerWord> sem peso, tensões de máquinas e a passagem do{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>tempo rítmico</ScramblerWord>.
+                O som funde o <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>techno modular agressivo</ScramblerWord> com a melancolia da primeira luz do dia (blue hour). Cada loop é um estudo de contraste: a ansiedade dos prazos diários e o peso das máquinas colidindo com a distorção das altas horas (<ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>after-hours</ScramblerWord>) e a elasticidade de madrugadas de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>imersão total na pista</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                Ao cruzar tecnologias interativas com{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>síntese analógica</ScramblerWord>, Metro Sul cria um plano audiovisual imersivo onde os tons são{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>alterados</ScramblerWord>,{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>filtrados</ScramblerWord> e{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.6}>esculpidos</ScramblerWord> ao vivo.
+                Ao cruzar tecnologia web interativa com <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>síntese analógica</ScramblerWord>, Metro Sul cria um plano audiovisual imersivo onde o cansaço do dia é <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtrado</ScramblerWord>, <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>reconfigurado</ScramblerWord> e dissolvido através de frequências de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>sub-graves profundos</ScramblerWord>.
               </p>
             </>
           ) : lang === "es" ? (
@@ -314,27 +295,13 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 <strong className="text-white font-medium select-none">
                   <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.9}>Metro Sul</ScramblerWord>
-                </strong> es un proyecto de música electrónica experimental que explora el espacio donde la{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>intuición humana</ScramblerWord> se encuentra con los{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>algoritmos mecánicos</ScramblerWord>. Fusionando{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>techno modular</ScramblerWord> profundo, frecuencias hipnóticas de{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>subgraves</ScramblerWord> y diseño espacial, el proyecto tiende un puente entre la{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>precisión digital</ScramblerWord> y la calidez{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>analógica pura</ScramblerWord>.
+                </strong> transforma la presión del tiempo urbano en movimiento electrónico: de la rigidez de la jornada laboral al pulso suspendido de la noche. Se diseña como un proyecto en el que el reloj mecánico deja de controlar el cuerpo, traduciendo la ansiedad del tránsito urbano, los plazos y la <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>liberación nocturna</ScramblerWord> a través de ritmos modulares y <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>síntesis pura</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                El sonido está arraigado en una estética{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>oscura minimalista</ScramblerWord> y una acústica altamente{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>inmersiva</ScramblerWord>, priorizando bucles progresivos sobre ganchos comerciales directos. Cada patrón es un estudio del contraste:{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>deriva atmosférica</ScramblerWord> sin peso, tensión de la máquina y flujo del{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>tiempo rítmico</ScramblerWord>.
+                El sonido fusiona un <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>techno modular potente</ScramblerWord> con la melancolía del amanecer. Cada patrón estudia el contraste: la fricción de los cronogramas rígidos y las rutinas mecánicas chocando con la distorción del <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>after-hours</ScramblerWord> y la extraña elasticidad de la madrugada de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>inmersión en la pista</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                Al combinar tecnología web interactiva con{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>síntesis analógica</ScramblerWord>, Metro Sul crea un lienzo audiovisual inmersivo donde los sonidos se{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>distorsionan</ScramblerWord>,{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>filtran</ScramblerWord> y{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.6}>esculpen</ScramblerWord> en vivo.
+                Al cruzar la tecnología web interactiva con la <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>síntesis analógica</ScramblerWord>, Metro Sul crea un lienzo audiovisual inmersivo en el que el cansancio diario se <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtra</ScramblerWord>, se <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>altera</ScramblerWord> y se disipa mediante frecuencias de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>subgraves profundos</ScramblerWord>.
               </p>
             </>
           ) : (
@@ -342,28 +309,13 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 <strong className="text-white font-medium select-none">
                   <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.9}>Metro Sul</ScramblerWord>
-                </strong> is an experimental electronic music project exploring the space where{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>human intuition</ScramblerWord> meets{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>mechanical algorithms</ScramblerWord>. Fusing deep{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>modular techno</ScramblerWord>, hypnotic{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>sub-bass frequencies</ScramblerWord>, and spatial design, the project bridges{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>digital precision</ScramblerWord> with raw{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>analog warmth</ScramblerWord>.
+                </strong> transforms urban time pressure into electronic motion — from the rigidity of the workday to the suspended pulse of the night. It is a premium electronic music project about the moment the mechanical clock stops controlling the body, translating transit anxiety, deadlines, and <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>nocturnal release</ScramblerWord> into deep modular beats and <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>tactile synthesis</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                The sound is rooted in minimalist{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>dark aesthetics</ScramblerWord> and highly immersive{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>acoustics</ScramblerWord>, prioritizing{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>progressive loops</ScramblerWord> over radio hooks. Each pattern is a study of contrast:{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>weightless atmospheric drift</ScramblerWord>, machine tension, and the flow of{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>rhythmic time</ScramblerWord>.
+                The sound merges heavy <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>modular techno</ScramblerWord> with blue hour melancholy. Each pattern studies contrast: the friction of daily schedules and machine-like repetition colliding with <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.4}>after-hours distortion</ScramblerWord> and the strange, smoky elasticity of the <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.45}>dance floor immersion</ScramblerWord>.
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
-                By combining interactive web tech with{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.3}>analog synthesis</ScramblerWord>, Metro Sul creates an immersive audio-visual canvas where sounds are{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>warped</ScramblerWord>,{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>filtered</ScramblerWord>, and{" "}
-                <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.6}>sculpted</ScramblerWord> live.
+                By crossing interactive web tech with <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>analog synthesis</ScramblerWord>, Metro Sul builds an immersive audio-visual canvas where the fatigue of the workday is <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtered</ScramblerWord>, <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>warped</ScramblerWord>, and dissolved back into deep <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>sub-bass frequencies</ScramblerWord>.
               </p>
             </>
           )}
@@ -372,11 +324,11 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
       </div>
 
       {/* Futuristic Spec Sheet / Grid Blocks */}
-      <div className="border border-white/10 rounded-lg bg-[#070709]/80 backdrop-blur-md p-6 md:p-8">
+      <div className="border border-white/5 rounded-lg bg-[#07111F]/50 backdrop-blur-md p-6 md:p-8">
         <div className="flex items-center gap-2 mb-6 pb-4 border-b border-white/5">
-          <Terminal size={14} className="text-neon-blue" />
-          <h3 className="font-mono text-xs font-semibold tracking-widest text-[#00f0ff]">
-            {lang === "pt" ? "ESPECIFICAÇÕES_DE_SISTEMA // ESPECTRO_DE_SINAL" : lang === "es" ? "ESPECIFICACIONES_DE_SISTEMA // ESPECTRO_DE_SEÑAL" : "SYSTEM_SPECIFICATION // SIGNAL_SPECTRUM"}
+          <Terminal size={14} className="text-[#009DFF]" />
+          <h3 className="font-mono text-xs font-semibold tracking-widest text-[#009DFF]">
+            {lang === "pt" ? "O_CICLO_DO_TEMPO_URBANO // CRONOS_E_KAIROS" : lang === "es" ? "EL_CICLO_DEL_TIEMPO_URBANO // CRONOS_Y_KAIROS" : "THE_URBAN_TIME_CYCLE // CHRONOS_AND_KAIROS"}
           </h3>
         </div>
 
@@ -390,7 +342,7 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
                 <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
                   {spec.category}
                 </span>
-                <span className="h-1 w-1 rounded-full bg-neutral-800 group-hover:bg-cyan-400 transition-colors" />
+                <span className="h-1 w-1 rounded-full bg-neutral-800 group-hover:bg-[#009DFF] transition-colors" />
               </div>
               
               <h4 className="font-mono text-[10px] text-neutral-400 mb-1 uppercase tracking-wider">

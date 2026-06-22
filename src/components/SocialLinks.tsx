@@ -69,14 +69,14 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
         
         {/* Direct Email contact hub card */}
-        <div className="md:col-span-7 rounded-lg border border-white/10 bg-[#070709]/80 p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
+        <div className="md:col-span-7 rounded-lg border border-white/5 bg-[#07111F]/50 p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
           {/* Subtle gradient light flare */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-neon-blue/10 to-transparent blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#009DFF]/10 to-transparent blur-2xl pointer-events-none" />
           
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Mail size={13} className="text-neon-blue" />
-              <span className="font-mono text-[10px] tracking-[0.25em] text-[#00f0ff] uppercase">{translations[lang].contactCardLabel}</span>
+              <Mail size={13} className="text-[#009DFF]" />
+              <span className="font-mono text-[10px] tracking-[0.25em] text-[#009DFF] uppercase">{translations[lang].contactCardLabel}</span>
             </div>
             
             <h3 className="font-display text-2xl font-bold tracking-tight text-white mb-2 uppercase">
@@ -93,7 +93,7 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
               className="flex-1 px-5 py-3 rounded-md bg-black/40 border border-white/5 hover:border-white/15 text-xs font-mono text-white flex items-center justify-between group transition-colors"
             >
               <span className="truncate tracking-wider">{emailAddress}</span>
-              <Mail size={12} className="text-neutral-500 group-hover:text-[#00f0ff] transition-colors ml-2 shrink-0" />
+              <Mail size={12} className="text-neutral-500 group-hover:text-[#009DFF] transition-colors ml-2 shrink-0" />
             </a>
 
             <button
@@ -126,7 +126,7 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
                 href={soc.url}
                 target="_blank"
                 rel="no-referrer"
-                className={`flex-1 p-5 rounded-lg border border-white/5 bg-[#070709]/60 flex items-center justify-between group transition-all duration-150 ${soc.platformColor}`}
+                className={`flex-1 p-5 rounded-lg border border-white/5 bg-[#07111F]/30 flex items-center justify-between group transition-all duration-150 ${soc.platformColor}`}
               >
                 <div className="flex items-center gap-4">
                   <div className="p-2.5 rounded bg-white/[0.01] border border-white/5 group-hover:bg-transparent group-hover:border-current transition-all">

@@ -21,7 +21,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { AlbumData } from "./types";
 import VisualizerCanvas from "./components/VisualizerCanvas";
-import { FaceVisualizer } from "./components/FaceVisualizer";
+import OrbitalPortal from "./components/OrbitalPortal";
 import SpotifyEmbeds, { ALBUMS } from "./components/SpotifyEmbeds";
 import InteractiveSynth from "./components/InteractiveSynth";
 import AboutProject from "./components/AboutProject";
@@ -320,8 +320,8 @@ export default function App() {
       {/* Geometric cyber grids overlay */}
       <div className="absolute inset-0 cyber-grid opacity-[0.35] pointer-events-none z-[1]" />
 
-      {/* Elegant Header/Navigation bar */}
-      <header ref={headerRef} className="fixed top-0 left-0 right-0 w-full z-50 border-b border-white/[0.04] bg-neutral-950/80 backdrop-blur-md px-6 md:px-12 py-4">
+      {/* Elegant Header/Navigation bar representing a cybernetic transmission bar */}
+      <header ref={headerRef} className="fixed top-0 left-0 right-0 w-full z-50 border-b border-white/[0.03] bg-[#03050A]/85 backdrop-blur-md px-6 md:px-12 py-3.5 shadow-[0_4px_30px_rgba(3,5,10,0.5)]">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           <div className="flex items-center gap-3 shrink-0">
@@ -333,24 +333,34 @@ export default function App() {
                 color: activeAlbum.colorTheme.primary 
               }} 
             />
-            <a href="#" className="font-display text-base font-bold tracking-[0.25em] text-white hover:opacity-80 transition-opacity">
-              METRO SUL
+            <a href="#" className="font-display text-base font-bold tracking-[0.25em] text-white hover:opacity-80 transition-all flex items-center gap-2">
+              <span className="text-xs text-neutral-500 font-mono font-normal tracking-tight">[</span>
+              <span>METRO SUL</span>
+              <span className="text-xs text-neutral-500 font-mono font-normal tracking-tight">]</span>
             </a>
           </div>
 
-          {/* Minimal anchors */}
-          <nav className="hidden md:flex items-center gap-8 text-[11px] font-mono tracking-widest text-neutral-400">
-            <a href="#music" className="hover:text-white transition-colors uppercase">
+          {/* Minimal transmission anchors */}
+          <nav className="hidden md:flex items-center gap-9 text-[10px] font-mono tracking-[0.22em] text-neutral-400 font-medium">
+            <a href="#music" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navReleases}
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
             </a>
-            <a href="#synthesizer" className="hover:text-white transition-colors uppercase">
+            <a href="#synthesizer" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navSynth}
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
             </a>
-            <a href="#about" className="hover:text-white transition-colors uppercase">
+            <a href="#about" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navManifesto}
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
             </a>
-            <a href="#contact" className="hover:text-white transition-colors uppercase">
+            <a href="#contact" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navInquiries}
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
             </a>
           </nav>
 
@@ -358,24 +368,39 @@ export default function App() {
           <div className="flex items-center gap-2">
             
             {/* Elegant Minimal Language Picker */}
-            <div className="hidden sm:flex items-center gap-1.2 font-mono text-[9px] bg-white/[0.02] border border-white/5 py-1.5 px-3 rounded-full text-neutral-400">
+            <div className="hidden sm:flex items-center gap-1.2 font-mono text-[9px] bg-white/[0.02] border border-white/5 py-1.5 px-3.5 rounded-full text-neutral-400">
               <button 
                 onClick={() => handleLanguageChange("pt")}
-                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "pt" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+                className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded"
+                style={{ 
+                  color: lang === "pt" ? activeAlbum.colorTheme.primary : undefined,
+                  fontWeight: lang === "pt" ? "bold" : undefined,
+                  background: lang === "pt" ? "rgba(255,255,255,0.03)" : undefined
+                }}
               >
                 PT
               </button>
               <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
               <button 
                 onClick={() => handleLanguageChange("en")}
-                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "en" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+                className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded"
+                style={{ 
+                  color: lang === "en" ? activeAlbum.colorTheme.primary : undefined,
+                  fontWeight: lang === "en" ? "bold" : undefined,
+                  background: lang === "en" ? "rgba(255,255,255,0.03)" : undefined
+                }}
               >
                 EN
               </button>
               <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
               <button 
                 onClick={() => handleLanguageChange("es")}
-                className={`cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded-md ${lang === "es" ? "text-[#00f0ff] font-bold bg-white/5" : ""}`}
+                className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded"
+                style={{ 
+                  color: lang === "es" ? activeAlbum.colorTheme.primary : undefined,
+                  fontWeight: lang === "es" ? "bold" : undefined,
+                  background: lang === "es" ? "rgba(255,255,255,0.03)" : undefined
+                }}
               >
                 ES
               </button>
@@ -387,7 +412,7 @@ export default function App() {
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full border font-mono text-[10px] tracking-wider transition-all duration-300 cursor-pointer ${
                 isMuted 
                   ? "bg-red-950/20 border-red-500/30 text-red-400 hover:border-red-400/50 hover:bg-red-950/30 font-semibold" 
-                  : "bg-white/[0.02] border-white/5 text-neutral-400 hover:border-white/12 hover:text-white hover:bg-white/[0.05]"
+                  : "bg-white/[0.02] border-white/5 text-neutral-450 hover:border-white/12 hover:text-white hover:bg-white/[0.05]"
               }`}
               title={isMuted ? "Unmute hardware synth" : "Mute hardware synth"}
             >
@@ -398,7 +423,7 @@ export default function App() {
                 </>
               ) : (
                 <>
-                  <Volume2 size={11} className="text-neon-blue" />
+                  <Volume2 size={11} style={{ color: activeAlbum.colorTheme.primary }} />
                   <span>{t.audioOn}</span>
                 </>
               )}
@@ -423,6 +448,14 @@ export default function App() {
           </div>
 
         </div>
+        
+        {/* Slidable glowing energy laser running along bottom border representing structural transmission signal */}
+        <div 
+          className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-[#009DFF] to-transparent w-full transition-all duration-1000 opacity-60"
+          style={{ 
+            backgroundImage: `linear-gradient(to right, transparent 0%, ${activeAlbum.colorTheme.primary} 50%, transparent 100%)`
+          }}
+        />
       </header>
 
       {/* Cybernetic Mobile navigation panel overlay */}
@@ -438,28 +471,28 @@ export default function App() {
             <a 
               href="#music" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
+              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navReleases}
             </a>
             <a 
               href="#synthesizer" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
+              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navSynth}
             </a>
             <a 
               href="#about" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left"
+              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navManifesto}
             </a>
             <a 
               href="#contact" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors uppercase py-2 block text-left border-b border-white/[0.02]"
+              className="hover:text-white transition-colors uppercase py-2 block text-left border-b border-white/[0.02] whitespace-nowrap"
             >
               {t.navInquiries}
             </a>
@@ -580,28 +613,21 @@ export default function App() {
 
             </div>
 
-            {/* Right side: Modern interactive 3D Profile Face vector visualizer */}
+            {/* Right side: Modern interactive Cosmic Orbital Portal visualizer */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
-              className="lg:col-span-5 w-full h-[360px] sm:h-[460px] flex items-center justify-center rounded-3xl border border-white/[0.04] bg-neutral-950/30 backdrop-blur-md relative overflow-hidden shadow-2xl p-4 group"
+              className="lg:col-span-5 w-full h-[360px] sm:h-[480px] flex items-center justify-center rounded-3xl border border-white/[0.04] bg-[#03050A]/70 backdrop-blur-md relative overflow-hidden shadow-2xl p-4 group"
             >
               {/* Subtle inner grid glow backplate */}
               <div 
-                className="absolute inset-0 opacity-10 pointer-events-none transition-all duration-1000 z-0 bg-radial-gradient"
+                className="absolute inset-0 opacity-15 pointer-events-none transition-all duration-1000 z-0 bg-radial-gradient"
                 style={{
                   background: `radial-gradient(circle at center, ${activeAlbum.colorTheme.primary} 0%, transparent 70%)`
                 }}
               />
-              <FaceVisualizer 
-                colorTheme={{
-                  primary: activeAlbum.colorTheme.primary,
-                  secondary: activeAlbum.colorTheme.secondary,
-                  glow: activeAlbum.colorTheme.glow
-                }}
-                intensity={synthIntensity}
-              />
+              <OrbitalPortal intensity={synthIntensity} />
             </motion.div>
 
           </div>

@@ -13,20 +13,44 @@ export const ALBUMS: AlbumData[] = [
     spotifyUrl: "https://open.spotify.com/intl-pt/album/3F10JFx7wrz3scGyBUY3ES",
     embedUrl: "https://open.spotify.com/embed/album/3F10JFx7wrz3scGyBUY3ES?utm_source=generator&theme=0",
     colorTheme: {
-      primary: "#00f0ff", // Bioluminescent Cyan
-      secondary: "#7000ff", // Deep Space Purple
-      glow: "rgba(0, 240, 255, 0.15)",
-      ambient: "from-[#00f0ff]/10 via-[#7000ff]/5 to-transparent"
+      primary: "#009DFF", // Electric Blue
+      secondary: "#37D8FF", // Plasma Blue
+      glow: "rgba(0, 157, 255, 0.15)",
+      ambient: "from-[#009DFF]/15 via-[#37D8FF]/5 to-transparent"
     },
     concept: "Hyper-resonance & Gravity Warps",
     description: "An evolutionary leap in deep techno landscapes. 'Beyond Gravity' represents an exploration of modular systems shifting through weightlessness. Fusing organic bioluminescent soundscapes with high-pressure cybernetic bass lines.",
     trackCount: 4,
     atmosphere: "Atmospheric, Ethereal, Heavy Low-Ends",
     tracklist: [
-      "Wake The Earth — 5:17",
-      "Feel The Earth — 6:15",
-      "Break Through — 4:01",
-      "Out Of My Head — 6:57"
+      {
+        title: "Wake The Earth",
+        duration: "5:17",
+        description: "Bioluminescent textures and a steady modular heartbeat.",
+        descriptionPt: "Texturas bioluminescentes e o pulsar firme de um coração modular.",
+        descriptionEs: "Texturas bioluminiscentes y el pulso constante de un corazón modular."
+      },
+      {
+        title: "Feel The Earth",
+        duration: "6:15",
+        description: "Massive sub-bass and deep atmospheric space drifts.",
+        descriptionPt: "Sub-grave massivo e flutuações atmosféricas de espaço profundo.",
+        descriptionEs: "Subgrave masivo y derivas atmosféricas de espacio profundo."
+      },
+      {
+        title: "Break Through",
+        duration: "4:01",
+        description: "Fast clock gates triggering high-voltage synth sweeps.",
+        descriptionPt: "Gates de clock velozes disparando varreduras de sintetizador de alta voltagem.",
+        descriptionEs: "Gates de reloj veloces disparando barridos de sintetizador de alto voltaje."
+      },
+      {
+        title: "Out Of My Head",
+        duration: "6:57",
+        description: "Continuous hypnotic loop building into weightless warmth.",
+        descriptionPt: "Loop hipnótico contínuo evoluindo para um calor sem gravidade.",
+        descriptionEs: "Bucle hipnótico continuo evolucionando hacia un calor sin gravedad."
+      }
     ]
   },
   {
@@ -37,31 +61,121 @@ export const ALBUMS: AlbumData[] = [
     spotifyUrl: "https://open.spotify.com/intl-pt/album/316abErdO1WCIfUhM3Tgdb",
     embedUrl: "https://open.spotify.com/embed/album/316abErdO1WCIfUhM3Tgdb?utm_source=generator&theme=0",
     colorTheme: {
-      primary: "#ff455b", // Solar Sunset Crimson
-      secondary: "#bd00ff", // Violet Plasma
-      glow: "rgba(255, 69, 91, 0.15)",
-      ambient: "from-[#ff455b]/10 via-[#bd00ff]/5 to-transparent"
+      primary: "#FF6A00", // Fire Orange
+      secondary: "#FFB000", // Solar Amber
+      glow: "rgba(255, 106, 0, 0.15)",
+      ambient: "from-[#FF6A00]/15 via-[#FFB000]/5 to-transparent"
     },
     concept: "Temporal Duality: Chronos vs. Kairos",
-    description: "A dual-faceted deep dive into the properties of time. 'VOLTA' explores the mechanical progression of linear schedules (Chronos) versus the opportune, suspended fluid moments of pure existence (Kairos). Intense modular rhythms colliding with dramatic string washes and cosmic stardust sweeps.",
+    description: "A dual-faceted deep dive into the properties of time. 'VOLTA' explores the mechanical progression of linear schedules (Chronos) versus the opportune, suspended fluid moments of pure existence (Kairos).",
     trackCount: 15,
     atmosphere: "Fast-paced, Relentless, Cinematic Melodics",
     tracklist: [
-      "Pressure (9 to 5) — 3:04",
-      "Transit — 2:34",
-      "Velvet Rope — 3:22",
-      "Ignition — 2:56",
-      "Syncopate — 2:24",
-      "Kairos (The Moment) — 3:24",
-      "Chemistry — 2:33",
-      "Smoke & Mirrors (Interlude) — 1:38",
-      "Second Wind — 2:16",
-      "Echoes in the Hall — 2:59",
-      "Blue Hour — 3:11",
-      "Taxi (The Ride Home) — 1:38",
-      "Afters (Apartment 4B) — 1:42",
-      "Sunday Morning — 1:11",
-      "Cycle (Outro) — 1:23"
+      {
+        title: "Pressure (9 to 5)",
+        duration: "3:04",
+        description: "dry machine percussion, minimalist anxiety, the wall-clock as antagonist.",
+        descriptionPt: "percussão seca de máquina, ansiedade minimalista, o relógio de parede como antagonista.",
+        descriptionEs: "percusión seca de máquina, ansiedad minimalista, el reloj de pared como antagonista."
+      },
+      {
+        title: "Transit",
+        duration: "2:34",
+        description: "subway acoustics, blurred city lights, nervous UK Garage swing.",
+        descriptionPt: "acústica de metrô, luzes borradas da cidade, balanço nervoso de UK Garage.",
+        descriptionEs: "acústica de metro, luces de la ciudad borrosas, balanceo nervioso de UK Garage."
+      },
+      {
+        title: "Velvet Rope",
+        duration: "3:22",
+        description: "Nu-Disco sophistication, heavy bass lines, whispered vocal fragments.",
+        descriptionPt: "sofisticação Nu-Disco, linhas de baixo marcantes, sussurros vocais fragmentados.",
+        descriptionEs: "sofisticación de Nu-Disco, líneas de bajo pesadas, fragmentos de voz susurrados."
+      },
+      {
+        title: "Ignition",
+        duration: "2:56",
+        description: "Piano House euphoria, collective movement.",
+        descriptionPt: "euforia Piano House, movimento coletivo.",
+        descriptionEs: "euforia de Piano House, movimiento colectivo."
+      },
+      {
+        title: "Syncopate",
+        duration: "2:24",
+        description: "hypnotic Tech House where the body counts in measures, not hours.",
+        descriptionPt: "Tech House hipnótico onde o corpo conta compassos, não horas.",
+        descriptionEs: "Tech House hipnótico donde el cuerpo cuenta compases, no horas."
+      },
+      {
+        title: "Kairos (The Moment)",
+        duration: "3:24",
+        description: "ethereal progressive synthesis and undefined time.",
+        descriptionPt: "síntese progressiva etérea e tempo indefinido.",
+        descriptionEs: "síntesis progresiva etérea y tiempo indefinido."
+      },
+      {
+        title: "Chemistry",
+        duration: "2:33",
+        description: "sensual Deep House, human magnetism and the present tense under strobe light.",
+        descriptionPt: "Deep House sensual, magnetismo humano e tempo presente sob o estroboscópio.",
+        descriptionEs: "Deep House sensual, magnetismo humano y tiempo presente bajo el estroboscopio."
+      },
+      {
+        title: "Smoke & Mirrors (Interlude)",
+        duration: "1:38",
+        description: "rain, muffled club sound and a pause outside the room.",
+        descriptionPt: "chuva, som de clube abafado e uma pausa do lado de fora.",
+        descriptionEs: "lluvia, sonido de club amortiguado y una pausa fuera de la sala."
+      },
+      {
+        title: "Second Wind",
+        duration: "2:16",
+        description: "3 a.m. adrenaline, raw Speed Garage and tired bodies finding voltage again.",
+        descriptionPt: "Adrenalina das 3h, Speed Garage bruto e corpos cansados recuperando a voltagem.",
+        descriptionEs: "Adrenalina de las 3 a.m., Speed Garage puro y cuerpos cansados encontrando voltaje otra vez."
+      },
+      {
+        title: "Echoes in the Hall",
+        duration: "2:59",
+        description: "Acid textures and TB-303-like synthesis bending the after-hours into a maze.",
+        descriptionPt: "texturas de Acid e síntese estilo TB-303 moldando as altas horas em um labirinto.",
+        descriptionEs: "texturas ácidas y síntesis estilo TB-303 transformando el after-hours en un laberinto."
+      },
+      {
+        title: "Blue Hour",
+        duration: "3:11",
+        description: "bright synthesizers, first light, hope, clarity and end-of-night melancholy.",
+        descriptionPt: "sintetizadores brilhantes, primeira luz, esperança, clareza e melancolia do fim de noite.",
+        descriptionEs: "sintetizadores brillantes, primera luz, esperanza, claridad y melancolía del fin de noche."
+      },
+      {
+        title: "Taxi (The Ride Home)",
+        duration: "1:38",
+        description: "Lo-Fi nostalgia and happy exhaustion as the normal city wakes up.",
+        descriptionPt: "nostalgia Lo-Fi e exaustão feliz enquanto a cidade normal desperta.",
+        descriptionEs: "nostalgia Lo-Fi y agotamiento feliz mientras la ciudad normal se despierta."
+      },
+      {
+        title: "Afters (Apartment 4B)",
+        duration: "1:42",
+        description: "glitchy minimal sounds, slow drag and elastic time without rules.",
+        descriptionPt: "sons minimalistas com glitch, andamento lento e tempo elástico sem regras.",
+        descriptionEs: "sonidos de glitch minimalistas, ritmo lento y tiempo elástico sin reglas."
+      },
+      {
+        title: "Sunday Morning",
+        duration: "1:11",
+        description: "Neo-Soul warmth, physical rest and emotional decompression.",
+        descriptionPt: "calor do Neo-Soul, descanso físico e descompressão emocional.",
+        descriptionEs: "calidez de Neo-Soul, descanso físico y descompresión emocional."
+      },
+      {
+        title: "Cycle (Outro)",
+        duration: "1:23",
+        description: "soft strings merging with the mechanical beginning; the clock starts again.",
+        descriptionPt: "cordas suaves fundindo-se com o início mecânico; o relógio recomeça.",
+        descriptionEs: "cuerdas suaves fusionándose con el inicio mecánico; el reloj comienza de nuevo."
+      }
     ]
   }
 ];
@@ -297,24 +411,45 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect, lang }: Spot
               <span className="block font-mono text-[10px] text-neutral-400 tracking-wider mb-3">{translations[lang].embedReleaseSeq}</span>
               <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 {activeAlbum.tracklist.map((track, idx) => {
-                  const parts = track.split(" — ");
-                  const title = parts[0];
-                  const duration = parts[1] || "";
+                  let title = "";
+                  let duration = "";
+                  let description = "";
+
+                  if (typeof track === "string") {
+                    const parts = track.split(" — ");
+                    title = parts[0];
+                    duration = parts[1] || "";
+                  } else {
+                    title = track.title;
+                    duration = track.duration;
+                    description = lang === "pt" && track.descriptionPt 
+                      ? track.descriptionPt 
+                      : lang === "es" && track.descriptionEs 
+                        ? track.descriptionEs 
+                        : (track.description || "");
+                  }
                   return (
                     <div 
                       key={idx}
-                      className="flex items-center justify-between p-2 rounded-lg bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.02] transition-colors group/track"
+                      className="flex flex-col p-2.5 rounded-lg bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.02] transition-colors group/track gap-1 text-left"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs text-neutral-500 w-5 text-right">{String(idx + 1).padStart(2, "0")}</span>
-                        <span className="text-xs text-neutral-300 group-hover/track:text-white transition-colors">{title}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-xs text-neutral-500 w-5 text-right">{String(idx + 1).padStart(2, "0")}</span>
+                          <span className="text-xs text-neutral-300 group-hover/track:text-white transition-colors font-medium">{title}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                          {duration && (
+                            <span className="font-mono text-[10px] text-neutral-400">{duration}</span>
+                          )}
+                          <PlayCircle size={12} className="text-neutral-500 group-hover/track:text-white transition-opacity duration-300" />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        {duration && (
-                          <span className="font-mono text-[10px] text-neutral-400">{duration}</span>
-                        )}
-                        <PlayCircle size={12} className="text-neutral-500 group-hover/track:text-white transition-opacity duration-300" />
-                      </div>
+                      {description && (
+                        <p className="font-mono text-[9.5px] text-neutral-500 group-hover/track:text-neutral-400 pl-8 leading-relaxed">
+                          {description}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

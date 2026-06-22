@@ -6,18 +6,28 @@
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-dark-bg: #050505;
-  --color-dark-card: #0c0c0e;
-  --color-neon-blue: #00f0ff;
-  --color-neon-sunset: #ff455b;
-  --color-ambient-purple: #7000ff;
+  --color-deep-black: #03050A;
+  --color-cosmic-navy: #07111F;
+  --color-electric-blue: #009DFF;
+  --color-plasma-blue: #37D8FF;
+  --color-fire-orange: #FF6A00;
+  --color-solar-amber: #FFB000;
+  --color-white-glow: #F4F8FF;
+  --color-muted-steel: #8D9AAD;
+
+  /* backwards compatibility aliases */
+  --color-dark-bg: #03050A;
+  --color-dark-card: #07111F;
+  --color-neon-blue: #009DFF;
+  --color-neon-sunset: #FF6A00;
+  --color-ambient-purple: #07111F;
 }
 
 /* Custom styles for high-fidelity dark-ambient aesthetics */
 @layer base {
   body {
-    background-color: #030303;
-    color: #dedee3;
+    background-color: #03050A;
+    color: #F4F8FF;
     font-family: var(--font-sans);
     overflow-x: hidden;
     scroll-behavior: smooth;
