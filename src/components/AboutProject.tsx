@@ -289,6 +289,9 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 Ao cruzar tecnologia web interativa com <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>síntese analógica</ScramblerWord>, Metro Sul cria um plano audiovisual imersivo onde o cansaço do dia é <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtrado</ScramblerWord>, <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>reconfigurado</ScramblerWord> e dissolvido através de frequências de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>sub-graves profundos</ScramblerWord>.
               </p>
+              <p className="border-l-2 border-white/5 pl-4 py-1 text-xs text-neutral-500">
+                O projeto foi fundado e é produzido pelo produtor, artista e designer de som <strong className="text-white font-medium select-none"><ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.25}>Bruno Gomes</ScramblerWord></strong>.
+              </p>
             </>
           ) : lang === "es" ? (
             <>
@@ -303,6 +306,9 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 Al cruzar la tecnología web interactiva con la <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>síntesis analógica</ScramblerWord>, Metro Sul crea un lienzo audiovisual inmersivo en el que el cansancio diario se <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtra</ScramblerWord>, se <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>altera</ScramblerWord> y se disipa mediante frecuencias de <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>subgraves profundos</ScramblerWord>.
               </p>
+              <p className="border-l-2 border-white/5 pl-4 py-1 text-xs text-neutral-500">
+                El proyecto fue fundado y es producido por el productor, artista y diseñador de sonido <strong className="text-white font-medium select-none"><ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.25}>Bruno Gomes</ScramblerWord></strong>.
+              </p>
             </>
           ) : (
             <>
@@ -316,6 +322,9 @@ export default function AboutProject({ lang }: { lang: "en" | "pt" | "es" }) {
               </p>
               <p className="border-l-2 border-white/5 pl-4 py-1">
                 By crossing interactive web tech with <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.35}>analog synthesis</ScramblerWord>, Metro Sul builds an immersive audio-visual canvas where the fatigue of the workday is <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.65}>filtered</ScramblerWord>, <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.7}>warped</ScramblerWord>, and dissolved back into deep <ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.5}>sub-bass frequencies</ScramblerWord>.
+              </p>
+              <p className="border-l-2 border-white/5 pl-4 py-1 text-xs text-neutral-500">
+                The project was founded and is produced by the artist, producer, and sonic designer <strong className="text-white font-medium select-none"><ScramblerWord globalTriggerId={globalTriggerId} scrambleChance={0.25}>Bruno Gomes</ScramblerWord></strong>.
               </p>
             </>
           )}

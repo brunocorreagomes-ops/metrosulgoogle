@@ -85,6 +85,17 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
             <p className="font-sans text-xs text-neutral-400 max-w-md leading-relaxed mb-6 font-light">
               {translations[lang].contactCardDesc}
             </p>
+
+            {/* Founder, Producer, and Artist Badge */}
+            <div className="mb-6 p-4 rounded-lg bg-black/35 border border-white/5 flex flex-col justify-center">
+              <span className="block font-mono text-[8px] text-[#009DFF] uppercase tracking-widest mb-1.5 font-bold">
+                {lang === "pt" ? "FUNDADOR, PRODUTOR & ARTISTA" : lang === "es" ? "FUNDADOR, PRODUCTOR Y ARTISTA" : "FOUNDER, PRODUCER & ARTIST"}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-display text-base font-bold tracking-wider text-white">BRUNO GOMES</span>
+                <span className="inline-block w-1.5 h-1.5 bg-[#009DFF] rounded-full animate-pulse" />
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">

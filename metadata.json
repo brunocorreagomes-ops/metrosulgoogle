@@ -1,6 +1,6 @@
 {
   "name": "Metro Sul",
-  "description": "Minimalist, immersive conceptual space for Metro Sul electronic music project. Live synthesizer, gravity particles visualizer, and Spotify audio embeds.",
+  "description": "Minimalist, immersive conceptual space for Metro Sul electronic music project, founded and produced by Bruno Gomes. Features a live synthesizer, gravity particles visualizer, and synchronized Spotify audio embeds.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
