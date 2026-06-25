@@ -166,6 +166,9 @@ export interface TranslationSchema {
   upcomingLabel: string;
   upcomingTitle: string;
   upcomingDesc: string;
+  upcomingCta: string;
+  upcomingDate: string;
+  upcomingPreSaveNotice: string;
 }
 
 export const translations: Record<Language, TranslationSchema> = {
@@ -318,7 +321,10 @@ export const translations: Record<Language, TranslationSchema> = {
     modalLogVersion: "METRO SUL VER_0.8B",
     upcomingLabel: "NEW SIGNAL PHASE",
     upcomingTitle: "Architect of Overflow",
-    upcomingDesc: "Architect of Overflow opens a new phase for Metro Sul — a frequency-driven electronic release about abundance, manifestation, alignment and conscious creation."
+    upcomingDesc: "Architect of Overflow opens a new phase for Metro Sul — a frequency-driven electronic release about abundance, manifestation, alignment and conscious creation.",
+    upcomingCta: "COMING SOON",
+    upcomingDate: "Released on July 31st on all major streaming platforms.",
+    upcomingPreSaveNotice: "Pre-save is not active yet."
   },
   pt: {
     bootSeq: [
@@ -469,7 +475,10 @@ export const translations: Record<Language, TranslationSchema> = {
     modalLogVersion: "METRO SUL VERSÃO_0.8B",
     upcomingLabel: "NOVA FASE DE SINAL",
     upcomingTitle: "Architect of Overflow",
-    upcomingDesc: "Architect of Overflow inaugura uma nova fase para Metro Sul — um lançamento eletrônico guiado por frequência sobre abundância, manifestação, alinhamento e criação consciente."
+    upcomingDesc: "Architect of Overflow inaugura uma nova fase para Metro Sul — um lançamento eletrônico guiado por frequência sobre abundância, manifestação, alinhamento e criação consciente.",
+    upcomingCta: "EM BREVE",
+    upcomingDate: "Lançamento em 31 de julho em todas as plataformas de streaming.",
+    upcomingPreSaveNotice: "Pré-salvamento ainda não disponível."
   },
   es: {
     bootSeq: [
@@ -620,6 +629,9 @@ export const translations: Record<Language, TranslationSchema> = {
     modalLogVersion: "METRO SUL VERSION_0.8B",
     upcomingLabel: "NUEVA FASE DE SEÑAL",
     upcomingTitle: "Architect of Overflow",
-    upcomingDesc: "Architect of Overflow inicia una nueva fase para Metro Sul — un lanzamiento electrónico guiado por frecuencia sobre abundancia, manifestación, alineación y creación consciente."
+    upcomingDesc: "Architect of Overflow inicia una nueva fase para Metro Sul — un lanzamiento electrónico guiado por frecuencia sobre abundancia, manifestación, alineación y creación consciente.",
+    upcomingCta: "MUY PRONTO",
+    upcomingDate: "Lanzamiento el 31 de julio en todas las plataformas de streaming.",
+    upcomingPreSaveNotice: "Pre-guardado aún no disponible."
   }
 };

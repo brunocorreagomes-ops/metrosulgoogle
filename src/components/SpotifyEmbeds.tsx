@@ -406,53 +406,26 @@ export default function SpotifyEmbeds({ activeAlbum, onAlbumSelect, lang }: Spot
 
             </div>
 
-            {/* Custom Interactive Tracklist Simulation */}
-            <div className="mt-8">
-              <span className="block font-mono text-[10px] text-neutral-400 tracking-wider mb-3">{translations[lang].embedReleaseSeq}</span>
-              <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                {activeAlbum.tracklist.map((track, idx) => {
-                  let title = "";
-                  let duration = "";
-                  let description = "";
-
-                  if (typeof track === "string") {
-                    const parts = track.split(" — ");
-                    title = parts[0];
-                    duration = parts[1] || "";
-                  } else {
-                    title = track.title;
-                    duration = track.duration;
-                    description = lang === "pt" && track.descriptionPt 
-                      ? track.descriptionPt 
-                      : lang === "es" && track.descriptionEs 
-                        ? track.descriptionEs 
-                        : (track.description || "");
-                  }
-                  return (
-                    <div 
-                      key={idx}
-                      className="flex flex-col p-2.5 rounded-lg bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.02] transition-colors group/track gap-1 text-left"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-xs text-neutral-500 w-5 text-right">{String(idx + 1).padStart(2, "0")}</span>
-                          <span className="text-xs text-neutral-300 group-hover/track:text-white transition-colors font-medium">{title}</span>
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                          {duration && (
-                            <span className="font-mono text-[10px] text-neutral-400">{duration}</span>
-                          )}
-                          <PlayCircle size={12} className="text-neutral-500 group-hover/track:text-white transition-opacity duration-300" />
-                        </div>
-                      </div>
-                      {description && (
-                        <p className="font-mono text-[9.5px] text-neutral-500 group-hover/track:text-neutral-400 pl-8 leading-relaxed">
-                          {description}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
+            {/* Release Technical Specifications instead of long tracklists */}
+            <div className="mt-6 pt-6 border-t border-white/[0.04]">
+              <span className="block font-mono text-[9px] text-neutral-500 uppercase tracking-[0.2em] mb-4">// {lang === "en" ? "RELEASE METADATA" : lang === "es" ? "METADATOS DE LANZAMIENTO" : "METADADOS DE LANÇAMENTO"}</span>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 font-mono text-[10px]">
+                <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                  <span className="text-neutral-500">CATALOG:</span>
+                  <span className="text-neutral-300 font-semibold">{activeAlbum.id === "beyond-gravity" ? "MTS-002" : "MTS-001"}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                  <span className="text-neutral-500">FORMAT:</span>
+                  <span className="text-neutral-300 font-semibold">{activeAlbum.type === "ALBUM" ? "LP / Lossless" : "EP / Lossless"}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                  <span className="text-neutral-500">YEAR:</span>
+                  <span className="text-neutral-300 font-semibold">{activeAlbum.releaseYear}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
+                  <span className="text-neutral-500">TRACKS:</span>
+                  <span className="text-[#009DFF] font-semibold">{activeAlbum.trackCount}</span>
+                </div>
               </div>
             </div>
           </div>

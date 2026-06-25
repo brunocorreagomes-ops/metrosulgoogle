@@ -755,19 +755,27 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="pt-6 flex flex-wrap items-center gap-4">
-                  <a 
-                    href="https://open.spotify.com/intl-pt/artist/4i7BYCbelBwv59mLCJ0pgk"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white text-black hover:bg-neutral-200 flex items-center gap-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <span>LISTEN ON SPOTIFY</span>
-                    <ExternalLink size={11} />
-                  </a>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
-                    *EXCLUSIVE IN-PORTAL TRANSMISSION IN PROGRESS
-                  </span>
+                <div className="pt-6 flex flex-col gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div 
+                      className="px-8 py-3.5 rounded-full text-xs font-mono tracking-widest font-bold bg-white/5 border border-[#FF8800]/20 text-[#FFAA00] flex items-center gap-2 transition-all duration-300 shadow-[0_0_15px_rgba(255,136,0,0.05)] cursor-default select-none"
+                    >
+                      <span className="inline-block w-2 h-2 rounded-full bg-[#FFAA00] animate-pulse" />
+                      <span>{t.upcomingCta}</span>
+                    </div>
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
+                      * PORTAL TRANSMISSION SIGNALS INBOUND
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-1 font-mono text-[10px] text-neutral-400 border-l border-white/10 pl-4 py-1">
+                    <p className="text-neutral-300 tracking-wide">
+                      {t.upcomingDate}
+                    </p>
+                    <p className="text-neutral-500 tracking-wider">
+                      * {t.upcomingPreSaveNotice}
+                    </p>
+                  </div>
                 </div>
               </div>
 
