@@ -703,7 +703,7 @@ export default function ArchitectOfOverflowPage() {
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[340vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[260vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10">
@@ -768,10 +768,10 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 05: About the Release */}
-      <section className="py-20 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
+      <section className="py-16 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
         
         {/* Visual signal path thread continuation at the top of Section 05 to close the vertical gap */}
-        <div className="w-full flex flex-col items-center -mt-20 mb-12">
+        <div className="w-full flex flex-col items-center -mt-16 mb-8">
           <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
           <motion.div 
             animate={{ scale: [0.95, 1.15, 0.95], opacity: [0.4, 0.8, 0.4] }}
@@ -828,7 +828,7 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 06: Release Preview (Spotify Embed after release date) */}
-      <section className="py-24 w-full bg-black border-t border-white/[0.02] flex flex-col items-center justify-center z-10 relative">
+      <section className="py-16 w-full bg-black border-t border-white/[0.02] flex flex-col items-center justify-center z-10 relative">
         <div className="max-w-3xl w-full mx-auto px-6 text-center space-y-10">
           <ScrollReveal>
             <div className="space-y-2">
@@ -901,7 +901,7 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 07: Final CTA */}
-      <section className="py-32 w-full bg-gradient-to-b from-black to-[#050508] border-t border-white/[0.02] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden z-10">
+      <section className="py-20 w-full bg-gradient-to-b from-black to-[#050508] border-t border-white/[0.02] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden z-10">
         
         {/* Symmetrical glowing backdrop */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#FFAA00]/5 to-transparent blur-[120px] pointer-events-none" />
