@@ -31,6 +31,7 @@ import SocialLinks from "./components/SocialLinks";
 import ArchitectCover from "./components/ArchitectCover";
 import { SignalLanguage } from "./components/SignalLanguage";
 import { translations, Language } from "./locales";
+import ArchitectOfOverflowPage from "./components/ArchitectOfOverflowPage";
 
 export default function App() {
   // Set default initial active album to first album ("Beyond Gravity")
@@ -41,6 +42,29 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [isBooting, setIsBooting] = useState<boolean>(true);
+  
+  // Custom router state to handle /architect-of-overflow standalone experience
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    return window.location.pathname + window.location.hash + window.location.search;
+  });
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname + window.location.hash + window.location.search);
+    };
+    
+    window.addEventListener("popstate", handleLocationChange);
+    window.addEventListener("hashchange", handleLocationChange);
+    
+    // Polling is ultra-safe for direct URL changes or single-page environment clicks
+    const interval = setInterval(handleLocationChange, 150);
+
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+      window.removeEventListener("hashchange", handleLocationChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Set up language selection with auto-detection on mount
   const [lang, setLang] = useState<Language>(() => {
@@ -240,6 +264,19 @@ export default function App() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  const isArchitectPage = 
+    currentPath.includes("/architect-of-overflow") || 
+    window.location.pathname.endsWith("/architect-of-overflow") || 
+    window.location.pathname.endsWith("/architect-of-overflow/") || 
+    window.location.hash.includes("architect-of-overflow") || 
+    window.location.search.includes("architect-of-overflow") ||
+    window.location.search.includes("page=architect-of-overflow") ||
+    window.location.search.includes("route=architect-of-overflow");
+
+  if (isArchitectPage) {
+    return <ArchitectOfOverflowPage />;
+  }
 
   return (
     <div className="relative min-h-screen bg-[#030304] overflow-hidden text-[#e2e2e9] selection:bg-neon-blue/30 selection:text-white pb-16">
@@ -757,14 +794,19 @@ export default function App() {
 
                 <div className="pt-6 flex flex-col gap-4">
                   <div className="flex flex-wrap items-center gap-4">
-                    <div 
-                      className="px-8 py-3.5 rounded-full text-xs font-mono tracking-widest font-bold bg-white/5 border border-[#FF8800]/20 text-[#FFAA00] flex items-center gap-2 transition-all duration-300 shadow-[0_0_15px_rgba(255,136,0,0.05)] cursor-default select-none"
+                    <a 
+                      href="#/architect-of-overflow"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.hash = "/architect-of-overflow";
+                      }}
+                      className="px-8 py-3.5 rounded-full text-xs font-mono tracking-widest font-bold bg-gradient-to-r from-[#FFAA00]/15 to-[#FF5500]/15 hover:from-[#FFAA00]/30 hover:to-[#FF5500]/30 border border-[#FF8800]/40 text-[#FFAA00] flex items-center gap-2 transition-all duration-300 shadow-[0_0_20px_rgba(255,136,0,0.1)] hover:shadow-[0_0_30px_rgba(255,136,0,0.25)] hover:-translate-y-0.5 cursor-pointer select-none"
                     >
                       <span className="inline-block w-2 h-2 rounded-full bg-[#FFAA00] animate-pulse" />
                       <span>{t.upcomingCta}</span>
-                    </div>
+                    </a>
                     <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-500">
-                      * PORTAL TRANSMISSION SIGNALS INBOUND
+                      * PORTAL TRANSMISSION SIGNALS ACTIVE - CLICK TO ENTER
                     </span>
                   </div>
                   
