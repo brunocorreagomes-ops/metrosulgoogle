@@ -125,6 +125,8 @@ export interface TranslationSchema {
   presetVelvetDesc: string;
   presetTransitTitle: string;
   presetTransitDesc: string;
+  presetBlueMondayTitle: string;
+  presetBlueMondayDesc: string;
 
   synthTerminalLabel: string;
   synthMainTitle: string;
@@ -284,6 +286,8 @@ export const translations: Record<Language, TranslationSchema> = {
     presetVelvetDesc: "Seductive late-night house. Deep syncopated tech-grooves and warm analog warmth oscillations.",
     presetTransitTitle: "Transit Velocity",
     presetTransitDesc: "Rapid mechanical network acceleration. Extremely fast clock rate triggers and high resonance accents.",
+    presetBlueMondayTitle: "Blue Monday (New Order)",
+    presetBlueMondayDesc: "Legendary 80s synth bass arpeggio. Uses deep sub gravity jumps and resonant synth sweeps in a driving octave groove.",
 
     synthTerminalLabel: "VOLTAGE TERMINAL 0.8B",
     synthMainTitle: "Metro Sul Interactive Synth",
@@ -438,6 +442,8 @@ export const translations: Record<Language, TranslationSchema> = {
     presetVelvetDesc: "House sedutor de fim de noite. Tech-grooves profundos e sincopados com oscilações quentes analógicas.",
     presetTransitTitle: "Velocidade de Trânsito",
     presetTransitDesc: "Aceleração mecânica rápida de rede. Triggers de clock extremamente rápidos e acentos de alta ressonância.",
+    presetBlueMondayTitle: "Blue Monday (New Order)",
+    presetBlueMondayDesc: "Arpejo lendário de synth bass dos anos 80. Saltos de sub-graves profundos e dentes de serra ressonantes com oitavas pulsantes.",
 
     synthTerminalLabel: "TERMINAL DE VOLTAGEM 0.8B",
     synthMainTitle: "Sintetizador Interativo Metro Sul",
@@ -592,6 +598,8 @@ export const translations: Record<Language, TranslationSchema> = {
     presetVelvetDesc: "House seductor de fin de noche. Tech-grooves profundos y sincopados con oscilaciones cálidas analógicas.",
     presetTransitTitle: "Velocidad de Tránsito",
     presetTransitDesc: "Acelera mecánica rápida de red. Disparadores de reloj extremadamente rápidos y acentos de alta resonancia.",
+    presetBlueMondayTitle: "Blue Monday (New Order)",
+    presetBlueMondayDesc: "Arpegio legendario de synth bass de los 80. Saltos de subgraves profundos y dientes de sierra resonantes con octavas pulsantes.",
 
     synthTerminalLabel: "TERMINAL DE VOLTAJE 0.8B",
     synthMainTitle: "Sintetizador Interactivo Metro Sul",

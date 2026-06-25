@@ -155,6 +155,19 @@ const SYNTH_PRESETS: SynthPreset[] = [
       [false, true, false, true, false, true, false, true],
       [true, false, false, true, true, false, false, true]
     ]
+  },
+  {
+    name: "Blue Monday",
+    desc: "Legendary 80s synth bass arpeggio. Uses deep sub gravity jumps and resonant synth sweeps in a driving octave groove.",
+    params: { cutoff: 1600, resonance: 12, feedback: 0.3, lfoRate: 5.0 },
+    grid: [
+      [false, false, false, false, false, false, false, false],
+      [false, false, false, true, false, false, false, true],
+      [false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false],
+      [true, true, true, false, true, true, true, false]
+    ]
   }
 ];
 
@@ -189,6 +202,7 @@ const getPresetName = (idx: number, lang: Language) => {
     case 2: return translations[lang].presetKairosTitle;
     case 3: return translations[lang].presetVelvetTitle;
     case 4: return translations[lang].presetTransitTitle;
+    case 5: return translations[lang].presetBlueMondayTitle;
     default: return "";
   }
 };
@@ -200,6 +214,7 @@ const getPresetDesc = (idx: number, lang: Language) => {
     case 2: return translations[lang].presetKairosDesc;
     case 3: return translations[lang].presetVelvetDesc;
     case 4: return translations[lang].presetTransitDesc;
+    case 5: return translations[lang].presetBlueMondayDesc;
     default: return "";
   }
 };
@@ -218,7 +233,7 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
   const [delayFeedback, setDelayFeedback] = useState<number>(0.35); // 0 to 0.9
   const [lfoRate, setLfoRate] = useState<number>(3); // 0.1 to 15 Hz
   const [lfoDepth, setLfoDepth] = useState<number>(400); // 0 to 1000 Hz
-  const [activeTab, setActiveTab] = useState<"pads" | "matrix">("pads");
+  const [activeTab, setActiveTab] = useState<"pads" | "matrix">("matrix");
   
   // Matrix sequencer state
   const [sequencerOn, setSequencerOn] = useState<boolean>(false);
@@ -560,51 +575,57 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
                 </p>
                 
                 {/* Advanced physical signal presets dock */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.01] p-4 rounded-2xl border border-white/[0.04]">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0a0a0d] p-4 rounded-2xl border border-white/[0.08] shadow-inner">
                   <div>
-                    <span className="block font-mono text-[9px] text-neon-blue uppercase tracking-widest mb-2 font-semibold">{translations[lang].synthOverridesLabel}</span>
+                    <span className="block font-mono text-[9px] text-[#FFAA00] uppercase tracking-widest mb-2 font-bold">// {translations[lang].synthOverridesLabel}</span>
                     <div className="flex flex-wrap gap-1.5">
                       {SYNTH_PRESETS.map((pst, idx) => (
-                        <button
+                        <motion.button
                           key={idx}
+                          whileHover={{ scale: 1.03, y: -1 }}
+                          whileTap={{ scale: 0.97 }}
                           onClick={() => applyPreset(idx)}
-                          className={`px-3 py-1.5 rounded-lg text-[10px] font-mono tracking-tight transition-all duration-300 cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-mono tracking-tight transition-all duration-200 cursor-pointer ${
                             selectedPreset === idx
-                              ? "bg-neon-sunset/20 text-neon-sunset border border-neon-sunset/40 font-bold shadow-lg shadow-neon-sunset/10"
-                              : "bg-white/[0.02] border border-white/5 text-neutral-400 hover:text-white hover:border-white/15"
+                              ? "bg-gradient-to-r from-[#FF6A00] to-[#FF3C00] text-white border-transparent font-bold shadow-[0_0_15px_rgba(255,100,0,0.35)]"
+                              : "bg-[#0f0f12] border border-white/10 text-neutral-300 hover:text-white hover:bg-[#1a1a24] hover:border-white/20"
                           }`}
                           title={getPresetDesc(idx, lang)}
                         >
                           {getPresetName(idx, lang)}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 self-end md:self-auto shrink-0">
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => setSequencerOn(!sequencerOn)}
-                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
+                      className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all duration-300 cursor-pointer ${
                         sequencerOn
-                          ? "bg-red-500/20 border border-red-500/30 text-red-500 shadow-md shadow-red-950/20"
-                          : "bg-neon-sunset/15 border border-neon-sunset/30 text-neon-sunset hover:bg-neon-sunset/25"
+                          ? "bg-red-500 text-white hover:bg-red-600 border border-red-400/20 shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                          : "bg-[#0c2e1b] border border-emerald-500/40 text-[#10B981] hover:bg-[#113f26] hover:text-[#34D399] shadow-[0_0_15px_rgba(16,185,129,0.15)]"
                       }`}
                     >
-                      {sequencerOn ? <Square size={11} /> : <Play size={11} />}
+                      {sequencerOn ? <Square size={11} className="fill-current" /> : <Play size={11} className="fill-current" />}
                       {sequencerOn ? translations[lang].synthStopBtn : translations[lang].synthStartBtn}
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={clearGrid}
-                      className="text-xs text-neutral-400 hover:text-neon-sunset border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                      className="text-xs text-neutral-300 hover:text-white border border-white/15 bg-neutral-900 hover:bg-neutral-800 px-3.5 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
                     >
                       {translations[lang].synthClearBtn}
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
 
               {selectedPreset !== null && (
-                <div className="mb-4 p-3 rounded-xl bg-white/[0.01] border border-white/[0.03] text-[11px] text-neutral-400 leading-relaxed font-sans flex items-start gap-2.5 animate-fadeIn">
+                <div className="mb-4 p-3 rounded-xl bg-white/[0.01] border border-white/[0.04] text-[11px] text-neutral-400 leading-relaxed font-sans flex items-start gap-2.5 animate-fadeIn">
                   <Sparkles size={12} className="text-neon-sunset shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-white font-mono mr-1">{translations[lang].synthActivePulseLabel}</span>
@@ -614,36 +635,42 @@ export default function InteractiveSynth({ isMuted = false, lang }: InteractiveS
               )}
 
               {/* Grid map */}
-              <div className="flex flex-col space-y-1.5 bg-black/40 p-4 rounded-2xl border border-white/5">
+              <div className="flex flex-col space-y-2 bg-[#050507] p-5 rounded-2xl border border-white/[0.08] shadow-2xl">
                 {CONSTANT_NODES.map((rowNode, rIndex) => (
                   <div key={rowNode.id} className="grid grid-cols-12 items-center gap-2">
                     {/* Row Label */}
-                    <span className="col-span-3 text-[10px] font-mono text-neutral-400 truncate tracking-tight pr-1" title={getNodeName(rowNode.id, lang)}>
+                    <span className="col-span-3 text-[10px] font-mono text-neutral-300 font-semibold truncate tracking-tight pr-1" title={getNodeName(rowNode.id, lang)}>
                       {getNodeName(rowNode.id, lang)}
                     </span>
                     
                     {/* Col step triggers */}
-                    <div className="col-span-9 grid grid-cols-8 gap-1">
+                    <div className="col-span-9 grid grid-cols-8 gap-1.5">
                       {Array(8).fill(null).map((_, cIndex) => {
                         const cellOn = matrixGrid[rIndex][cIndex];
                         const stepActive = sequencerOn && currentStep === cIndex;
 
                         return (
-                          <button
+                          <motion.button
                             key={cIndex}
+                            whileHover={{ scale: 1.06, y: -1 }}
+                            whileTap={{ scale: 0.94 }}
                             onClick={() => toggleMatrixCell(rIndex, cIndex)}
-                            className={`h-[40px] sm:h-[44px] rounded-lg border transition-all relative ${
+                            className={`h-[42px] sm:h-[46px] rounded-lg border transition-all relative cursor-pointer ${
                               cellOn
-                                ? "bg-neon-sunset/35 border-neon-sunset/60 shadow-lg shadow-neon-sunset/15"
-                                : "bg-white/[0.01] border-white/5 hover:border-white/15"
+                                ? "bg-gradient-to-br from-[#FF8800] via-[#FF5500] to-[#E60000] border-t border-[#FFBB66] border-l border-[#FF9944] shadow-[0_4px_12px_rgba(255,60,0,0.4)]"
+                                : "bg-[#09090c] border-white/10 hover:border-white/25 hover:bg-[#121217]"
                             } ${
-                              stepActive ? "ring-1 ring-white/60 ring-offset-2 ring-offset-black" : ""
+                              stepActive 
+                                ? "ring-2 ring-white ring-offset-2 ring-offset-[#050507] scale-[1.04] z-10" 
+                                : ""
                             }`}
                           >
                             {stepActive && (
-                              <div className="absolute inset-0 bg-white/10 rounded-lg animate-pulse" />
+                              <div className={`absolute inset-0 rounded-lg animate-pulse ${
+                                cellOn ? "bg-white shadow-[0_0_12px_#fff]" : "bg-white/15"
+                              }`} />
                             )}
-                          </button>
+                          </motion.button>
                         );
                       })}
                     </div>
