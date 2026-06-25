@@ -799,6 +799,7 @@ export default function App() {
                       onClick={(e) => {
                         e.preventDefault();
                         window.location.hash = "/architect-of-overflow";
+                        window.scrollTo(0, 0);
                       }}
                       className="px-8 py-3.5 rounded-full text-xs font-mono tracking-widest font-bold bg-gradient-to-r from-[#FFAA00]/15 to-[#FF5500]/15 hover:from-[#FFAA00]/30 hover:to-[#FF5500]/30 border border-[#FF8800]/40 text-[#FFAA00] flex items-center gap-2 transition-all duration-300 shadow-[0_0_20px_rgba(255,136,0,0.1)] hover:shadow-[0_0_30px_rgba(255,136,0,0.25)] hover:-translate-y-0.5 cursor-pointer select-none"
                     >

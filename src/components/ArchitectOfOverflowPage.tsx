@@ -81,6 +81,33 @@ export default function ArchitectOfOverflowPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const transmissionContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Force reset scroll to top on component load/mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const scrollTimeout = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 40);
+
+    if ("scrollRestoration" in window.history) {
+      try {
+        window.history.scrollRestoration = "manual";
+      } catch (e) {
+        console.warn("Could not set scrollRestoration to manual:", e);
+      }
+    }
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      if ("scrollRestoration" in window.history) {
+        try {
+          window.history.scrollRestoration = "auto";
+        } catch (e) {
+          console.warn("Could not set scrollRestoration to auto:", e);
+        }
+      }
+    };
+  }, []);
+
   useEffect(() => {
     // Scroll progress handler for immersive text transitions
     const handleScroll = () => {
@@ -676,7 +703,7 @@ export default function ArchitectOfOverflowPage() {
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[420vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[340vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10">
@@ -707,17 +734,55 @@ export default function ArchitectOfOverflowPage() {
           </div>
 
           {/* Elegant HUD tracking meter */}
-          <div className="absolute bottom-24 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
+          <div className="absolute bottom-36 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] transition-all duration-100 ease-out" 
               style={{ width: `${scrollProgress * 100}%` }}
             />
           </div>
+
+          {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll */}
+          <motion.div 
+            style={{ 
+              opacity: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 6.5) : 0,
+              y: scrollProgress > 0.80 ? 0 : 25
+            }}
+            transition={{ ease: "easeOut" }}
+            className="absolute bottom-8 flex flex-col items-center gap-3 z-20 pointer-events-none"
+          >
+            <span className="font-mono text-[8px] tracking-[0.45em] text-[#FFAA00] uppercase font-bold pl-[0.45em] animate-pulse">
+              CONTINUE TRANSMISSION
+            </span>
+            <div className="relative flex flex-col items-center h-16 w-8">
+              {/* Vertical thin frequency line using the Metro Sul palette */}
+              <div className="w-[1px] h-16 bg-gradient-to-b from-[#FFAA00] via-[#009DFF] to-transparent" />
+              {/* Subtle pulsing dot moving downward along the line */}
+              <motion.div 
+                animate={{ y: [0, 52, 0] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#FFAA00] to-[#009DFF] shadow-[0_0_10px_#009DFF] z-10"
+              />
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* SECTION 05: About the Release */}
-      <section className="py-32 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
+      <section className="py-20 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
+        
+        {/* Visual signal path thread continuation at the top of Section 05 to close the vertical gap */}
+        <div className="w-full flex flex-col items-center -mt-20 mb-12">
+          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
+          <motion.div 
+            animate={{ scale: [0.95, 1.15, 0.95], opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
+            className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] shadow-[0_0_8px_#FFAA00]"
+          />
+          <span className="font-mono text-[7px] tracking-[0.4em] text-neutral-500 uppercase mt-3">
+            RECEIVER ACTIVE // DECODED
+          </span>
+        </div>
+
         <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10">
           
           <ScrollReveal>
