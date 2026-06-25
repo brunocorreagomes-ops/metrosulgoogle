@@ -28,6 +28,7 @@ import SpotifyEmbeds, { ALBUMS } from "./components/SpotifyEmbeds";
 import InteractiveSynth from "./components/InteractiveSynth";
 import AboutProject from "./components/AboutProject";
 import SocialLinks from "./components/SocialLinks";
+import ArchitectCover from "./components/ArchitectCover";
 import { SignalLanguage } from "./components/SignalLanguage";
 import { translations, Language } from "./locales";
 
@@ -772,42 +773,7 @@ export default function App() {
 
               {/* Visual artwork column */}
               <div className="col-span-1 lg:col-span-5 flex justify-center mt-6 lg:mt-0">
-                <div className="relative w-72 h-72 md:w-[340px] md:h-[340px] select-none group/art flex items-center justify-center">
-                  
-                  {/* Floating abstract geometrical overflow diagram */}
-                  <div className="absolute inset-0 rounded-3xl border border-white/5 bg-neutral-950/45 p-6 flex flex-col justify-between overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-[0_10px_40px_rgba(0,157,255,0.15)] hover:border-white/10">
-                    {/* Golden circle in center pulsing to represent abundance/alignment */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-36 h-36 rounded-full border border-[#FF8800]/15 animate-ping" style={{ animationDuration: "5s" }} />
-                      <div className="w-28 h-28 rounded-full border border-dashed border-[#009DFF]/20 animate-spin" style={{ animationDuration: "12s" }} />
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FFAA00]/25 to-[#009DFF]/25 filter blur-lg animate-pulse" />
-                    </div>
-                    
-                    {/* Corner readouts */}
-                    <div className="flex justify-between items-start font-mono text-[9px] text-neutral-500 tracking-wider">
-                      <span>[ OVERFLOW_M≡TR_SYS ]</span>
-                      <span>MTS-003</span>
-                    </div>
-
-                    <div className="w-full flex flex-col items-center justify-center py-12 text-center space-y-2 z-10 scale-105">
-                      <span className="font-display text-lg font-bold text-white tracking-[0.4em] uppercase leading-none">
-                        ARCHITECT
-                      </span>
-                      <span className="font-mono text-[9px] text-neutral-400 uppercase tracking-[0.5em] pl-1">
-                        OF OVERFLOW
-                      </span>
-                      <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#009DFF]/40 to-transparent my-3" />
-                      <span className="font-mono text-[7px] text-[#FFAA00] uppercase tracking-[0.3em] font-medium leading-none">
-                        FREQUENCY 528Hz // HIGHER STATE
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-end font-mono text-[9px] text-neutral-500 tracking-wider">
-                      <span>PT: NOVO CICLO</span>
-                      <span>EN: NEW CYCLE</span>
-                    </div>
-                  </div>
-                </div>
+                <ArchitectCover />
               </div>
 
             </div>
