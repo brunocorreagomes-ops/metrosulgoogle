@@ -99,6 +99,135 @@ export default function App() {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
+  // Web Audio API helper for premium interface sound effects
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const lastHoverSoundTimeRef = useRef<number>(0);
+
+  // Safely get or create AudioContext on user interaction
+  const getAudioContext = (): AudioContext | null => {
+    if (typeof window === "undefined") return null;
+    if (!audioContextRef.current) {
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContextClass) {
+          audioContextRef.current = new AudioContextClass();
+        }
+      } catch (e) {
+        console.warn("Web Audio API is not supported in this browser:", e);
+      }
+    }
+    return audioContextRef.current;
+  };
+
+  // Check if device is touch-based/mobile to disable hover sounds
+  const isTouchDevice = (): boolean => {
+    if (typeof window === "undefined") return true;
+    return (
+      window.matchMedia("(pointer: coarse)").matches || 
+      "ontouchstart" in window || 
+      /Mobi|Android|iPhone|iPad|Macintosh/i.test(navigator.userAgent)
+    );
+  };
+
+  // Play a very soft digital tick / signal click (extremely subtle, low volume)
+  const playHoverSound = () => {
+    if (isMuted) return;
+    if (isTouchDevice()) return;
+
+    const now = Date.now();
+    // Debounce to prevent sound spam (180ms delay minimum)
+    if (now - lastHoverSoundTimeRef.current < 180) return;
+    lastHoverSoundTimeRef.current = now;
+
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      if (ctx.state === "suspended") {
+        return;
+      }
+
+      // Synthesize a beautiful, high-quality digital signal "tick"
+      // Frequency: 1800Hz decaying rapidly to 1100Hz in 15ms. Volume: 0.005 (extremely soft and premium)
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(1800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.015);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(4000, ctx.currentTime);
+
+      gainNode.gain.setValueAtTime(0.005, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.018);
+
+      osc.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.02);
+    } catch (e) {
+      // Fail silently to ensure a robust user experience
+    }
+  };
+
+  // Play a slightly deeper soft confirmation tone (very subtle)
+  const playClickSound = () => {
+    if (isMuted) return;
+
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      
+      // If suspended, resume because this is an explicit user click interaction
+      if (ctx.state === "suspended") {
+        ctx.resume().catch(() => {});
+      }
+
+      // Synthesize a beautiful, deeper soft confirmation tone
+      // Frequency: 580Hz decaying to 280Hz in 70ms. Volume: 0.018
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(580, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.07);
+
+      gainNode.gain.setValueAtTime(0.018, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.09);
+    } catch (e) {
+      // Fail silently
+    }
+  };
+
+  // Setup interaction listeners to unlock Web Audio API Context
+  useEffect(() => {
+    const handleInteraction = () => {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === "suspended") {
+        ctx.resume().catch(() => {});
+      }
+    };
+    
+    window.addEventListener("click", handleInteraction, { once: true });
+    window.addEventListener("keydown", handleInteraction, { once: true });
+    window.addEventListener("touchstart", handleInteraction, { once: true });
+    
+    return () => {
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("keydown", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+    };
+  }, []);
+
   const headerRef = useRef<HTMLElement>(null);
   const audioOnRef = useRef<HTMLButtonElement>(null);
   const pulseDotRef = useRef<HTMLSpanElement>(null);
@@ -412,25 +541,53 @@ export default function App() {
 
           {/* Minimal transmission anchors */}
           <nav className="hidden md:flex items-center gap-9 text-[10px] font-mono tracking-[0.22em] text-neutral-400 font-medium">
-            <a href="#music" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
+            <a 
+              href="#music" 
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+            >
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navReleases}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
+              {/* Subtle electric blue glowing signal line */}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
             </a>
-            <a href="#synthesizer" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
+            <a 
+              href="#synthesizer" 
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+            >
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navSynth}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
+              {/* Subtle electric blue glowing signal line */}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
             </a>
-            <a href="#about" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
+            <a 
+              href="#about" 
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+            >
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navManifesto}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
+              {/* Subtle electric blue glowing signal line */}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
             </a>
-            <a href="#contact" className="hover:text-white transition-all uppercase relative group py-1 whitespace-nowrap">
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 mr-1 opacity-0 group-hover:opacity-100">[</span>
+            <a 
+              href="#contact" 
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+            >
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
               {t.navInquiries}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-300 ml-1 opacity-0 group-hover:opacity-100">]</span>
+              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
+              {/* Subtle electric blue glowing signal line */}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
             </a>
           </nav>
 
@@ -540,28 +697,28 @@ export default function App() {
           >
             <a 
               href="#music" 
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navReleases}
             </a>
             <a 
               href="#synthesizer" 
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navSynth}
             </a>
             <a 
               href="#about" 
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
               className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
             >
               {t.navManifesto}
             </a>
             <a 
               href="#contact" 
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
               className="hover:text-white transition-colors uppercase py-2 block text-left border-b border-white/[0.02] whitespace-nowrap"
             >
               {t.navInquiries}

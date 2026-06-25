@@ -556,8 +556,11 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 02: Live Countdown */}
-      <section className="relative py-32 w-full border-t border-white/[0.03] bg-gradient-to-b from-black to-[#050508] flex flex-col items-center justify-center overflow-hidden z-10">
+      <section className="relative py-20 md:py-28 w-full border-t border-white/[0.03] bg-gradient-to-b from-black to-[#050508] flex flex-col items-center justify-center overflow-hidden z-10">
         
+        {/* Soft blue glow backdrop behind countdown */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[440px] md:h-[440px] mx-auto rounded-full bg-[#009DFF]/[0.05] blur-[90px] md:blur-[130px] pointer-events-none" />
+
         {/* Release State Debug Switcher */}
         <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
           <button
@@ -631,7 +634,12 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 03: Artwork Gallery Component */}
-      <section className="py-24 w-full bg-gradient-to-b from-[#050508] to-black flex flex-col items-center justify-center z-10 relative">
+      <section className="py-16 md:py-20 w-full bg-gradient-to-b from-[#050508] to-black flex flex-col items-center justify-center z-10 relative">
+        
+        {/* Blue/orange balanced glow backdrop behind artwork */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[200px] h-[200px] md:w-[320px] md:h-[320px] rounded-full bg-[#009DFF]/[0.04] blur-[80px] md:blur-[110px] pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[200px] h-[200px] md:w-[320px] md:h-[320px] rounded-full bg-[#FFAA00]/[0.03] blur-[80px] md:blur-[110px] pointer-events-none" />
+
         <div className="max-w-xl mx-auto px-6 text-center space-y-10">
           <ScrollReveal>
             <div className="space-y-2">
@@ -703,11 +711,14 @@ export default function ArchitectOfOverflowPage() {
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[260vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[170vh] md:h-[220vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10">
           
+          {/* Amber signal glow backdrop behind transmission/code */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[460px] md:h-[460px] mx-auto rounded-full bg-[#FFAA00]/[0.045] blur-[100px] md:blur-[140px] pointer-events-none" />
+
           {/* Subtle horizontal signal waves */}
           <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFAA00]/12 to-transparent top-[45%] pointer-events-none" />
           <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#009DFF]/8 to-transparent top-[55%] pointer-events-none" />
@@ -748,12 +759,23 @@ export default function ArchitectOfOverflowPage() {
               y: scrollProgress > 0.80 ? 0 : 25
             }}
             transition={{ ease: "easeOut" }}
-            className="absolute bottom-8 flex flex-col items-center gap-3 z-20 pointer-events-none"
+            className="absolute bottom-8 flex flex-col items-center gap-3.5 z-20 pointer-events-auto"
           >
-            <span className="font-mono text-[8px] tracking-[0.45em] text-[#FFAA00] uppercase font-bold pl-[0.45em] animate-pulse">
-              CONTINUE TRANSMISSION
-            </span>
-            <div className="relative flex flex-col items-center h-16 w-8">
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                triggerSound("confirm");
+                const target = document.getElementById("editorial-section");
+                if (target) {
+                  target.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              onMouseEnter={() => triggerSound("tick")}
+              className="font-mono text-[8.5px] tracking-[0.38em] text-[#FFAA00] hover:text-[#009DFF] uppercase font-bold pl-[0.38em] transition-all duration-300 bg-black/60 hover:bg-black/90 border border-[#FFAA00]/25 hover:border-[#009DFF]/50 px-4 py-2 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2"
+            >
+              CONTINUE TO RELEASE NOTES
+            </button>
+            <div className="relative flex flex-col items-center h-16 w-8 pointer-events-none">
               {/* Vertical thin frequency line using the Metro Sul palette */}
               <div className="w-[1px] h-16 bg-gradient-to-b from-[#FFAA00] via-[#009DFF] to-transparent" />
               {/* Subtle pulsing dot moving downward along the line */}
@@ -768,19 +790,26 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 05: About the Release */}
-      <section className="py-16 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
+      <section 
+        id="editorial-section" 
+        className="py-16 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10"
+      >
+        {/* Calmer white/blue glow backdrop in editorial/about section */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full bg-white/[0.02] blur-[90px] md:blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/3 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-[#009DFF]/[0.03] blur-[90px] md:blur-[120px] pointer-events-none" />
         
-        {/* Visual signal path thread continuation at the top of Section 05 to close the vertical gap */}
-        <div className="w-full flex flex-col items-center -mt-16 mb-8">
-          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
+        {/* Visual signal path thread continuation at the top of Section 05: Minimal "Signal Evolution" Connector */}
+        <div className="w-full flex flex-col items-center -mt-16 mb-8 relative z-20">
+          <div className="w-[1px] h-12 md:h-20 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
           <motion.div 
             animate={{ scale: [0.95, 1.15, 0.95], opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 2.2, repeat: Infinity }}
             className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] shadow-[0_0_8px_#FFAA00]"
           />
-          <span className="font-mono text-[7px] tracking-[0.4em] text-neutral-500 uppercase mt-3">
-            RECEIVER ACTIVE // DECODED
+          <span className="font-mono text-[8px] tracking-[0.45em] text-[#FFAA00] uppercase font-bold mt-3 pl-[0.45em]">
+            SIGNAL EVOLUTION
           </span>
+          <div className="w-[1px] h-8 md:h-12 bg-gradient-to-b from-[#FFAA00]/40 to-transparent mt-3" />
         </div>
 
         <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10">
