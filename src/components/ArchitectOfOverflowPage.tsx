@@ -17,8 +17,50 @@ import {
   Smartphone
 } from "lucide-react";
 
-// The official release date config
+// The official release date and link configs
 const RELEASE_DATE = "2026-07-31";
+const PRESAVE_URL = "https://ffm.to/6rdp19";
+
+// Premium Apple-like ScrollReveal transition wrapper
+function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 35, filter: "blur(12px)", scale: 0.99 }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Staggered cinematic receiver characters reveal
+function StaggeredPhrase({ phrase, isActive }: { phrase: string; isActive: boolean }) {
+  const letters = phrase.split("");
+  return (
+    <div className="flex flex-wrap justify-center items-center gap-[0.01em] md:gap-[0.03em] select-none">
+      {letters.map((char, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, filter: "blur(10px)", y: 5 }}
+          animate={isActive 
+            ? { opacity: 1, filter: "blur(0px)", y: 0 } 
+            : { opacity: 0.1, filter: "blur(5px)", y: -3 }
+          }
+          transition={{
+            duration: 0.9,
+            delay: isActive ? i * 0.035 : 0,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+          className={char === " " ? "w-3 md:w-5" : "inline-block"}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </div>
+  );
+}
 
 export default function ArchitectOfOverflowPage() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -85,6 +127,60 @@ export default function ArchitectOfOverflowPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // High-fidelity synthesized Web Audio triggers
+  const triggerSound = (type: "click" | "tick" | "confirm") => {
+    if (!soundEnabled || !audioCtxRef.current) return;
+    const ctx = audioCtxRef.current;
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+    try {
+      if (type === "click") {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(1000, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.025);
+        gain.gain.setValueAtTime(0.006, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.025);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.03);
+      } else if (type === "tick") {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(160, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.012, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+      } else if (type === "confirm") {
+        const now = ctx.currentTime;
+        // Harmonic deep signal resonance chord
+        [220, 329.63, 440, 659.25].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.015, now + idx * 0.04 + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(now + 1.5);
+        });
+      }
+    } catch (e) {
+      console.warn("Error synthesizing interaction sound:", e);
+    }
+  };
+
   // Ambient sound synth toggle
   const toggleSound = () => {
     if (!soundEnabled) {
@@ -102,10 +198,10 @@ export default function ArchitectOfOverflowPage() {
         osc.frequency.setValueAtTime(55, ctx.currentTime); // A1 note
         
         filter.type = "lowpass";
-        filter.frequency.setValueAtTime(150, ctx.currentTime);
-        filter.Q.setValueAtTime(5, ctx.currentTime);
+        filter.frequency.setValueAtTime(140, ctx.currentTime);
+        filter.Q.setValueAtTime(4, ctx.currentTime);
 
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
 
         osc.connect(filter);
         filter.connect(gain);
@@ -123,13 +219,18 @@ export default function ArchitectOfOverflowPage() {
           if (filterRef.current && ctx) {
             const t = ctx.currentTime;
             filterRef.current.frequency.exponentialRampToValueAtTime(
-              120 + Math.sin(t * 0.5) * 40,
+              110 + Math.sin(t * 0.4) * 30,
               t + 1
             );
           }
         }, 1000);
 
         (window as any).__modInterval = modInterval;
+
+        // Trigger safe initial feedback tone
+        setTimeout(() => {
+          triggerSound("confirm");
+        }, 100);
 
       } catch (err) {
         console.warn("Audio Context init failed:", err);
@@ -173,29 +274,39 @@ export default function ArchitectOfOverflowPage() {
     "CODE ACCEPTED"
   ];
 
+  // Map progress to active indices
+  const activeIndex = Math.max(0, Math.min(transmissionPhrases.length - 1, Math.floor(scrollProgress * transmissionPhrases.length)));
+  const prevActiveIndexRef = useRef(-1);
+
+  // Sound clicker on scroll trigger transition
+  useEffect(() => {
+    if (activeIndex !== prevActiveIndexRef.current) {
+      if (prevActiveIndexRef.current !== -1) {
+        triggerSound("tick");
+      }
+      prevActiveIndexRef.current = activeIndex;
+    }
+  }, [activeIndex, soundEnabled]);
+
   // Helper to calculate opacity and blur for each phrase based on global scrollProgress of Section 04
   const getPhraseStyle = (index: number) => {
     const totalPhrases = transmissionPhrases.length;
-    // Each phrase has a dedicated active window in scroll progress
     const segmentLength = 1 / totalPhrases;
     const center = (index + 0.5) * segmentLength;
-    
-    // Distance from the center of this phrase's active scroll window
     const distance = Math.abs(scrollProgress - center);
+    const activeRange = segmentLength * 0.8;
     
-    // Smooth interpolations
-    const activeRange = segmentLength * 0.8; // How wide the peak is
     let opacity = 0;
-    let blur = 15;
-    let scale = 0.9;
-    let letterSpacing = "0.2em";
+    let blur = 18;
+    let scale = 0.94;
+    let letterSpacing = "0.25em";
 
     if (distance < activeRange) {
       const factor = 1 - (distance / activeRange); // 1 at center, 0 at edges
-      opacity = Math.pow(factor, 1.8); // elegant ease-in-out curve
-      blur = Math.max(0, 16 * (1 - factor));
-      scale = 0.92 + 0.08 * factor;
-      letterSpacing = `${0.15 + (0.1 * factor)}em`;
+      opacity = Math.pow(factor, 1.6);
+      blur = Math.max(0, 14 * (1 - factor));
+      scale = 0.96 + 0.04 * factor;
+      letterSpacing = `${0.2 + (0.08 * factor)}em`;
     }
 
     return {
@@ -203,18 +314,41 @@ export default function ArchitectOfOverflowPage() {
       filter: `blur(${blur}px)`,
       transform: `scale(${scale})`,
       letterSpacing,
-      transition: "filter 0.15s ease-out, transform 0.15s ease-out"
+      transition: "filter 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
     };
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden selection:bg-[#FFAA00]/30 selection:text-white">
+    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden selection:bg-[#FFAA00]/30 selection:text-white relative">
       
+      {/* 2. Ambient depth texture layers */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden mix-blend-overlay">
+        {/* Subtle base64 visual noise */}
+        <div 
+          className="absolute inset-0 opacity-[0.015]" 
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+          }}
+        />
+        {/* Cinematic vertical scanlines */}
+        <div 
+          className="absolute inset-0 opacity-[0.012]" 
+          style={{
+            backgroundImage: "linear-gradient(rgba(18, 16, 22, 0) 50%, rgba(255, 255, 255, 0.1) 50%)",
+            backgroundSize: "100% 4px"
+          }}
+        />
+      </div>
+
+      {/* Soft cinematic vignette gradient over depth */}
+      <div className="fixed inset-0 pointer-events-none z-[1] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.85)_100%)]" />
+
       {/* Top Floating Mini Header */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-5 md:px-12 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent backdrop-blur-md border-b border-white/[0.03]">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-5 md:px-12 flex items-center justify-between bg-gradient-to-b from-black/85 to-transparent backdrop-blur-md border-b border-white/[0.03]">
         <div className="flex items-center gap-6">
           <a 
             href="/"
+            onMouseEnter={() => triggerSound("click")}
             onClick={(e) => {
               e.preventDefault();
               window.location.hash = "";
@@ -235,7 +369,8 @@ export default function ArchitectOfOverflowPage() {
           {/* Immersive Sound controller */}
           <button
             onClick={toggleSound}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-full border font-mono text-[9px] tracking-wider transition-all duration-300 cursor-pointer ${
+            onMouseEnter={() => triggerSound("click")}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-mono text-[9px] tracking-wider transition-all duration-300 cursor-pointer ${
               soundEnabled
                 ? "bg-[#FFAA00]/10 border-[#FFAA00]/40 text-[#FFAA00]"
                 : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-white/20"
@@ -248,6 +383,7 @@ export default function ArchitectOfOverflowPage() {
           {/* Home Link */}
           <a
             href="/"
+            onMouseEnter={() => triggerSound("click")}
             onClick={(e) => {
               e.preventDefault();
               window.location.hash = "";
@@ -262,20 +398,20 @@ export default function ArchitectOfOverflowPage() {
       </nav>
 
       {/* SECTION 01: Full-Screen Hero */}
-      <section className="relative min-h-screen w-full flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden">
+      <section className="relative min-h-screen w-full flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden z-10">
         
         {/* Subtle background visual elements */}
         <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[#009DFF]/4 to-[#FFAA00]/4 blur-[140px]" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] opacity-25" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-[#009DFF]/4 to-[#FFAA00]/4 blur-[160px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] opacity-15" />
         </div>
 
-        {/* Large Floating Symmetrical Metro Sul Symbol */}
-        <div className="relative z-10 w-full max-w-[320px] md:max-w-[380px] aspect-square flex items-center justify-center select-none group">
+        {/* 1. Large Floating Symmetrical Metro Sul Symbol with extremely subtle breathing motion */}
+        <div className="relative z-10 w-full max-w-[310px] md:max-w-[370px] aspect-square flex items-center justify-center select-none group">
           <motion.div
             animate={{ 
-              y: [0, -12, 0],
-              scale: [1, 1.02, 1]
+              scale: [1, 1.02, 1],
+              opacity: [0.93, 1, 0.93]
             }}
             transition={{ 
               duration: 8, 
@@ -285,42 +421,41 @@ export default function ArchitectOfOverflowPage() {
             className="w-full h-full relative flex items-center justify-center"
           >
             {/* Outer soft breathing halo glow */}
-            <div className="absolute w-[200px] h-[200px] rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] opacity-5 blur-[50px]" />
+            <motion.div 
+              animate={{ opacity: [0.03, 0.07, 0.03] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute w-[220px] h-[220px] rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] blur-[60px]" 
+            />
             
             <svg 
               viewBox="0 0 100 100" 
-              className="w-[85%] h-[85%] drop-shadow-[0_0_40px_rgba(0,157,255,0.1)] group-hover:drop-shadow-[0_0_55px_rgba(255,136,0,0.18)] transition-all duration-1000"
+              className="w-[85%] h-[85%] drop-shadow-[0_0_35px_rgba(0,157,255,0.08)] group-hover:drop-shadow-[0_0_50px_rgba(255,136,0,0.15)] transition-all duration-1000"
             >
               <defs>
                 <linearGradient id="heroBlueArc" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#009DFF" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#37D8FF" stopOpacity="0.4" />
+                  <stop offset="0%" stopColor="#009DFF" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#37D8FF" stopOpacity="0.35" />
                 </linearGradient>
                 <linearGradient id="heroOrangeArc" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FFAA00" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#FF4500" stopOpacity="0.4" />
-                </linearGradient>
-                <linearGradient id="heroFiber" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="#FF4500" stopOpacity="0" />
-                  <stop offset="40%" stopColor="#FF8800" stopOpacity="0.4" />
-                  <stop offset="85%" stopColor="#FFFFFF" stopOpacity="0.95" />
+                  <stop offset="0%" stopColor="#FFAA00" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#FF4500" stopOpacity="0.35" />
                 </linearGradient>
               </defs>
 
               {/* Central bars */}
-              <motion.rect x="43" y="38" width="1.8" height="34" rx="0.9" fill="#FFFFFF" className="opacity-80" animate={{ height: [34, 30, 34], y: [38, 40, 38] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} />
-              <motion.rect x="49" y="26" width="2" height="51" rx="1" fill="#FFAA00" className="opacity-95" animate={{ height: [51, 55, 51], y: [26, 24, 26] }} transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }} />
-              <motion.rect x="55.2" y="38" width="1.8" height="34" rx="0.9" fill="#FFFFFF" className="opacity-80" animate={{ height: [34, 32, 34], y: [38, 39, 38] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.rect x="43" y="38" width="1.8" height="34" rx="0.9" fill="#FFFFFF" className="opacity-80" animate={{ height: [34, 31, 34], y: [38, 39.5, 38] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.rect x="49" y="26" width="2" height="51" rx="1" fill="#FFAA00" className="opacity-95" animate={{ height: [51, 53, 51], y: [26, 25, 26] }} transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.rect x="55.2" y="38" width="1.8" height="34" rx="0.9" fill="#FFFFFF" className="opacity-80" animate={{ height: [34, 32.5, 34], y: [38, 38.75, 38] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }} />
 
               {/* Symmetrical Left blue arc */}
               <motion.path 
                 d="M 37 14 A 39 39 0 0 0 37 86" 
                 fill="none" 
                 stroke="url(#heroBlueArc)" 
-                strokeWidth="2.5" 
+                strokeWidth="2.2" 
                 strokeLinecap="round"
-                animate={{ opacity: [0.75, 0.95, 0.75] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ opacity: [0.75, 0.9, 0.75] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               />
 
               {/* Symmetrical Right orange arc */}
@@ -328,25 +463,25 @@ export default function ArchitectOfOverflowPage() {
                 d="M 63 14 A 39 39 0 0 1 63 86" 
                 fill="none" 
                 stroke="url(#heroOrangeArc)" 
-                strokeWidth="2.5" 
+                strokeWidth="2.2" 
                 strokeLinecap="round"
-                animate={{ opacity: [0.75, 0.95, 0.75] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                animate={{ opacity: [0.75, 0.9, 0.75] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
               />
             </svg>
           </motion.div>
         </div>
 
         {/* Headline, Subheadline and Info */}
-        <div className="relative z-10 space-y-6 max-w-2xl px-6 -mt-4">
+        <div className="relative z-10 space-y-6 max-w-2xl px-6 -mt-3">
           <div className="space-y-3">
-            <span className="font-mono text-[9px] tracking-[0.4em] text-[#009DFF] uppercase font-semibold">
+            <span className="font-mono text-[9px] tracking-[0.4em] text-[#009DFF] uppercase font-semibold block">
               // ORIGINAL SIGNAL PHASE
             </span>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white uppercase leading-none">
+            <h1 className="font-display text-4.5xl sm:text-5.5xl md:text-7xl font-bold tracking-tight text-white uppercase leading-none">
               ARCHITECT OF OVERFLOW
             </h1>
-            <p className="font-mono text-[10px] md:text-xs text-neutral-400 tracking-[0.25em] max-w-lg mx-auto">
+            <p className="font-mono text-[10px] md:text-xs text-neutral-400 tracking-[0.25em] max-w-lg mx-auto leading-relaxed">
               The first transmission of a new Metro Sul chapter.
             </p>
           </div>
@@ -360,20 +495,24 @@ export default function ArchitectOfOverflowPage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <a 
-              href="https://ffm.to/6rdp19"
+              href={PRESAVE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-10 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white text-black hover:bg-neutral-200 flex items-center justify-center gap-2.5 transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 cursor-pointer"
+              onMouseEnter={() => triggerSound("click")}
+              onClick={() => triggerSound("confirm")}
+              className="w-full sm:w-auto px-10 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white text-black hover:bg-neutral-200 flex items-center justify-center gap-2.5 transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.22)] hover:-translate-y-0.5 cursor-pointer"
             >
-              <span>JOIN THE SIGNAL</span>
+              <span>{isReleased || testReleased ? "LISTEN NOW" : "JOIN THE SIGNAL"}</span>
               <ArrowRight size={12} />
             </a>
             
             <button
               onClick={() => {
+                triggerSound("confirm");
                 setShowTeaser(true);
                 setIsPlayingTeaser(true);
               }}
+              onMouseEnter={() => triggerSound("click")}
               className="w-full sm:w-auto px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white flex items-center justify-center gap-2.5 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
             >
               <Play size={11} className="fill-current" />
@@ -390,12 +529,15 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 02: Live Countdown */}
-      <section className="relative py-28 w-full border-t border-white/[0.03] bg-gradient-to-b from-black to-[#050508] flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative py-32 w-full border-t border-white/[0.03] bg-gradient-to-b from-black to-[#050508] flex flex-col items-center justify-center overflow-hidden z-10">
         
-        {/* Release State Debug Switcher (Only visible to help testing) */}
+        {/* Release State Debug Switcher */}
         <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
           <button
-            onClick={() => setTestReleased(!testReleased)}
+            onClick={() => {
+              triggerSound("click");
+              setTestReleased(!testReleased);
+            }}
             className="px-3 py-1 rounded bg-white/5 border border-white/10 text-[8px] font-mono tracking-wider text-neutral-400 hover:text-white transition-all cursor-pointer"
           >
             [SIMULATE {testReleased ? "PRE-RELEASE" : "POST-RELEASE"}]
@@ -403,14 +545,16 @@ export default function ArchitectOfOverflowPage() {
         </div>
 
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12 relative z-10">
-          <div className="space-y-2">
-            <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold">
-              // TEMPORAL VECTOR COUNTDOWN
-            </span>
-            <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-              RESONANCE ENVELOPE SYNCHRONIZATION
-            </h2>
-          </div>
+          <ScrollReveal>
+            <div className="space-y-2">
+              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold block">
+                // TEMPORAL VECTOR COUNTDOWN
+              </span>
+              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+                RESONANCE ENVELOPE SYNCHRONIZATION
+              </h2>
+            </div>
+          </ScrollReveal>
 
           <AnimatePresence mode="wait">
             {isReleased || testReleased ? (
@@ -435,7 +579,7 @@ export default function ArchitectOfOverflowPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 max-w-3xl mx-auto"
+                className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 max-w-4.5xl mx-auto"
               >
                 {[
                   { label: "DAYS", value: timeLeft.days },
@@ -443,12 +587,12 @@ export default function ArchitectOfOverflowPage() {
                   { label: "MINUTES", value: timeLeft.minutes },
                   { label: "SECONDS", value: timeLeft.seconds }
                 ].map((item, index) => (
-                  <div key={index} className="space-y-1 text-center p-6 md:p-8 rounded-2xl bg-[#09090c] border border-white/[0.04] shadow-inner relative group">
+                  <div key={index} className="space-y-2 text-center p-8 md:p-10 rounded-2xl bg-[#09090c] border border-white/[0.06] shadow-inner relative group">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#FFAA00]/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
-                    <div className="font-display text-4xl sm:text-5xl md:text-6xl font-extralight tracking-tight text-white">
+                    <div className="font-display text-5xl sm:text-6xl md:text-7xl font-extralight tracking-tight text-white">
                       {String(item.value).padStart(2, "0")}
                     </div>
-                    <div className="text-[9px] font-mono text-neutral-500 tracking-[0.2em] font-semibold">
+                    <div className="text-[9.5px] font-mono text-neutral-500 tracking-[0.2em] font-semibold uppercase">
                       {item.label}
                     </div>
                   </div>
@@ -460,60 +604,65 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 03: Artwork Gallery Component */}
-      <section className="py-24 w-full bg-gradient-to-b from-[#050508] to-black flex flex-col items-center justify-center">
+      <section className="py-24 w-full bg-gradient-to-b from-[#050508] to-black flex flex-col items-center justify-center z-10 relative">
         <div className="max-w-xl mx-auto px-6 text-center space-y-10">
-          <div className="space-y-2">
-            <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold">
-              // PHYSICAL FREQUENCY OBJECT
-            </span>
-            <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-              TRANSMISSION COVER MATRIX
-            </h2>
-          </div>
+          <ScrollReveal>
+            <div className="space-y-2">
+              <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold block">
+                // PHYSICAL FREQUENCY OBJECT
+              </span>
+              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+                TRANSMISSION COVER MATRIX
+              </h2>
+            </div>
+          </ScrollReveal>
 
           {/* Symmetrical Floating Frame for Gallery Object */}
-          <motion.div 
-            whileHover={{ y: -10, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="w-full aspect-square max-w-[340px] md:max-w-[400px] mx-auto rounded-3xl bg-[#0a0a0d] border border-white/[0.08] shadow-[0_30px_70px_rgba(0,0,0,0.95)] p-5 relative overflow-hidden group cursor-grab active:cursor-grabbing"
-          >
-            {/* Glossy overlay sheen */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/[0.015] to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-            
-            {/* Gallery object inner artwork */}
-            <div className="w-full h-full rounded-2xl overflow-hidden bg-black border border-white/[0.04] relative flex flex-col justify-between p-6">
+          <ScrollReveal delay={0.2}>
+            <motion.div 
+              whileHover={{ y: -10, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              onMouseEnter={() => triggerSound("click")}
+              className="w-full aspect-square max-w-[340px] md:max-w-[400px] mx-auto rounded-3xl bg-[#0a0a0d] border border-white/[0.08] shadow-[0_30px_70px_rgba(0,0,0,0.95)] p-5 relative overflow-hidden group cursor-grab active:cursor-grabbing"
+            >
+              {/* Glossy overlay sheen */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/[0.015] to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               
-              {/* Radial warm lighting inside */}
-              <div className="absolute inset-0 bg-radial-gradient pointer-events-none" 
-                style={{
-                  background: "radial-gradient(circle at 50% 50%, rgba(255, 136, 0, 0.08) 0%, rgba(0, 157, 255, 0.04) 60%, transparent 100%)"
-                }}
-              />
+              {/* Gallery object inner artwork */}
+              <div className="w-full h-full rounded-2xl overflow-hidden bg-black border border-white/[0.04] relative flex flex-col justify-between p-6">
+                
+                {/* Radial warm lighting inside */}
+                <div className="absolute inset-0 bg-radial-gradient pointer-events-none" 
+                  style={{
+                    background: "radial-gradient(circle at 50% 50%, rgba(255, 136, 0, 0.08) 0%, rgba(0, 157, 255, 0.04) 60%, transparent 100%)"
+                  }}
+                />
 
-              <div className="text-center z-10 pt-1">
-                <span className="font-display text-[10px] tracking-[0.5em] font-light text-white pl-[0.5em] uppercase opacity-75">
-                  METRO SUL
-                </span>
-              </div>
+                <div className="text-center z-10 pt-1">
+                  <span className="font-display text-[10px] tracking-[0.5em] font-light text-white pl-[0.5em] uppercase opacity-75">
+                    METRO SUL
+                  </span>
+                </div>
 
-              {/* Graphic container */}
-              <div className="flex-1 w-full flex items-center justify-center">
-                <svg viewBox="0 0 100 100" className="w-[65%] h-[65%] drop-shadow-[0_0_30px_rgba(255,136,0,0.12)]">
-                  <motion.rect x="44.5" y="40" width="1.5" height="30" rx="0.75" fill="#FFFFFF" className="opacity-70" animate={{ height: [30, 27, 30], y: [40, 41.5, 40] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} />
-                  <motion.rect x="49.2" y="29" width="1.6" height="42" rx="0.8" fill="#FFAA00" className="opacity-90" animate={{ height: [42, 45, 42], y: [29, 27.5, 29] }} transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }} />
-                  <motion.rect x="54" y="40" width="1.5" height="30" rx="0.75" fill="#FFFFFF" className="opacity-70" animate={{ height: [30, 28, 30], y: [40, 41, 40] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }} />
-                  <path d="M 39 20 A 32 32 0 0 0 39 80" fill="none" stroke="#009DFF" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
-                  <path d="M 61 20 A 32 32 0 0 1 61 80" fill="none" stroke="#FFAA00" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
-                </svg>
-              </div>
+                {/* Graphic container */}
+                <div className="flex-1 w-full flex items-center justify-center">
+                  <svg viewBox="0 0 100 100" className="w-[65%] h-[65%] drop-shadow-[0_0_30px_rgba(255,136,0,0.12)]">
+                    <motion.rect x="44.5" y="40" width="1.5" height="30" rx="0.75" fill="#FFFFFF" className="opacity-70" animate={{ height: [30, 27, 30], y: [40, 41.5, 40] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} />
+                    <motion.rect x="49.2" y="29" width="1.6" height="42" rx="0.8" fill="#FFAA00" className="opacity-90" animate={{ height: [42, 45, 42], y: [29, 27.5, 29] }} transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }} />
+                    <motion.rect x="54" y="40" width="1.5" height="30" rx="0.75" fill="#FFFFFF" className="opacity-70" animate={{ height: [30, 28, 30], y: [40, 41, 40] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }} />
+                    <path d="M 39 20 A 32 32 0 0 0 39 80" fill="none" stroke="#009DFF" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
+                    <path d="M 61 20 A 32 32 0 0 1 61 80" fill="none" stroke="#FFAA00" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
+                  </svg>
+                </div>
 
-              <div className="text-center z-10 pb-1 flex flex-col items-center gap-1">
-                <span className="font-display text-[7.5px] tracking-[0.4em] text-white/80 pl-[0.4em] uppercase font-semibold">
-                  ARCHITECT OF OVERFLOW
-                </span>
+                <div className="text-center z-10 pb-1 flex flex-col items-center gap-1">
+                  <span className="font-display text-[7.5px] tracking-[0.4em] text-white/80 pl-[0.4em] uppercase font-semibold">
+                    ARCHITECT OF OVERFLOW
+                  </span>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </ScrollReveal>
 
           {/* Fine Editorial Caption */}
           <div className="space-y-1 text-center font-mono text-[9px] text-neutral-500 uppercase tracking-[0.25em]">
@@ -527,7 +676,7 @@ export default function ArchitectOfOverflowPage() {
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[380vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[420vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10">
@@ -542,16 +691,19 @@ export default function ArchitectOfOverflowPage() {
           </div>
 
           {/* Sticky target anchor viewport */}
-          <div className="w-full max-w-4xl px-6 relative flex items-center justify-center h-40">
-            {transmissionPhrases.map((phrase, idx) => (
-              <div
-                key={idx}
-                style={getPhraseStyle(idx)}
-                className="absolute font-display text-2xl sm:text-4xl md:text-6xl font-black text-center text-white tracking-[0.15em] uppercase select-none font-bold"
-              >
-                {phrase}
-              </div>
-            ))}
+          <div className="w-full max-w-4xl px-6 relative flex items-center justify-center h-48">
+            {transmissionPhrases.map((phrase, idx) => {
+              const isCurrentActive = activeIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  style={getPhraseStyle(idx)}
+                  className="absolute font-display text-2.5xl sm:text-4xl md:text-6xl font-black text-center text-white tracking-[0.15em] uppercase select-none font-bold"
+                >
+                  <StaggeredPhrase phrase={phrase} isActive={isCurrentActive} />
+                </div>
+              );
+            })}
           </div>
 
           {/* Elegant HUD tracking meter */}
@@ -565,147 +717,168 @@ export default function ArchitectOfOverflowPage() {
       </section>
 
       {/* SECTION 05: About the Release */}
-      <section className="py-32 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative">
+      <section className="py-32 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10">
         <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10">
           
-          <div className="space-y-2 text-center md:text-left">
-            <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold">
-              // EDITORIAL PROTOCOL
-            </span>
-            <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-              ABOUT THE RELEASE
-            </h2>
-          </div>
+          <ScrollReveal>
+            <div className="space-y-2 text-center md:text-left">
+              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold block">
+                // EDITORIAL PROTOCOL
+              </span>
+              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+                ABOUT THE RELEASE
+              </h2>
+            </div>
+          </ScrollReveal>
 
-          <div className="space-y-8 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
-            <p className="font-semibold text-white">
-              Architect of Overflow opens a new creative chapter for Metro Sul.
-            </p>
-            <p className="text-neutral-400">
-              Blending melodic electronic production with progressive movement and subtle trance-inspired energy, the release evolves from cinematic vocals into an uplifting electronic journey designed for immersive late-night listening.
-            </p>
-          </div>
+          <ScrollReveal delay={0.25}>
+            <div className="space-y-8 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
+              <p className="font-semibold text-white">
+                Architect of Overflow opens a new creative chapter for Metro Sul.
+              </p>
+              <p className="text-neutral-400">
+                Blending melodic electronic production with progressive movement and subtle trance-inspired energy, the release evolves from cinematic vocals into an uplifting electronic journey designed for immersive late-night listening.
+              </p>
+            </div>
+          </ScrollReveal>
 
           {/* Spec panel details */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/5 font-mono text-[9px] text-neutral-500 uppercase tracking-widest text-center">
-            <div className="space-y-1">
-              <span className="block text-neutral-600">BPM</span>
-              <span className="text-neutral-300 font-bold">124 BPM</span>
+          <ScrollReveal delay={0.4}>
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/5 font-mono text-[9px] text-neutral-500 uppercase tracking-widest text-center">
+              <div className="space-y-1">
+                <span className="block text-neutral-600">BPM</span>
+                <span className="text-neutral-300 font-bold">124 BPM</span>
+              </div>
+              <div className="space-y-1 border-x border-white/5">
+                <span className="block text-neutral-600">KEY</span>
+                <span className="text-neutral-300 font-bold">A MINOR</span>
+              </div>
+              <div className="space-y-1">
+                <span className="block text-neutral-600">RESOLUTION</span>
+                <span className="text-neutral-300 font-bold">24-BIT / 96KHZ</span>
+              </div>
             </div>
-            <div className="space-y-1 border-x border-white/5">
-              <span className="block text-neutral-600">KEY</span>
-              <span className="text-neutral-300 font-bold">A MINOR</span>
-            </div>
-            <div className="space-y-1">
-              <span className="block text-neutral-600">RESOLUTION</span>
-              <span className="text-neutral-300 font-bold">24-BIT / 96KHZ</span>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* SECTION 06: Release Preview (Spotify Embed after release date) */}
-      <section className="py-24 w-full bg-black border-t border-white/[0.02] flex flex-col items-center justify-center">
+      <section className="py-24 w-full bg-black border-t border-white/[0.02] flex flex-col items-center justify-center z-10 relative">
         <div className="max-w-3xl w-full mx-auto px-6 text-center space-y-10">
-          <div className="space-y-2">
-            <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold">
-              // PREVIEW PORTAL WIDGET
-            </span>
-            <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-              SPOTIFY BROADCAST CHANNEL
-            </h2>
-          </div>
+          <ScrollReveal>
+            <div className="space-y-2">
+              <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold block">
+                // PREVIEW PORTAL WIDGET
+              </span>
+              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+                SPOTIFY BROADCAST CHANNEL
+              </h2>
+            </div>
+          </ScrollReveal>
 
-          <AnimatePresence mode="wait">
-            {isReleased || testReleased ? (
-              <motion.div
-                key="spotify-player"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden bg-neutral-900/40 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
-              >
-                {/* Embedded actual Metro Sul Spotify Player widget */}
-                <iframe 
-                  src="https://open.spotify.com/embed/album/3F10JFx7wrz3scGyBUY3ES?utm_source=generator&theme=0" 
-                  width="100%" 
-                  height="352" 
-                  frameBorder="0" 
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                  loading="lazy"
-                  className="rounded-3xl border-0"
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="spotify-placeholder"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="max-w-lg mx-auto py-12 px-8 rounded-3xl bg-[#09090c] border border-white/[0.04] shadow-inner space-y-6 flex flex-col items-center"
-              >
-                <div className="p-4 rounded-full bg-white/[0.02] border border-white/5 text-[#FFAA00] animate-pulse">
-                  <Disc size={32} className="animate-spin" style={{ animationDuration: "12s" }} />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-mono text-xs tracking-[0.3em] font-bold text-white uppercase">
-                    AVAILABLE JULY 31
-                  </h3>
-                  <p className="font-sans text-[11px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
-                    The direct Spotify broadcast pipeline will connect automatically on the release date. Join the signal to pre-save now.
-                  </p>
-                </div>
-                
-                <a 
-                  href="https://ffm.to/6rdp19"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest text-neutral-300 transition-all cursor-pointer inline-flex items-center gap-2"
+          <ScrollReveal delay={0.2}>
+            <AnimatePresence mode="wait">
+              {isReleased || testReleased ? (
+                <motion.div
+                  key="spotify-player"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden bg-neutral-900/40 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
                 >
-                  <span>NOTIFY VIA SMARTLINK</span>
-                  <ExternalLink size={10} />
-                </a>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  {/* Embedded actual Metro Sul Spotify Player widget */}
+                  <iframe 
+                    src="https://open.spotify.com/embed/album/3F10JFx7wrz3scGyBUY3ES?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="352" 
+                    frameBorder="0" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    className="rounded-3xl border-0"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="spotify-placeholder"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="max-w-lg mx-auto py-12 px-8 rounded-3xl bg-[#09090c] border border-white/[0.04] shadow-inner space-y-6 flex flex-col items-center"
+                >
+                  <div className="p-4 rounded-full bg-white/[0.02] border border-white/5 text-[#FFAA00] animate-pulse">
+                    <Disc size={32} className="animate-spin" style={{ animationDuration: "12s" }} />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-mono text-xs tracking-[0.3em] font-bold text-white uppercase">
+                      AVAILABLE JULY 31
+                    </h3>
+                    <p className="font-sans text-[11px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
+                      The direct Spotify broadcast pipeline will connect automatically on the release date. Join the signal to pre-save now.
+                    </p>
+                  </div>
+                  
+                  <a 
+                    href={PRESAVE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => triggerSound("click")}
+                    onClick={() => triggerSound("confirm")}
+                    className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest text-neutral-300 transition-all cursor-pointer inline-flex items-center gap-2"
+                  >
+                    <span>NOTIFY VIA SMARTLINK</span>
+                    <ExternalLink size={10} />
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* SECTION 07: Final CTA */}
-      <section className="py-32 w-full bg-gradient-to-b from-black to-[#050508] border-t border-white/[0.02] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+      <section className="py-32 w-full bg-gradient-to-b from-black to-[#050508] border-t border-white/[0.02] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden z-10">
         
         {/* Symmetrical glowing backdrop */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#FFAA00]/5 to-transparent blur-[120px] pointer-events-none" />
 
         <div className="max-w-xl mx-auto space-y-10 relative z-10">
           
-          {/* Symmetrical Metro Sul miniature symbol */}
-          <div className="w-16 h-16 mx-auto relative select-none">
-            <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_20px_rgba(255,136,0,0.2)]">
-              <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255, 170, 0, 0.15)" strokeWidth="1" />
-              <line x1="50" y1="30" x2="50" y2="70" stroke="#FFAA00" strokeWidth="2.5" />
-              <path d="M 40 35 A 18 18 0 0 0 40 65" fill="none" stroke="#009DFF" strokeWidth="2" />
-              <path d="M 60 35 A 18 18 0 0 1 60 65" fill="none" stroke="#FFAA00" strokeWidth="2" />
-            </svg>
-          </div>
+          <ScrollReveal>
+            {/* Symmetrical Metro Sul miniature symbol */}
+            <div className="w-16 h-16 mx-auto relative select-none">
+              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_20px_rgba(255,136,0,0.2)]">
+                <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255, 170, 0, 0.15)" strokeWidth="1" />
+                <line x1="50" y1="30" x2="50" y2="70" stroke="#FFAA00" strokeWidth="2.5" />
+                <path d="M 40 35 A 18 18 0 0 0 40 65" fill="none" stroke="#009DFF" strokeWidth="2" />
+                <path d="M 60 35 A 18 18 0 0 1 60 65" fill="none" stroke="#FFAA00" strokeWidth="2" />
+              </svg>
+            </div>
+          </ScrollReveal>
 
-          <div className="space-y-3">
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase">
-              Join the Signal
-            </h2>
-            <p className="font-mono text-[9px] text-neutral-400 tracking-[0.3em] uppercase max-w-xs mx-auto leading-relaxed">
-              Secure your direct link to the alignment sequence.
-            </p>
-          </div>
+          <ScrollReveal delay={0.2}>
+            <div className="space-y-3">
+              <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase">
+                Join the Signal
+              </h2>
+              <p className="font-mono text-[9px] text-neutral-400 tracking-[0.3em] uppercase max-w-xs mx-auto leading-relaxed">
+                Secure your direct link to the alignment sequence.
+              </p>
+            </div>
+          </ScrollReveal>
 
-          <a 
-            href="https://ffm.to/6rdp19"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex px-12 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-gradient-to-r from-[#FFAA00] to-[#FF5500] text-white hover:opacity-90 shadow-[0_0_30px_rgba(255,136,0,0.25)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-          >
-            PRE-SAVE ON SPOTIFY
-          </a>
+          {/* 6. Wider & taller Join the Signal button with premium blue/orange hover glow */}
+          <ScrollReveal delay={0.35}>
+            <a 
+              href={PRESAVE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => triggerSound("click")}
+              onClick={() => triggerSound("confirm")}
+              className="inline-flex px-14 py-5 rounded-full text-xs font-mono tracking-widest font-bold bg-gradient-to-r from-[#FFAA00] to-[#FF5500] text-white hover:opacity-90 shadow-[0_0_30px_rgba(255,136,0,0.25)] hover:shadow-[0_0_45px_rgba(255,136,0,0.35),0_0_20px_rgba(0,157,255,0.15)] transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5 cursor-pointer border border-white/10"
+            >
+              {isReleased || testReleased ? "LISTEN ON SPOTIFY" : "PRE-SAVE ON SPOTIFY"}
+            </a>
+          </ScrollReveal>
 
           {/* Small footer */}
           <div className="pt-12 space-y-2">
@@ -731,9 +904,11 @@ export default function ArchitectOfOverflowPage() {
             {/* Close button */}
             <button
               onClick={() => {
+                triggerSound("click");
                 setShowTeaser(false);
                 setIsPlayingTeaser(false);
               }}
+              onMouseEnter={() => triggerSound("click")}
               className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/5 border border-white/10 text-neutral-400 hover:text-white transition-all cursor-pointer hover:bg-white/10"
             >
               <X size={18} />
@@ -818,3 +993,4 @@ export default function ArchitectOfOverflowPage() {
     </div>
   );
 }
+
