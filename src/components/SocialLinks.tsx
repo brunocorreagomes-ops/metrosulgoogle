@@ -56,12 +56,23 @@ const METRO_SOCIALS: SocialItem[] = [
 
 export default function SocialLinks({ lang }: SocialLinksProps) {
   const [copied, setCopied] = useState<boolean>(false);
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
   const emailAddress = "brunocorreagomes@gmail.com";
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(emailAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyShareLink = () => {
+    try {
+      navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch (err) {
+      console.error("Failed to copy link: ", err);
+    }
   };
 
   return (
@@ -130,7 +141,7 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
           </div>
         </div>
 
-        {/* Triple social link list */}
+        {/* Quadruple social & share link list */}
         <div className="md:col-span-5 flex flex-col justify-between gap-3">
           {METRO_SOCIALS.map((soc) => {
             const IconComponent = soc.icon;
@@ -163,9 +174,53 @@ export default function SocialLinks({ lang }: SocialLinksProps) {
               </a>
             );
           })}
+
+          {/* Copy Share Link Button */}
+          <button
+            onClick={handleCopyShareLink}
+            className="flex-1 w-full p-5 rounded-lg border border-white/5 bg-[#07111F]/30 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/5 text-left flex items-center justify-between group transition-all duration-150 cursor-pointer text-white hover:text-[#009DFF]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 rounded bg-white/[0.01] border border-white/5 group-hover:bg-transparent group-hover:border-[#009DFF]/30 transition-all">
+                <Share2 size={16} className="stroke-[1.5]" />
+              </div>
+              <div>
+                <span className="block font-mono text-[8px] text-neutral-500 uppercase tracking-widest group-hover:text-[#009DFF]/70 transition-colors">
+                  {lang === "pt" ? "PORTAL" : lang === "es" ? "PORTAL" : "PORTAL"}
+                </span>
+                <span className="font-mono text-xs font-medium text-white group-hover:text-white tracking-widest uppercase transition-colors">
+                  {translations[lang].shareBtn}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-1.5 rounded bg-white/[0.01] border border-white/5 text-neutral-600 group-hover:text-[#009DFF] group-hover:border-[#009DFF]/30 group-hover:translate-x-1 transition-all duration-200">
+              {shareCopied ? <Check size={11} className="text-green-400" /> : <Copy size={11} />}
+            </div>
+          </button>
         </div>
 
       </div>
+
+      {/* Subtle UI Notification Toast */}
+      <AnimatePresence>
+        {shareCopied && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, x: "-50%", scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+            exit={{ opacity: 0, y: 20, x: "-50%", scale: 0.95 }}
+            transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed bottom-24 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-full bg-[#030712]/95 border border-[#009DFF]/30 backdrop-blur-md shadow-[0_12px_40px_rgba(0,0,0,0.9)]"
+          >
+            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#009DFF]/10 text-[#009DFF]">
+              <Check size={11} className="stroke-[2.5]" />
+            </div>
+            <span className="font-mono text-[9px] tracking-[0.15em] text-neutral-200 uppercase font-semibold">
+              {translations[lang].shareCopied}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

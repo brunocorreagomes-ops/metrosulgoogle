@@ -150,6 +150,8 @@ export interface TranslationSchema {
   contactCardDesc: string;
   contactCardCopy: string;
   contactCardCopied: string;
+  shareBtn: string;
+  shareCopied: string;
 
   // Footer & Help Systems
   footerCredits: string;
@@ -304,6 +306,8 @@ export const translations: Record<Language, TranslationSchema> = {
     contactCardDesc: "This is the official contact channel for the music project. For ownership verification, digital platforms, Spotify, licensing, partnerships, or catalog-related inquiries, please use the email below.",
     contactCardCopy: "COPY EMAIL",
     contactCardCopied: "COPIED",
+    shareBtn: "COPY SHARE LINK",
+    shareCopied: "LINK COPIED TO CLIPBOARD",
 
     footerCredits: "CODING PATTERNS COMPLIANT WITH COGNITIVE MINIMALISM.",
     hotkeysBtn: "SYSTEM HOTKEYS",
@@ -453,6 +457,8 @@ export const translations: Record<Language, TranslationSchema> = {
     contactCardDesc: "Este é o canal oficial de contato do projeto musical. Para verificação de propriedade, plataformas digitais, Spotify, licenciamento, parcerias ou assuntos relacionados ao catálogo, utilize o e-mail abaixo.",
     contactCardCopy: "COPIAR E-MAIL",
     contactCardCopied: "COPIADO",
+    shareBtn: "COPIAR LINK DE COMPARTILHAMENTO",
+    shareCopied: "LINK COPIADO PARA A ÁREA DE TRANSFERÊNCIA",
 
     footerCredits: "PADRÕES DE CÓDIGO COMPATÍVEIS COM MINIMALISMO COGNITIVO.",
     hotkeysBtn: "ATALHOS DE SISTEMA",
@@ -602,6 +608,8 @@ export const translations: Record<Language, TranslationSchema> = {
     contactCardDesc: "Este es el canal oficial de contacto del proyecto musical. Para verificación de propiedad, plataformas digitales, Spotify, licenciamiento, alianzas o asuntos relacionados con el catálogo, utilice el correo electrónico abajo.",
     contactCardCopy: "COPIAR CORREO",
     contactCardCopied: "COPIADO",
+    shareBtn: "COPIAR ENLACE DE COMPARTIR",
+    shareCopied: "ENLACE COPIADO AL PORTAPAPELES",
 
     footerCredits: "PATRONES DE CÓDIGO COMPATIBLES CON MINIMALISMO COGNITIVO.",
     hotkeysBtn: "ATALHOS DE SISTEMA",
