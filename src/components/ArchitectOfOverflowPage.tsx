@@ -579,7 +579,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
       </nav>
 
       {/* SECTION 01: Full-Screen Hero */}
-      <section className="relative min-h-screen w-full flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden z-10">
+      <section className="relative min-h-screen w-full flex flex-col items-center justify-center text-center px-4 pt-24 pb-44 overflow-hidden z-10">
         
         {/* Subtle background visual elements */}
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -588,7 +588,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         </div>
 
         {/* 1. Large Floating Symmetrical Metro Sul Symbol with extremely subtle breathing motion */}
-        <div className="relative z-10 w-full max-w-[310px] md:max-w-[370px] aspect-square flex items-center justify-center select-none group">
+        <div className="relative z-10 w-full max-w-[220px] sm:max-w-[280px] md:max-w-[340px] aspect-square flex items-center justify-center select-none group">
           <motion.div
             animate={{ 
               scale: [1, 1.02, 1],
@@ -654,8 +654,8 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         </div>
 
         {/* Headline, Subheadline and Info */}
-        <div className="relative z-10 space-y-6 max-w-2xl px-6 -mt-3">
-          <div className="space-y-3">
+        <div className="relative z-10 space-y-4 md:space-y-6 max-w-2xl px-6">
+          <div className="space-y-2 md:space-y-3">
             <span className="font-mono text-[9px] tracking-[0.4em] text-[#009DFF] uppercase font-semibold block">
               // ORIGINAL SIGNAL PHASE
             </span>
@@ -668,7 +668,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           </div>
 
           {/* Prominent Hero Release Date */}
-          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 px-7 py-3 rounded-full bg-[#FFAA00]/[0.03] border border-[#FFB31A]/35 font-mono tracking-widest mt-6 mb-4 shadow-[0_0_20px_rgba(255,170,0,0.05)]">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-[#FFAA00]/[0.03] border border-[#FFB31A]/35 font-mono tracking-widest mt-4 mb-2 sm:mt-6 sm:mb-4 shadow-[0_0_20px_rgba(255,170,0,0.05)]">
             <span className="text-[10px] sm:text-[11px] text-[#FFC14D] font-bold tracking-[0.2em] flex items-center gap-1.5 uppercase pl-[0.2em]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#FFC14D] animate-pulse" />
               {lang === "pt" ? "ALINHAMENTO GLOBAL" : lang === "es" ? "ALINEACIÓN GLOBAL" : "ALIGNMENT TARGET"}
@@ -680,7 +680,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2 sm:pt-4">
             <a 
               href={PRESAVE_URL}
               target="_blank"
@@ -709,9 +709,9 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         </div>
 
         {/* Ambient Chevron scroll down indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60 animate-pulse" style={{ animationDuration: "3s" }}>
-          <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium pl-[0.28em]">SCROLL ENGINE</span>
-          <ChevronDown size={18} className="text-[#FFC14D]" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60 animate-pulse" style={{ animationDuration: "3s" }}>
+          <span className="font-mono text-[13px] sm:text-[15px] md:text-[18px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium pl-[0.28em]">SCROLL ENGINE</span>
+          <ChevronDown size={16} className="text-[#FFC14D]" />
         </div>
       </section>
 
