@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { 
   Play, 
+  Pause,
   X, 
   ExternalLink, 
   Volume2, 
@@ -90,6 +91,61 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
   const [activeTab, setActiveTab] = useState<"desktop" | "mobile">("desktop");
   const [soundEnabled, setSoundEnabled] = useState(false);
 
+  // Teaser Video states and refs
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoPlaying, setVideoPlaying] = useState(true);
+  const [videoDuration, setVideoDuration] = useState(15);
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [videoError, setVideoError] = useState(false);
+  const ambientWasEnabledRef = useRef(false);
+
+  const handleOpenTeaser = () => {
+    triggerSound("confirm");
+    setShowTeaser(true);
+    setIsPlayingTeaser(true);
+    setVideoError(false);
+    
+    ambientWasEnabledRef.current = soundEnabled;
+    if (soundEnabled && gainRef.current) {
+      // Lower ambient background volume to extremely low level
+      gainRef.current.gain.setValueAtTime(0.005, audioCtxRef.current?.currentTime || 0);
+    }
+  };
+
+  const handleCloseTeaser = () => {
+    triggerSound("click");
+    setShowTeaser(false);
+    setIsPlayingTeaser(false);
+    
+    if (ambientWasEnabledRef.current && gainRef.current) {
+      // Restore ambient background volume
+      gainRef.current.gain.setValueAtTime(0.06, audioCtxRef.current?.currentTime || 0);
+    }
+  };
+
+  // Lock body scroll and register escape key to close teaser
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseTeaser();
+      }
+    };
+
+    if (showTeaser) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showTeaser]);
+
   // Sound Synth engine for absolute immersion (Cercle / Anyma feel)
   const audioCtxRef = useRef<AudioContext | null>(null);
   const oscRef = useRef<OscillatorNode | null>(null);
@@ -99,6 +155,47 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
   // Intersection scroll tracking for Section 04: Transmission
   const [scrollProgress, setScrollProgress] = useState(0);
   const transmissionContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Active phrase index for Section 04, controlled by IntersectionObserver with rootMargin: "-40% 0px -40% 0px"
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const sentinelsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null, // viewport
+      rootMargin: "-40% 0px -40% 0px", // 20% center band
+      threshold: 0
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = sentinelsRef.current.indexOf(entry.target as HTMLDivElement);
+          if (index !== -1) {
+            setActiveIndex(index);
+          }
+        } else {
+          const index = sentinelsRef.current.indexOf(entry.target as HTMLDivElement);
+          if (index !== -1) {
+            setActiveIndex((prev) => (prev === index ? -1 : prev));
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observe each sentinel
+    sentinelsRef.current.forEach((sentinel) => {
+      if (sentinel) {
+        observer.observe(sentinel);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Force reset scroll to top on component load/mount and disable auto scroll restoration
   useEffect(() => {
@@ -309,6 +406,23 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
     return () => cleanupAudio();
   }, []);
 
+  const toggleVideoPlay = () => {
+    if (!videoRef.current) return;
+    triggerSound("click");
+    if (videoPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
+  const toggleVideoMute = () => {
+    if (!videoRef.current) return;
+    triggerSound("click");
+    videoRef.current.muted = !videoMuted;
+    setVideoMuted(!videoMuted);
+  };
+
   // Transmission phrases for Section 04
   const transmissionPhrases = [
     "SIGNAL DETECTED",
@@ -319,18 +433,6 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
     "ARCHITECT OF OVERFLOW",
     "CODE ACCEPTED"
   ];
-
-  // Map progress to active indices based on proximity to center values (shifted for tightness & less dead space)
-  const centers = [0.08, 0.21, 0.34, 0.47, 0.60, 0.73, 0.86];
-  
-  // Calculate current active index (only active if within the active scroll progress band)
-  let activeIndex = -1;
-  centers.forEach((center, idx) => {
-    const dist = Math.abs(scrollProgress - center);
-    if (dist <= 0.06) {
-      activeIndex = idx;
-    }
-  });
 
   const prevActiveIndexRef = useRef(-1);
 
@@ -344,67 +446,17 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
     }
   }, [activeIndex, soundEnabled]);
 
-  // Helper to calculate opacity and blur for each phrase based on global scrollProgress of Section 04
+  // Helper to calculate opacity and blur for each phrase based on activeIndex (IntersectionObserver controlled)
   const getPhraseStyle = (index: number) => {
-    const center = centers[index];
-    const distance = scrollProgress - center; // Negative means below center, positive means above center
+    const isActive = activeIndex === index;
     
-    // We want a tighter vertical motion envelope:
-    // translateY goes from +3vh (at distance = -0.06) to -3vh (at distance = +0.06)
-    // Map distance within [-0.06, 0.06] to translateY within [3, -3] vh units
-    let translateY = 0;
-    if (distance <= -0.06) {
-      translateY = 3;
-    } else if (distance >= 0.06) {
-      translateY = -3;
-    } else {
-      translateY = -(distance / 0.06) * 3;
-    }
-    
-    // Calculate yFrac where 0.50 is the exact vertical center.
-    // 3vh travel maps to 0.03 frac of viewport height, so yFrac ranges from 0.53 to 0.47.
-    // This fits perfectly within the 45% - 55% viewport height range!
-    const yFrac = 0.5 + (translateY / 100);
-    
-    let opacity = 0;
-    let blur = 14;
-    let scale = 0.96;
-    let letterSpacing = "0.15em";
-
-    // Precise envelope based on viewport position (45% to 55%):
-    // - start reveal around 53% viewport height (yFrac = 0.53, corresponding to distance = -0.06)
-    // - complete reveal (peak opacity, sharpness) at 50% viewport height (yFrac = 0.50, distance = 0)
-    // - fade out completely by 47% viewport height (yFrac = 0.47, distance = +0.06)
-    // This avoids any reveal in the top third (yFrac < 0.33) or lower half (yFrac > 0.55).
-    if (yFrac <= 0.53 && yFrac >= 0.47) {
-      if (yFrac >= 0.50) {
-        // Revealing phase: yFrac goes from 0.53 to 0.50 (factor from 0 to 1)
-        const factor = (0.53 - yFrac) / 0.03;
-        opacity = Math.pow(factor, 1.4);
-        blur = Math.max(0, 10 * (1 - factor));
-        scale = 0.97 + 0.03 * factor;
-        letterSpacing = `${0.15 + (0.05 * factor)}em`;
-      } else {
-        // Fading out phase: yFrac goes from 0.50 to 0.47 (factor from 1 to 0)
-        const factor = (yFrac - 0.47) / 0.03;
-        opacity = Math.pow(factor, 1.4);
-        blur = Math.max(0, 10 * (1 - factor));
-        scale = 0.97 + 0.03 * factor;
-        letterSpacing = `${0.15 + (0.05 * factor)}em`;
-      }
-    } else {
-      opacity = 0;
-      blur = 14;
-      scale = 0.96;
-    }
-
     return {
-      opacity,
-      filter: `blur(${blur}px)`,
-      transform: `translateY(${translateY}vh) scale(${scale})`,
-      letterSpacing,
-      pointerEvents: opacity > 0.15 ? "auto" : "none",
-      transition: "opacity 0.08s ease-out, filter 0.08s ease-out, transform 0.08s ease-out"
+      opacity: isActive ? 1 : 0,
+      filter: isActive ? "blur(0px)" : "blur(12px)",
+      transform: isActive ? "scale(1)" : "scale(0.96)",
+      letterSpacing: isActive ? "0.2em" : "0.15em",
+      pointerEvents: (isActive ? "auto" : "none") as any,
+      transition: "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
     };
   };
 
@@ -450,43 +502,43 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
             <span>M<span className="text-[#009DFF]">≡</span>TRO SUL</span>
           </a>
           <span className="h-3 w-[1px] bg-white/10 hidden md:block" />
-          <span className="font-mono text-[9px] text-[#FFAA00] tracking-[0.2em] uppercase hidden md:inline-block animate-pulse">
+          <span className="font-mono text-[11px] text-[#FFB31A] tracking-[0.14em] uppercase hidden md:inline-block animate-pulse font-medium">
             // LIVE TRANSMISSION PORTAL
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           {/* Elegant Minimal Language Picker */}
-          <div className="flex items-center gap-1 font-mono text-[9px] bg-white/[0.02] border border-white/5 py-1.5 px-3 rounded-full text-neutral-400">
+          <div className="flex items-center gap-1 font-mono text-[11px] bg-white/[0.02] border border-white/5 py-1.5 px-3 rounded-full text-neutral-400">
             <button 
               onClick={() => setLang?.("pt")}
-              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[10px] sm:text-[11px]"
               style={{ 
-                color: lang === "pt" ? "#FFAA00" : undefined,
+                color: lang === "pt" ? "#FFB31A" : undefined,
                 fontWeight: lang === "pt" ? "bold" : undefined,
                 background: lang === "pt" ? "rgba(255,255,255,0.03)" : undefined
               }}
             >
               PT
             </button>
-            <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+            <span className="text-neutral-700 font-light text-[10px] select-none">|</span>
             <button 
               onClick={() => setLang?.("en")}
-              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[10px] sm:text-[11px]"
               style={{ 
-                color: lang === "en" ? "#FFAA00" : undefined,
+                color: lang === "en" ? "#FFB31A" : undefined,
                 fontWeight: lang === "en" ? "bold" : undefined,
                 background: lang === "en" ? "rgba(255,255,255,0.03)" : undefined
               }}
             >
               EN
             </button>
-            <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+            <span className="text-neutral-700 font-light text-[10px] select-none">|</span>
             <button 
               onClick={() => setLang?.("es")}
-              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[10px] sm:text-[11px]"
               style={{ 
-                color: lang === "es" ? "#FFAA00" : undefined,
+                color: lang === "es" ? "#FFB31A" : undefined,
                 fontWeight: lang === "es" ? "bold" : undefined,
                 background: lang === "es" ? "rgba(255,255,255,0.03)" : undefined
               }}
@@ -499,9 +551,9 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           <button
             onClick={toggleSound}
             onMouseEnter={() => triggerSound("click")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-mono text-[9px] tracking-wider transition-all duration-300 cursor-pointer ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-mono text-[11px] tracking-wider transition-all duration-300 cursor-pointer ${
               soundEnabled
-                ? "bg-[#FFAA00]/10 border-[#FFAA00]/40 text-[#FFAA00]"
+                ? "bg-[#FFAA00]/12 border-[#FFAA00]/50 text-[#FFB31A] font-medium"
                 : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-white/20"
             }`}
           >
@@ -615,15 +667,15 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
             </p>
           </div>
 
-          {/* Release Date Info */}
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/[0.02] border border-white/5 font-mono text-[10px] tracking-widest text-neutral-300">
-            <Calendar size={12} className="text-[#FFAA00]" />
-            <span>
-              {lang === "pt" 
-                ? "DATA DE LANÇAMENTO: 31 DE JULHO DE 2026" 
-                : lang === "es" 
-                  ? "FECHA DE LANZAMIENTO: 31 DE JULIO DE 2026" 
-                  : "RELEASE DATE: 31 JULY 2026"}
+          {/* Prominent Hero Release Date */}
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 px-7 py-3 rounded-full bg-[#FFAA00]/[0.03] border border-[#FFB31A]/35 font-mono tracking-widest mt-6 mb-4 shadow-[0_0_20px_rgba(255,170,0,0.05)]">
+            <span className="text-[10px] sm:text-[11px] text-[#FFC14D] font-bold tracking-[0.2em] flex items-center gap-1.5 uppercase pl-[0.2em]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#FFC14D] animate-pulse" />
+              {lang === "pt" ? "ALINHAMENTO GLOBAL" : lang === "es" ? "ALINEACIÓN GLOBAL" : "ALIGNMENT TARGET"}
+            </span>
+            <span className="hidden sm:inline text-neutral-700">|</span>
+            <span className="text-sm sm:text-base font-bold text-white tracking-[0.25em] pl-[0.25em]">
+              31 JULY 2026
             </span>
           </div>
 
@@ -646,11 +698,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
             </a>
             
             <button
-              onClick={() => {
-                triggerSound("confirm");
-                setShowTeaser(true);
-                setIsPlayingTeaser(true);
-              }}
+              onClick={handleOpenTeaser}
               onMouseEnter={() => triggerSound("click")}
               className="w-full sm:w-auto px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white flex items-center justify-center gap-2.5 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
             >
@@ -661,9 +709,9 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         </div>
 
         {/* Ambient Chevron scroll down indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 opacity-45 animate-pulse" style={{ animationDuration: "3s" }}>
-          <span className="font-mono text-[8px] tracking-[0.3em] text-neutral-500 uppercase">SCROLL ENGINE</span>
-          <ChevronDown size={14} className="text-neutral-400" />
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60 animate-pulse" style={{ animationDuration: "3s" }}>
+          <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium pl-[0.28em]">SCROLL ENGINE</span>
+          <ChevronDown size={18} className="text-[#FFC14D]" />
         </div>
       </section>
 
@@ -688,11 +736,15 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
 
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12 relative z-10">
           <ScrollReveal>
-            <div className="space-y-2">
-              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold block">
+            <div className="space-y-4">
+              <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium block pl-[0.28em]">
                 // TEMPORAL VECTOR COUNTDOWN
               </span>
-              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+              <div className="flex flex-col items-center justify-center space-y-1 py-1">
+                <span className="font-mono text-[10px] tracking-[0.25em] text-neutral-500 font-bold uppercase pl-[0.25em]">RELEASE DATE</span>
+                <span className="font-display text-xl sm:text-2xl font-black tracking-[0.2em] text-[#FFC14D] pl-[0.2em]">31 JULY 2026</span>
+              </div>
+              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase pl-[0.25em]">
                 RESONANCE ENVELOPE SYNCHRONIZATION
               </h2>
             </div>
@@ -823,8 +875,20 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[110vh] md:h-[125vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[340vh] w-full bg-black flex flex-col justify-start"
       >
+        {/* Sentinels for IntersectionObserver tracking with -40% 0px -40% 0px rootMargin (middle 20% viewport band) */}
+        {transmissionPhrases.map((_, idx) => (
+          <div
+            key={idx}
+            ref={(el) => {
+              sentinelsRef.current[idx] = el;
+            }}
+            className="absolute left-0 right-0 h-1 pointer-events-none"
+            style={{ top: `${50 + idx * 40}vh` }}
+          />
+        ))}
+
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden z-10">
           
@@ -835,8 +899,8 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFAA00]/12 to-transparent top-[45%] pointer-events-none" />
           <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#009DFF]/8 to-transparent top-[55%] pointer-events-none" />
 
-          {/* Interactive instruction tag */}
-          <div className="absolute top-24 font-mono text-[8px] text-neutral-500 tracking-[0.4em] uppercase">
+          {/* Interactive instruction tag - mathematically centered */}
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 font-mono text-[15px] md:text-[19px] text-[#FFC14D] tracking-[0.28em] leading-[1.3] font-medium uppercase text-center whitespace-nowrap z-20 pl-[0.28em]">
             {t.aooScrollSlowly}
           </div>
 
@@ -865,29 +929,29 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           {/* Subtle frequency signal line continuing downward from the center */}
           <motion.div 
             style={{ 
-              opacity: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 10.0) : 0,
-              scaleY: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 8.0) : 0,
+              opacity: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 10.0) : 0,
+              scaleY: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 8.0) : 0,
               originY: 0
             }}
-            className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[1px] h-[35vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
+            className="absolute top-[50%] left-1/2 -translate-x-1/2 w-[1px] h-[30vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
           />
 
-          {/* Elegant HUD tracking meter */}
-          <div className="absolute bottom-36 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
+          {/* Elegant HUD tracking meter - mathematically centered */}
+          <div className="absolute bottom-36 left-1/2 -translate-x-1/2 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] transition-all duration-100 ease-out" 
               style={{ width: `${scrollProgress * 100}%` }}
             />
           </div>
 
-          {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll */}
+          {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll - mathematically centered */}
           <motion.div 
             style={{ 
-              opacity: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 8.0) : 0,
-              y: scrollProgress > 0.86 ? 0 : 25
+              opacity: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 8.0) : 0,
+              y: scrollProgress > 0.90 ? 0 : 25
             }}
             transition={{ ease: "easeOut" }}
-            className="absolute bottom-8 flex flex-col items-center gap-3.5 z-20 pointer-events-auto"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3.5 z-20 pointer-events-auto"
           >
             <button 
               onClick={(e) => {
@@ -899,18 +963,18 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
                 }
               }}
               onMouseEnter={() => triggerSound("tick")}
-              className="font-mono text-[8.5px] tracking-[0.38em] text-[#FFAA00] hover:text-[#009DFF] uppercase font-bold pl-[0.38em] transition-all duration-300 bg-black/60 hover:bg-black/90 border border-[#FFAA00]/25 hover:border-[#009DFF]/50 px-4 py-2 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2"
+              className="font-mono text-[11px] tracking-[0.18em] text-[#FFB31A] hover:text-[#009DFF] uppercase font-bold pl-[0.18em] transition-all duration-300 bg-black/70 hover:bg-black/90 border border-[#FFAA00]/35 hover:border-[#009DFF]/50 px-5 py-2.5 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2 whitespace-nowrap"
             >
               {t.aooContinueToReleaseNotes.toUpperCase()}
             </button>
             <div className="relative flex flex-col items-center h-16 w-8 pointer-events-none">
               {/* Vertical thin frequency line using the Metro Sul palette */}
               <div className="w-[1px] h-16 bg-gradient-to-b from-[#FFAA00] via-[#009DFF] to-transparent" />
-              {/* Subtle pulsing dot moving downward along the line */}
+              {/* Subtle pulsing dot moving downward along the line - mathematically centered */}
               <motion.div 
                 animate={{ y: [0, 52, 0] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-0 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#FFAA00] to-[#009DFF] shadow-[0_0_10px_#009DFF] z-10"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#FFAA00] to-[#009DFF] shadow-[0_0_10px_#009DFF] z-10"
               />
             </div>
           </motion.div>
@@ -934,7 +998,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
             transition={{ duration: 2.2, repeat: Infinity }}
             className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] shadow-[0_0_8px_#FFAA00]"
           />
-          <span className="font-mono text-[8px] tracking-[0.45em] text-[#FFAA00] uppercase font-bold mt-3 pl-[0.45em]">
+          <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium mt-3 pl-[0.28em] text-center">
             SIGNAL EVOLUTION
           </span>
           <div className="w-[1px] h-8 md:h-12 bg-gradient-to-b from-[#FFAA00]/40 to-transparent mt-3" />
@@ -944,7 +1008,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           
           <ScrollReveal>
             <div className="space-y-2 text-center md:text-left">
-              <span className="font-mono text-[9px] tracking-[0.3em] text-[#FFAA00] uppercase font-semibold block">
+              <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium block pl-[0.28em] text-center md:text-left">
                 // EDITORIAL PROTOCOL
               </span>
               <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
@@ -1084,7 +1148,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase">
                 Join the Signal
               </h2>
@@ -1095,6 +1159,13 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
                     ? "Asegura tu enlace directo a la secuencia de alineación." 
                     : "Secure your direct link to the alignment sequence."}
               </p>
+              
+              {/* Campaign statement */}
+              <div className="pt-4 pb-1">
+                <span className="font-display text-xl sm:text-2xl md:text-3xl font-black tracking-[0.25em] text-white bg-gradient-to-r from-white via-[#FFB31A] to-white bg-clip-text text-transparent block pl-[0.25em]">
+                  ARRIVING 31 JULY 2026
+                </span>
+              </div>
             </div>
           </ScrollReveal>
 
@@ -1116,7 +1187,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
 
           {/* Small footer */}
           <div className="pt-12 space-y-2">
-            <p className="font-mono text-[10px] text-neutral-400 tracking-[0.4em] uppercase font-bold text-[#FFAA00]">
+            <p className="font-mono text-[11.5px] text-[#FFB31A] tracking-[0.22em] uppercase font-bold">
               Frequency becomes form.
             </p>
             <p className="font-mono text-[8px] text-neutral-600 tracking-widest uppercase">
@@ -1130,110 +1201,253 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
       <AnimatePresence>
         {showTeaser && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-12"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(24px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)", transition: { duration: 0.2 } }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            onClick={handleCloseTeaser}
+            className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4 md:p-6 select-none cursor-pointer"
           >
-            {/* Close button */}
+            {/* Custom Scan Line Animation Style */}
+            <style>{`
+              @keyframes video-scan {
+                0% { top: 0%; }
+                100% { top: 100%; }
+              }
+              .animate-video-scan {
+                animation: video-scan 4s infinite linear;
+              }
+            `}</style>
+
+            {/* Top-Right Close Button - Easy to tap on mobile, clearly visible */}
             <button
-              onClick={() => {
-                triggerSound("click");
-                setShowTeaser(false);
-                setIsPlayingTeaser(false);
-              }}
+              onClick={handleCloseTeaser}
               onMouseEnter={() => triggerSound("click")}
-              className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/5 border border-white/10 text-neutral-400 hover:text-white transition-all cursor-pointer hover:bg-white/10"
+              className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-4 rounded-full bg-black/40 hover:bg-white/15 border border-white/15 backdrop-blur-md text-white/80 hover:text-white transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center justify-center"
+              aria-label="Close Teaser"
             >
-              <X size={18} />
+              <X size={24} />
             </button>
 
-            {/* Cinematic video visual display / Sound generation matrix inside */}
-            <div className="w-full max-w-5xl aspect-video rounded-2xl bg-neutral-950 border border-white/10 shadow-[0_0_100px_rgba(255,136,0,0.15)] relative overflow-hidden flex flex-col items-center justify-center">
+            {/* Center Cinematic Container with scale and opacity animations */}
+            <motion.div 
+              initial={{ scale: 0.98, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.98, opacity: 0, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex flex-col items-center justify-center w-full max-w-md cursor-default"
+            >
               
-              {/* If there's an immersive canvas-like particles loop when playing */}
-              <div className="absolute inset-0 z-0 bg-radial-gradient" 
-                style={{
-                  background: "radial-gradient(circle at 50% 50%, rgba(255, 136, 0, 0.05) 0%, rgba(0, 157, 255, 0.03) 60%, transparent 100%)"
-                }}
-              />
-              
-              {/* Matrix grid lines */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:32px_32px] opacity-40" />
+              {/* Title & Transmission Caption ABOVE the video */}
+              <div className="text-center space-y-1.5 mb-5">
+                <h4 className="font-display text-xl sm:text-2xl tracking-[0.22em] text-white font-black uppercase leading-none">
+                  ARCHITECT OF OVERFLOW
+                </h4>
+                <div className="flex items-center justify-center gap-3 font-mono text-[11px] tracking-[0.18em] text-[#FFB31A] uppercase font-bold">
+                  <span>OFFICIAL PREVIEW</span>
+                  <span className="text-neutral-700 font-light">|</span>
+                  <span className="text-white">31 JULY 2026</span>
+                </div>
+              </div>
 
-              {/* Simulated high-end visualizer or embedded teaser video */}
-              <div className="absolute inset-0 w-full h-full z-10 flex flex-col items-center justify-center p-6 text-center space-y-6">
+              {/* Vertical 9:16 Video Area */}
+              <div className="relative w-[85vw] max-w-[340px] sm:max-w-[360px] aspect-[9/16] rounded-2xl bg-neutral-950 border border-white/10 shadow-[0_0_60px_rgba(255,170,0,0.15)] overflow-hidden group">
                 
-                {/* Let's embed a real gorgeous cinematic music visualizer of electronic beats, or show the interactive frequency matrix responding live! */}
-                <iframe 
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0" 
-                  title="Architect of Overflow Teaser"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full opacity-0 pointer-events-none" // Hidden rickroll audio fallback if wanted, but wait! Let's make a real gorgeous cinematic audio player!
+                {/* CRT Scanline effect overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%] pointer-events-none z-20 opacity-35" />
+                
+                {/* Ambient glow backing */}
+                <div className="absolute inset-0 bg-radial-gradient z-0 pointer-events-none" 
+                  style={{
+                    background: "radial-gradient(circle at 50% 50%, rgba(255, 170, 0, 0.04) 0%, rgba(0, 157, 255, 0.02) 60%, transparent 100%)"
+                  }}
                 />
 
-                <div className="space-y-4 max-w-lg">
-                  <span className="font-mono text-[9px] tracking-[0.40em] text-[#FFAA00] uppercase font-bold block animate-pulse">
-                    // TEASER STREAM ACTIVE [MTS-003]
-                  </span>
-                  <h3 className="font-display text-2xl sm:text-4xl font-extrabold tracking-wider text-white uppercase leading-none">
-                    ARCHITECT OF OVERFLOW
-                  </h3>
-                  
-                  {/* Rotating elegant disk/radar HUD vector */}
-                  <div className="w-32 h-32 mx-auto relative flex items-center justify-center my-6">
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 rounded-full border border-dashed border-white/20"
-                    />
-                    <motion.div 
-                      animate={{ rotate: -360 }}
-                      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                      className="absolute w-24 h-24 rounded-full border border-[#009DFF]/20"
-                    />
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#FFAA00] to-[#FF5500] opacity-80 flex items-center justify-center shadow-[0_0_20px_rgba(255,136,0,0.5)]">
-                      <Play size={14} className="fill-white text-white ml-0.5" />
+                {videoError ? (
+                  /* Premium Placeholder if Video Fails to Load / Not Available */
+                  <div className="absolute inset-0 bg-neutral-950 flex flex-col items-center justify-between p-6 overflow-hidden z-10">
+                    {/* Matrix lines */}
+                    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:24px_24px] opacity-20" />
+                    
+                    {/* Sweep Line */}
+                    <div className="absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#FFB31A]/30 to-transparent top-0 animate-video-scan pointer-events-none" />
+                    
+                    {/* HUD Header */}
+                    <div className="w-full flex justify-between items-center text-[8px] font-mono text-neutral-500 tracking-wider">
+                      <span>MTS // CHANN-03</span>
+                      <span className="text-[#FFB31A] font-bold tracking-[0.15em] animate-pulse">// OFFLINE CAPTURE</span>
+                    </div>
+
+                    {/* Center symbol */}
+                    <div className="relative flex flex-col items-center justify-center my-auto space-y-4">
+                      <div className="w-24 h-24 relative flex items-center justify-center">
+                        <motion.div 
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                          className="absolute inset-0 rounded-full border border-dashed border-white/10"
+                        />
+                        <motion.div 
+                          animate={{ rotate: -360 }}
+                          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                          className="absolute w-18 h-18 rounded-full border border-[#009DFF]/15"
+                        />
+                        <div className="w-12 h-12 rounded-full bg-neutral-900 border border-white/5 flex items-center justify-center shadow-[0_0_15px_rgba(255,170,0,0.08)]">
+                          <svg viewBox="0 0 100 100" className="w-6 h-6">
+                            <rect x="49" y="24" width="2" height="52" rx="1" fill="#FFB31A" className="opacity-90" />
+                            <path d="M 38 28 A 22 22 0 0 0 38 72" fill="none" stroke="#009DFF" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
+                            <path d="M 62 28 A 22 22 0 0 1 62 72" fill="none" stroke="#FFB31A" strokeWidth="2" strokeLinecap="round" className="opacity-80" />
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center space-y-1">
+                        <span className="font-mono text-[10px] tracking-[0.2em] text-[#FFB31A] font-bold block animate-pulse">
+                          TEASER SIGNAL LOADING
+                        </span>
+                        <span className="font-mono text-[7px] tracking-[0.1em] text-neutral-500 block uppercase">
+                          RESONANCE ACTIVE // MTS-003
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* HUD Footer */}
+                    <div className="w-full flex flex-col gap-1 font-mono text-[7px] text-neutral-600 tracking-wider">
+                      <div className="w-full h-[1px] bg-white/5" />
+                      <div className="flex justify-between">
+                        <span>PIPELINE: LOCKED</span>
+                        <span>V_0.8B</span>
+                      </div>
                     </div>
                   </div>
+                ) : (
+                  /* Video Stream Element */
+                  <div className="absolute inset-0 w-full h-full z-10 cursor-pointer" onClick={toggleVideoPlay}>
+                    <video
+                      ref={videoRef}
+                      src="/assets/architect-of-overflow-teaser.mp4"
+                      className="w-full h-full object-cover animate-fade-in"
+                      autoPlay
+                      muted={videoMuted}
+                      loop
+                      playsInline
+                      onPlay={() => setVideoPlaying(true)}
+                      onPause={() => setVideoPlaying(false)}
+                      onError={() => setVideoError(true)}
+                      onTimeUpdate={() => {
+                        if (videoRef.current) {
+                          setVideoCurrentTime(videoRef.current.currentTime);
+                          setVideoProgress((videoRef.current.currentTime / (videoRef.current.duration || 1)) * 100);
+                        }
+                      }}
+                      onLoadedMetadata={() => {
+                        if (videoRef.current) {
+                          setVideoDuration(videoRef.current.duration || 15);
+                        }
+                      }}
+                    />
 
-                  <p className="font-mono text-[10px] text-neutral-400 tracking-wider">
-                    {lang === "pt" 
-                      ? "FASE DE RESSONÂNCIA: TRANSMISSÃO COGNITIVA DE OVERFLOW EM BAIXOS PROFUNDOS" 
-                      : lang === "es" 
-                        ? "FASE DE RESONANCIA: TRANSMISIÓN COGNITIVA DE OVERFLOW EN BAJOS PROFUNDOS" 
-                        : "RESONANCE PHASE: COGNITIVE OVERFLOW DEEP BASS TRANSMISSION"}
-                  </p>
+                    {/* HUD Top-Bar Overlay on Video */}
+                    <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/80 to-transparent p-4 z-20 flex justify-between items-center font-mono text-[8px] text-neutral-300 tracking-wider">
+                      <span>MTS // TRANS-STREAM</span>
+                      <span className="font-bold text-[#FFB31A] tracking-widest flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded border border-white/5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#FFB31A] animate-ping" />
+                        OFFICIAL PREVIEW
+                      </span>
+                    </div>
 
-                  <div className="flex justify-center gap-6 font-mono text-[9px] text-neutral-500 uppercase tracking-widest pt-4">
-                    <span>
-                      {lang === "pt" ? "ÁUDIO: 24-BIT LOSSLESS" : lang === "es" ? "AUDIO: 24-BIT LOSSLESS" : "AUDIO: LOSSLESS 24-BIT"}
-                    </span>
-                    <span>•</span>
-                    <span>
-                      {lang === "pt" ? "VISUAIS: SÍNTESE EM TEMPO REAL" : lang === "es" ? "VISUALES: SÍNTESIS EN TIEMPO REAL" : "VISUALS: REAL-TIME SYNTHESIS"}
-                    </span>
+                    {/* Center Play Icon Overlay (visible when paused) */}
+                    <AnimatePresence>
+                      {!videoPlaying && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          className="absolute inset-0 flex items-center justify-center bg-black/40 z-20"
+                        >
+                          <div className="w-14 h-14 rounded-full bg-black/60 border border-white/15 backdrop-blur-md flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                            <Play size={18} className="fill-white text-white ml-1" />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Interactive HUD Controls Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 z-20 flex flex-col gap-2.5">
+                      {/* Subtle Progress Bar */}
+                      <div 
+                        className="w-full h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer relative"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!videoRef.current || !videoDuration) return;
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const clickX = e.clientX - rect.left;
+                          const percentage = clickX / rect.width;
+                          videoRef.current.currentTime = percentage * videoDuration;
+                        }}
+                      >
+                        <div 
+                          className="h-full bg-gradient-to-r from-[#009DFF] to-[#FFB31A] transition-all duration-100"
+                          style={{ width: `${videoProgress}%` }}
+                        />
+                      </div>
+
+                      {/* Controls Bottom Row */}
+                      <div className="flex justify-between items-center text-[9px] font-mono text-neutral-300">
+                        <div className="flex items-center gap-3">
+                          {/* Play/Pause Toggle */}
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleVideoPlay();
+                            }}
+                            className="p-1 text-white hover:text-[#FFB31A] transition-colors cursor-pointer"
+                          >
+                            {videoPlaying ? <Pause size={12} /> : <Play size={12} className="fill-current" />}
+                          </button>
+
+                          {/* Sound Mute/Unmute Toggle */}
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleVideoMute();
+                            }}
+                            className="p-1 text-white hover:text-[#FFB31A] transition-colors cursor-pointer flex items-center gap-1"
+                          >
+                            {videoMuted ? (
+                              <>
+                                <VolumeX size={12} className="text-red-500" />
+                                <span className="text-[7.5px] text-red-500 uppercase font-bold">MUTED</span>
+                              </>
+                            ) : (
+                              <>
+                                <Volume2 size={12} className="text-[#FFB31A]" />
+                                <span className="text-[7.5px] text-[#FFB31A] uppercase font-bold">AUDIO</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Current Time / Duration Counter */}
+                        <div className="tracking-widest text-neutral-400">
+                          {Math.floor(videoCurrentTime)}s / {Math.floor(videoDuration)}s
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
-                </div>
+                )}
 
               </div>
 
-              {/* Bottom technical parameters bar */}
-              <div className="absolute bottom-0 left-0 w-full p-4 border-t border-white/5 bg-black/40 backdrop-blur-md z-20 flex justify-between items-center text-[8px] font-mono text-neutral-500 tracking-wider">
-                <span>PORTAL PIPELINE ID: CAT1927582</span>
-                <span className="text-neutral-400">
-                  {lang === "pt" 
-                    ? "STATUS: TRANSMITINDO EM TEMPO REAL" 
-                    : lang === "es" 
-                      ? "ESTADO: TRANSMITIENDO EN TIEMPO REAL" 
-                      : "STATUS: BROADCASTING REAL-TIME"}
-                </span>
-                <span>SYSTEM VERSION 0.8B</span>
+              {/* Running Time BELOW the video */}
+              <div className="mt-5 text-center">
+                <p className="font-mono text-[11px] text-[#FFB31A] tracking-[0.18em] uppercase font-semibold">
+                  Running Time • 00:12
+                </p>
               </div>
 
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
