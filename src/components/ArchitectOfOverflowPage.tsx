@@ -875,7 +875,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[340vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[290vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sentinels for IntersectionObserver tracking with -40% 0px -40% 0px rootMargin (middle 20% viewport band) */}
         {transmissionPhrases.map((_, idx) => (
@@ -885,7 +885,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
               sentinelsRef.current[idx] = el;
             }}
             className="absolute left-0 right-0 h-1 pointer-events-none"
-            style={{ top: `${50 + idx * 40}vh` }}
+            style={{ top: `${50 + idx * 31}vh` }}
           />
         ))}
 
@@ -981,34 +981,34 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         </div>
       </section>
 
-      {/* SECTION 05: About the Release */}
+      {/* SECTION 05: About the Release & Preview */}
       <section 
         id="editorial-section" 
-        className="py-16 w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10"
+        className="min-h-screen w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10 py-16 md:py-24"
       >
         {/* Calmer white/blue glow backdrop in editorial/about section */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full bg-white/[0.02] blur-[90px] md:blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/3 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-[#009DFF]/[0.03] blur-[90px] md:blur-[120px] pointer-events-none" />
         
         {/* Visual signal path thread continuation at the top of Section 05: Minimal "Signal Evolution" Connector */}
-        <div className="w-full flex flex-col items-center -mt-16 mb-8 relative z-20">
-          <div className="w-[1px] h-12 md:h-20 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
+        <div className="w-full flex flex-col items-center mb-8 relative z-20">
+          <div className="w-[1px] h-12 md:h-16 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
           <motion.div 
             animate={{ scale: [0.95, 1.15, 0.95], opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 2.2, repeat: Infinity }}
             className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] shadow-[0_0_8px_#FFAA00]"
           />
-          <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium mt-3 pl-[0.28em] text-center">
+          <span className="font-mono text-[14px] md:text-[17px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium mt-3 pl-[0.28em] text-center">
             SIGNAL EVOLUTION
           </span>
-          <div className="w-[1px] h-8 md:h-12 bg-gradient-to-b from-[#FFAA00]/40 to-transparent mt-3" />
+          <div className="w-[1px] h-8 md:h-10 bg-gradient-to-b from-[#FFAA00]/40 to-transparent mt-3" />
         </div>
 
-        <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10">
+        <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10 w-full">
           
           <ScrollReveal>
             <div className="space-y-2 text-center md:text-left">
-              <span className="font-mono text-[15px] md:text-[19px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium block pl-[0.28em] text-center md:text-left">
+              <span className="font-mono text-[14px] md:text-[17px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium block pl-[0.28em] text-center md:text-left">
                 // EDITORIAL PROTOCOL
               </span>
               <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
@@ -1018,7 +1018,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           </ScrollReveal>
 
           <ScrollReveal delay={0.25}>
-            <div className="space-y-8 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
+            <div className="space-y-6 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
               <p className="font-semibold text-white">
                 {t.aooOpensNewCreative}
               </p>
@@ -1045,85 +1045,83 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
               </div>
             </div>
           </ScrollReveal>
-        </div>
-      </section>
 
-      {/* SECTION 06: Release Preview (Spotify Embed after release date) */}
-      <section className="py-16 w-full bg-black border-t border-white/[0.02] flex flex-col items-center justify-center z-10 relative">
-        <div className="max-w-3xl w-full mx-auto px-6 text-center space-y-10">
-          <ScrollReveal>
-            <div className="space-y-2">
-              <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold block">
-                // PREVIEW PORTAL WIDGET
-              </span>
-              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-                SPOTIFY BROADCAST CHANNEL
-              </h2>
-            </div>
-          </ScrollReveal>
+          {/* Integrated Preview Portal Widget with clean spacing */}
+          <div className="pt-10 border-t border-white/5 space-y-6">
+            <ScrollReveal>
+              <div className="space-y-2 text-center">
+                <span className="font-mono text-[9px] tracking-[0.3em] text-[#009DFF] uppercase font-semibold block">
+                  // PREVIEW PORTAL WIDGET
+                </span>
+                <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+                  SPOTIFY BROADCAST CHANNEL
+                </h2>
+              </div>
+            </ScrollReveal>
 
-          <ScrollReveal delay={0.2}>
-            <AnimatePresence mode="wait">
-              {isReleased || testReleased ? (
-                <motion.div
-                  key="spotify-player"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden bg-neutral-900/40 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
-                >
-                  {/* Embedded actual Metro Sul Spotify Player widget */}
-                  <iframe 
-                    src="https://open.spotify.com/embed/album/3F10JFx7wrz3scGyBUY3ES?utm_source=generator&theme=0" 
-                    width="100%" 
-                    height="352" 
-                    frameBorder="0" 
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                    loading="lazy"
-                    className="rounded-3xl border-0"
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="spotify-placeholder"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="max-w-lg mx-auto py-12 px-8 rounded-3xl bg-[#09090c] border border-white/[0.04] shadow-inner space-y-6 flex flex-col items-center"
-                >
-                  <div className="p-4 rounded-full bg-white/[0.02] border border-white/5 text-[#FFAA00] animate-pulse">
-                    <Disc size={32} className="animate-spin" style={{ animationDuration: "12s" }} />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-mono text-xs tracking-[0.3em] font-bold text-white uppercase">
-                      {t.aooAvailableJuly31}
-                    </h3>
-                    <p className="font-sans text-[11px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
-                      {t.aooSpotifyNotice}
-                    </p>
-                  </div>
-                  
-                  <a 
-                    href={PRESAVE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onMouseEnter={() => triggerSound("click")}
-                    onClick={() => triggerSound("confirm")}
-                    className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest text-neutral-300 transition-all cursor-pointer inline-flex items-center gap-2"
+            <ScrollReveal delay={0.2}>
+              <AnimatePresence mode="wait">
+                {isReleased || testReleased ? (
+                  <motion.div
+                    key="spotify-player"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden bg-neutral-900/40 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-pulse-subtle"
                   >
-                    <span>
-                      {lang === "pt" 
-                        ? "NOTIFICAR VIA SMARTLINK" 
-                        : lang === "es" 
-                          ? "NOTIFICAR VÍA SMARTLINK" 
-                          : "NOTIFY VIA SMARTLINK"}
-                    </span>
-                    <ExternalLink size={10} />
-                  </a>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </ScrollReveal>
+                    {/* Embedded actual Metro Sul Spotify Player widget */}
+                    <iframe 
+                      src="https://open.spotify.com/embed/album/3F10JFx7wrz3scGyBUY3ES?utm_source=generator&theme=0" 
+                      width="100%" 
+                      height="352" 
+                      frameBorder="0" 
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                      loading="lazy"
+                      className="rounded-3xl border-0"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="spotify-placeholder"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="max-w-lg mx-auto py-10 px-8 rounded-3xl bg-[#09090c]/80 border border-white/[0.04] shadow-inner space-y-6 flex flex-col items-center"
+                  >
+                    <div className="p-4 rounded-full bg-white/[0.02] border border-white/5 text-[#FFAA00] animate-pulse">
+                      <Disc size={32} className="animate-spin" style={{ animationDuration: "12s" }} />
+                    </div>
+                    <div className="space-y-2 text-center">
+                      <h3 className="font-mono text-xs tracking-[0.3em] font-bold text-white uppercase">
+                        {t.aooAvailableJuly31}
+                      </h3>
+                      <p className="font-sans text-[11px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
+                        {t.aooSpotifyNotice}
+                      </p>
+                    </div>
+                    
+                    <a 
+                      href={PRESAVE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseEnter={() => triggerSound("click")}
+                      onClick={() => triggerSound("confirm")}
+                      className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest text-neutral-300 transition-all cursor-pointer inline-flex items-center gap-2 hover:shadow-[0_0_15px_rgba(255,170,0,0.15)]"
+                    >
+                      <span>
+                        {lang === "pt" 
+                          ? "NOTIFICAR VIA SMARTLINK" 
+                          : lang === "es" 
+                            ? "NOTIFICAR VÍA SMARTLINK" 
+                            : "NOTIFY VIA SMARTLINK"}
+                      </span>
+                      <ExternalLink size={10} />
+                    </a>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
