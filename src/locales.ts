@@ -171,6 +171,27 @@ export interface TranslationSchema {
   upcomingCta: string;
   upcomingDate: string;
   upcomingPreSaveNotice: string;
+
+  // Architect of Overflow standalone page keys
+  aooFirstTransmission: string;
+  aooRelease: string;
+  aooDays: string;
+  aooHours: string;
+  aooMinutes: string;
+  aooSeconds: string;
+  aooWatchTeaser: string;
+  aooAvailableJuly31: string;
+  aooOpensNewCreative: string;
+  aooBlendingDescription: string;
+  aooContinueToReleaseNotes: string;
+  aooMainSystem: string;
+  aooScrollSlowly: string;
+  aooSignalActive: string;
+  aooTransmissionLive: string;
+  aooNotifySmartlink: string;
+  aooSpotifyNotice: string;
+  aooAudioActive: string;
+  aooAudioOff: string;
 }
 
 export const translations: Record<Language, TranslationSchema> = {
@@ -328,7 +349,26 @@ export const translations: Record<Language, TranslationSchema> = {
     upcomingDesc: "Architect of Overflow opens a new phase for Metro Sul — a frequency-driven electronic release about abundance, manifestation, alignment and conscious creation.",
     upcomingCta: "COMING SOON",
     upcomingDate: "Released on July 31st on all major streaming platforms.",
-    upcomingPreSaveNotice: "Pre-save is not active yet."
+    upcomingPreSaveNotice: "Pre-save is not active yet.",
+    aooFirstTransmission: "The first transmission of a new Metro Sul chapter.",
+    aooRelease: "Release",
+    aooDays: "Days",
+    aooHours: "Hours",
+    aooMinutes: "Minutes",
+    aooSeconds: "Seconds",
+    aooWatchTeaser: "Watch Teaser",
+    aooAvailableJuly31: "Available July 31",
+    aooOpensNewCreative: "Architect of Overflow opens a new creative chapter for Metro Sul.",
+    aooBlendingDescription: "Blending melodic electronic production with progressive movement and subtle trance-inspired energy, the release evolves from cinematic vocals into an uplifting electronic journey designed for immersive late-night listening.",
+    aooContinueToReleaseNotes: "Continue to release notes",
+    aooMainSystem: "MAIN SYSTEM",
+    aooScrollSlowly: "SCROLL SLOWLY TO DECODE",
+    aooSignalActive: "SIGNAL FULLY ACTIVE",
+    aooTransmissionLive: "PORTAL TRANSMISSION LIVE",
+    aooNotifySmartlink: "NOTIFY VIA SMARTLINK",
+    aooSpotifyNotice: "The direct Spotify broadcast pipeline will connect automatically on the release date. Join the signal to pre-save now.",
+    aooAudioActive: "SYS AUDIO: ACTIVE",
+    aooAudioOff: "SYS AUDIO: OFF"
   },
   pt: {
     bootSeq: [
@@ -484,7 +524,26 @@ export const translations: Record<Language, TranslationSchema> = {
     upcomingDesc: "Architect of Overflow inaugura uma nova fase para Metro Sul — um lançamento eletrônico guiado por frequência sobre abundância, manifestação, alinhamento e criação consciente.",
     upcomingCta: "EM BREVE",
     upcomingDate: "Lançamento em 31 de julho em todas as plataformas de streaming.",
-    upcomingPreSaveNotice: "Pré-salvamento ainda não disponível."
+    upcomingPreSaveNotice: "Pré-salvamento ainda não disponível.",
+    aooFirstTransmission: "A primeira transmissão de uma nova fase do Metro Sul.",
+    aooRelease: "Lançamento",
+    aooDays: "Dias",
+    aooHours: "Horas",
+    aooMinutes: "Minutos",
+    aooSeconds: "Segundos",
+    aooWatchTeaser: "Assistir teaser",
+    aooAvailableJuly31: "Disponível em 31 de julho",
+    aooOpensNewCreative: "Architect of Overflow abre uma nova fase criativa para o Metro Sul.",
+    aooBlendingDescription: "Combinando produção eletrônica melódica, movimento progressivo e uma energia sutil inspirada no trance, o lançamento evolui de vocais cinematográficos para uma jornada eletrônica imersiva e ascendente, criada para escutas noturnas profundas.",
+    aooContinueToReleaseNotes: "Continuar para as notas do lançamento",
+    aooMainSystem: "SISTEMA PRINCIPAL",
+    aooScrollSlowly: "ROLE DEVAGAR PARA DECODIFICAR",
+    aooSignalActive: "SINAL TOTALMENTE ATIVO",
+    aooTransmissionLive: "TRANSMISSÃO DO PORTAL AO VIVO",
+    aooNotifySmartlink: "NOTIFICAR VIA SMARTLINK",
+    aooSpotifyNotice: "O pipeline de transmissão direta do Spotify se conectará automaticamente na data de lançamento. Entre no sinal para pré-salvar agora.",
+    aooAudioActive: "ÁUDIO DO SYS: ATIVO",
+    aooAudioOff: "ÁUDIO DO SYS: DESLIGADO"
   },
   es: {
     bootSeq: [
@@ -640,6 +699,25 @@ export const translations: Record<Language, TranslationSchema> = {
     upcomingDesc: "Architect of Overflow inicia una nueva fase para Metro Sul — un lanzamiento electrónico guiado por frecuencia sobre abundancia, manifestación, alineación y creación consciente.",
     upcomingCta: "MUY PRONTO",
     upcomingDate: "Lanzamiento el 31 de julio en todas las plataformas de streaming.",
-    upcomingPreSaveNotice: "Pre-guardado aún no disponible."
+    upcomingPreSaveNotice: "Pre-guardado aún no disponible.",
+    aooFirstTransmission: "La primera transmisión de una nueva etapa de Metro Sul.",
+    aooRelease: "Lanzamiento",
+    aooDays: "Días",
+    aooHours: "Horas",
+    aooMinutes: "Minutos",
+    aooSeconds: "Segundos",
+    aooWatchTeaser: "Ver teaser",
+    aooAvailableJuly31: "Disponible el 31 de julio",
+    aooOpensNewCreative: "Architect of Overflow abre una nueva etapa creativa para Metro Sul.",
+    aooBlendingDescription: "Combinando producción electrónica melódica, movimiento progresivo y una energía sutil inspirada en el trance, el lanzamiento evoluciona desde voces cinematográficas hacia un viaje electrónico inmersivo y ascendente, diseñado para escuchas nocturnas profundas.",
+    aooContinueToReleaseNotes: "Continuar a las notas del lanzamiento",
+    aooMainSystem: "SISTEMA PRINCIPAL",
+    aooScrollSlowly: "DESPLÁCESE LENTAMENTE PARA DECRIFRAR",
+    aooSignalActive: "SEÑAL COMPLETAMENTE ACTIVA",
+    aooTransmissionLive: "TRANSMISIÓN DEL PORTAL EN VIVO",
+    aooNotifySmartlink: "NOTIFICAR VÍA SMARTLINK",
+    aooSpotifyNotice: "La línea de transmisión directa de Spotify se conectará automáticamente en la fecha de lanzamiento. Entra en la señal para preguardar ahora.",
+    aooAudioActive: "AUDIO DE SYS: ACTIVO",
+    aooAudioOff: "AUDIO DE SYS: APAGADO"
   }
 };

@@ -403,8 +403,42 @@ export default function App() {
     window.location.search.includes("page=architect-of-overflow") ||
     window.location.search.includes("route=architect-of-overflow");
 
+  // Force scroll to top on routing mount/transition
+  useEffect(() => {
+    if (isArchitectPage) {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTo(0, 0);
+      document.body.scrollTo(0, 0);
+      
+      const t1 = setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTo(0, 0);
+        document.body.scrollTo(0, 0);
+      }, 50);
+
+      const t2 = setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTo(0, 0);
+        document.body.scrollTo(0, 0);
+      }, 150);
+
+      if ("scrollRestoration" in window.history) {
+        try {
+          window.history.scrollRestoration = "manual";
+        } catch (e) {
+          console.warn("Could not set manual scroll restoration:", e);
+        }
+      }
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [isArchitectPage]);
+
   if (isArchitectPage) {
-    return <ArchitectOfOverflowPage />;
+    return <ArchitectOfOverflowPage lang={lang} setLang={setLang} />;
   }
 
   return (

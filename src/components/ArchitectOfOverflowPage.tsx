@@ -16,6 +16,7 @@ import {
   Disc,
   Smartphone
 } from "lucide-react";
+import { Language, translations } from "../locales";
 
 // The official release date and link configs
 const RELEASE_DATE = "2026-07-31";
@@ -37,32 +38,50 @@ function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; dela
 
 // Staggered cinematic receiver characters reveal
 function StaggeredPhrase({ phrase, isActive }: { phrase: string; isActive: boolean }) {
-  const letters = phrase.split("");
+  const words = phrase.split(" ");
+  let charIndex = 0; // for stagger delay
+  
   return (
-    <div className="flex flex-wrap justify-center items-center gap-[0.01em] md:gap-[0.03em] select-none">
-      {letters.map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0, filter: "blur(10px)", y: 5 }}
-          animate={isActive 
-            ? { opacity: 1, filter: "blur(0px)", y: 0 } 
-            : { opacity: 0.1, filter: "blur(5px)", y: -3 }
-          }
-          transition={{
-            duration: 0.9,
-            delay: isActive ? i * 0.035 : 0,
-            ease: [0.16, 1, 0.3, 1]
-          }}
-          className={char === " " ? "w-3 md:w-5" : "inline-block"}
-        >
-          {char}
-        </motion.span>
-      ))}
+    <div className="flex flex-wrap justify-center items-center gap-x-[0.3em] gap-y-[0.1em] select-none text-center w-full max-w-full">
+      {words.map((word, wIdx) => {
+        const letters = word.split("");
+        return (
+          <span key={wIdx} className="inline-block whitespace-nowrap">
+            {letters.map((char, lIdx) => {
+              const currentIdx = charIndex++;
+              return (
+                <motion.span
+                  key={lIdx}
+                  initial={{ opacity: 0, filter: "blur(10px)", y: 5 }}
+                  animate={isActive 
+                    ? { opacity: 1, filter: "blur(0px)", y: 0 } 
+                    : { opacity: 0.1, filter: "blur(5px)", y: -3 }
+                  }
+                  transition={{
+                    duration: 0.9,
+                    delay: isActive ? currentIdx * 0.035 : 0,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  className="inline-block"
+                >
+                  {char}
+                </motion.span>
+              );
+            })}
+          </span>
+        );
+      })}
     </div>
   );
 }
 
-export default function ArchitectOfOverflowPage() {
+interface ArchitectOfOverflowPageProps {
+  lang?: Language;
+  setLang?: (lang: Language) => void;
+}
+
+export default function ArchitectOfOverflowPage({ lang = "en", setLang }: ArchitectOfOverflowPageProps) {
+  const t = translations[lang];
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isReleased, setIsReleased] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
@@ -81,13 +100,8 @@ export default function ArchitectOfOverflowPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const transmissionContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Force reset scroll to top on component load/mount
+  // Force reset scroll to top on component load/mount and disable auto scroll restoration
   useEffect(() => {
-    window.scrollTo(0, 0);
-    const scrollTimeout = setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 40);
-
     if ("scrollRestoration" in window.history) {
       try {
         window.history.scrollRestoration = "manual";
@@ -96,15 +110,20 @@ export default function ArchitectOfOverflowPage() {
       }
     }
 
+    const resetScroll = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTo(0, 0);
+      document.body.scrollTo(0, 0);
+    };
+
+    resetScroll();
+
+    // Sequence of resets to guarantee starting at the top regardless of initial render or image load timings
+    const intervals = [10, 30, 80, 150, 300, 500];
+    const timers = intervals.map(ms => setTimeout(resetScroll, ms));
+
     return () => {
-      clearTimeout(scrollTimeout);
-      if ("scrollRestoration" in window.history) {
-        try {
-          window.history.scrollRestoration = "auto";
-        } catch (e) {
-          console.warn("Could not set scrollRestoration to auto:", e);
-        }
-      }
+      timers.forEach(clearTimeout);
     };
   }, []);
 
@@ -301,14 +320,24 @@ export default function ArchitectOfOverflowPage() {
     "CODE ACCEPTED"
   ];
 
-  // Map progress to active indices
-  const activeIndex = Math.max(0, Math.min(transmissionPhrases.length - 1, Math.floor(scrollProgress * transmissionPhrases.length)));
+  // Map progress to active indices based on proximity to center values (shifted for tightness & less dead space)
+  const centers = [0.08, 0.21, 0.34, 0.47, 0.60, 0.73, 0.86];
+  
+  // Calculate current active index (only active if within the active scroll progress band)
+  let activeIndex = -1;
+  centers.forEach((center, idx) => {
+    const dist = Math.abs(scrollProgress - center);
+    if (dist <= 0.06) {
+      activeIndex = idx;
+    }
+  });
+
   const prevActiveIndexRef = useRef(-1);
 
   // Sound clicker on scroll trigger transition
   useEffect(() => {
     if (activeIndex !== prevActiveIndexRef.current) {
-      if (prevActiveIndexRef.current !== -1) {
+      if (prevActiveIndexRef.current !== -1 && activeIndex !== -1) {
         triggerSound("tick");
       }
       prevActiveIndexRef.current = activeIndex;
@@ -317,31 +346,65 @@ export default function ArchitectOfOverflowPage() {
 
   // Helper to calculate opacity and blur for each phrase based on global scrollProgress of Section 04
   const getPhraseStyle = (index: number) => {
-    const totalPhrases = transmissionPhrases.length;
-    const segmentLength = 1 / totalPhrases;
-    const center = (index + 0.5) * segmentLength;
-    const distance = Math.abs(scrollProgress - center);
-    const activeRange = segmentLength * 0.8;
+    const center = centers[index];
+    const distance = scrollProgress - center; // Negative means below center, positive means above center
+    
+    // We want a tighter vertical motion envelope:
+    // translateY goes from +3vh (at distance = -0.06) to -3vh (at distance = +0.06)
+    // Map distance within [-0.06, 0.06] to translateY within [3, -3] vh units
+    let translateY = 0;
+    if (distance <= -0.06) {
+      translateY = 3;
+    } else if (distance >= 0.06) {
+      translateY = -3;
+    } else {
+      translateY = -(distance / 0.06) * 3;
+    }
+    
+    // Calculate yFrac where 0.50 is the exact vertical center.
+    // 3vh travel maps to 0.03 frac of viewport height, so yFrac ranges from 0.53 to 0.47.
+    // This fits perfectly within the 45% - 55% viewport height range!
+    const yFrac = 0.5 + (translateY / 100);
     
     let opacity = 0;
-    let blur = 18;
-    let scale = 0.94;
-    let letterSpacing = "0.25em";
+    let blur = 14;
+    let scale = 0.96;
+    let letterSpacing = "0.15em";
 
-    if (distance < activeRange) {
-      const factor = 1 - (distance / activeRange); // 1 at center, 0 at edges
-      opacity = Math.pow(factor, 1.6);
-      blur = Math.max(0, 14 * (1 - factor));
-      scale = 0.96 + 0.04 * factor;
-      letterSpacing = `${0.2 + (0.08 * factor)}em`;
+    // Precise envelope based on viewport position (45% to 55%):
+    // - start reveal around 53% viewport height (yFrac = 0.53, corresponding to distance = -0.06)
+    // - complete reveal (peak opacity, sharpness) at 50% viewport height (yFrac = 0.50, distance = 0)
+    // - fade out completely by 47% viewport height (yFrac = 0.47, distance = +0.06)
+    // This avoids any reveal in the top third (yFrac < 0.33) or lower half (yFrac > 0.55).
+    if (yFrac <= 0.53 && yFrac >= 0.47) {
+      if (yFrac >= 0.50) {
+        // Revealing phase: yFrac goes from 0.53 to 0.50 (factor from 0 to 1)
+        const factor = (0.53 - yFrac) / 0.03;
+        opacity = Math.pow(factor, 1.4);
+        blur = Math.max(0, 10 * (1 - factor));
+        scale = 0.97 + 0.03 * factor;
+        letterSpacing = `${0.15 + (0.05 * factor)}em`;
+      } else {
+        // Fading out phase: yFrac goes from 0.50 to 0.47 (factor from 1 to 0)
+        const factor = (yFrac - 0.47) / 0.03;
+        opacity = Math.pow(factor, 1.4);
+        blur = Math.max(0, 10 * (1 - factor));
+        scale = 0.97 + 0.03 * factor;
+        letterSpacing = `${0.15 + (0.05 * factor)}em`;
+      }
+    } else {
+      opacity = 0;
+      blur = 14;
+      scale = 0.96;
     }
 
     return {
       opacity,
       filter: `blur(${blur}px)`,
-      transform: `scale(${scale})`,
+      transform: `translateY(${translateY}vh) scale(${scale})`,
       letterSpacing,
-      transition: "filter 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+      pointerEvents: opacity > 0.15 ? "auto" : "none",
+      transition: "opacity 0.08s ease-out, filter 0.08s ease-out, transform 0.08s ease-out"
     };
   };
 
@@ -371,7 +434,7 @@ export default function ArchitectOfOverflowPage() {
       <div className="fixed inset-0 pointer-events-none z-[1] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.85)_100%)]" />
 
       {/* Top Floating Mini Header */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-5 md:px-12 flex items-center justify-between bg-gradient-to-b from-black/85 to-transparent backdrop-blur-md border-b border-white/[0.03]">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-5 md:px-12 flex flex-col sm:flex-row items-center justify-between bg-gradient-to-b from-black/85 to-transparent backdrop-blur-md border-b border-white/[0.03] gap-4 sm:gap-0">
         <div className="flex items-center gap-6">
           <a 
             href="/"
@@ -392,7 +455,46 @@ export default function ArchitectOfOverflowPage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          {/* Elegant Minimal Language Picker */}
+          <div className="flex items-center gap-1 font-mono text-[9px] bg-white/[0.02] border border-white/5 py-1.5 px-3 rounded-full text-neutral-400">
+            <button 
+              onClick={() => setLang?.("pt")}
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              style={{ 
+                color: lang === "pt" ? "#FFAA00" : undefined,
+                fontWeight: lang === "pt" ? "bold" : undefined,
+                background: lang === "pt" ? "rgba(255,255,255,0.03)" : undefined
+              }}
+            >
+              PT
+            </button>
+            <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+            <button 
+              onClick={() => setLang?.("en")}
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              style={{ 
+                color: lang === "en" ? "#FFAA00" : undefined,
+                fontWeight: lang === "en" ? "bold" : undefined,
+                background: lang === "en" ? "rgba(255,255,255,0.03)" : undefined
+              }}
+            >
+              EN
+            </button>
+            <span className="text-neutral-700 font-light text-[8px] select-none">|</span>
+            <button 
+              onClick={() => setLang?.("es")}
+              className="cursor-pointer hover:text-white transition-colors py-0.5 px-1.5 rounded text-[8px] sm:text-[9px]"
+              style={{ 
+                color: lang === "es" ? "#FFAA00" : undefined,
+                fontWeight: lang === "es" ? "bold" : undefined,
+                background: lang === "es" ? "rgba(255,255,255,0.03)" : undefined
+              }}
+            >
+              ES
+            </button>
+          </div>
+
           {/* Immersive Sound controller */}
           <button
             onClick={toggleSound}
@@ -404,7 +506,7 @@ export default function ArchitectOfOverflowPage() {
             }`}
           >
             {soundEnabled ? <Volume2 size={11} className="animate-bounce" /> : <VolumeX size={11} />}
-            <span>{soundEnabled ? "SYS AUDIO: ACTIVE" : "SYS AUDIO: OFF"}</span>
+            <span>{soundEnabled ? t.aooAudioActive : t.aooAudioOff}</span>
           </button>
 
           {/* Home Link */}
@@ -419,7 +521,7 @@ export default function ArchitectOfOverflowPage() {
             }}
             className="px-4 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest transition-all duration-300 cursor-pointer"
           >
-            MAIN SYSTEM
+            {t.aooMainSystem}
           </a>
         </div>
       </nav>
@@ -509,14 +611,20 @@ export default function ArchitectOfOverflowPage() {
               ARCHITECT OF OVERFLOW
             </h1>
             <p className="font-mono text-[10px] md:text-xs text-neutral-400 tracking-[0.25em] max-w-lg mx-auto leading-relaxed">
-              The first transmission of a new Metro Sul chapter.
+              {t.aooFirstTransmission}
             </p>
           </div>
 
           {/* Release Date Info */}
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/[0.02] border border-white/5 font-mono text-[10px] tracking-widest text-neutral-300">
             <Calendar size={12} className="text-[#FFAA00]" />
-            <span>RELEASE DATE: 31 JULY 2026</span>
+            <span>
+              {lang === "pt" 
+                ? "DATA DE LANÇAMENTO: 31 DE JULHO DE 2026" 
+                : lang === "es" 
+                  ? "FECHA DE LANZAMIENTO: 31 DE JULIO DE 2026" 
+                  : "RELEASE DATE: 31 JULY 2026"}
+            </span>
           </div>
 
           {/* Action Buttons */}
@@ -529,7 +637,11 @@ export default function ArchitectOfOverflowPage() {
               onClick={() => triggerSound("confirm")}
               className="w-full sm:w-auto px-10 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white text-black hover:bg-neutral-200 flex items-center justify-center gap-2.5 transition-all duration-300 hover:shadow-[0_0_35px_rgba(255,255,255,0.22)] hover:-translate-y-0.5 cursor-pointer"
             >
-              <span>{isReleased || testReleased ? "LISTEN NOW" : "JOIN THE SIGNAL"}</span>
+              <span>
+                {isReleased || testReleased 
+                  ? (lang === "pt" ? "OUVIR AGORA" : lang === "es" ? "ESCUCHAR AHORA" : "LISTEN NOW") 
+                  : "JOIN THE SIGNAL"}
+              </span>
               <ArrowRight size={12} />
             </a>
             
@@ -543,7 +655,7 @@ export default function ArchitectOfOverflowPage() {
               className="w-full sm:w-auto px-8 py-4 rounded-full text-xs font-mono tracking-widest font-bold bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white flex items-center justify-center gap-2.5 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
             >
               <Play size={11} className="fill-current" />
-              <span>WATCH TEASER</span>
+              <span>{t.aooWatchTeaser.toUpperCase()}</span>
             </button>
           </div>
         </div>
@@ -597,10 +709,10 @@ export default function ArchitectOfOverflowPage() {
               >
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] tracking-widest uppercase">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>SIGNAL FULLY ACTIVE</span>
+                  <span>{t.aooSignalActive}</span>
                 </div>
                 <h3 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white uppercase">
-                  PORTAL TRANSMISSION LIVE
+                  {t.aooTransmissionLive}
                 </h3>
               </motion.div>
             ) : (
@@ -612,10 +724,10 @@ export default function ArchitectOfOverflowPage() {
                 className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 max-w-4.5xl mx-auto"
               >
                 {[
-                  { label: "DAYS", value: timeLeft.days },
-                  { label: "HOURS", value: timeLeft.hours },
-                  { label: "MINUTES", value: timeLeft.minutes },
-                  { label: "SECONDS", value: timeLeft.seconds }
+                  { label: t.aooDays.toUpperCase(), value: timeLeft.days },
+                  { label: t.aooHours.toUpperCase(), value: timeLeft.hours },
+                  { label: t.aooMinutes.toUpperCase(), value: timeLeft.minutes },
+                  { label: t.aooSeconds.toUpperCase(), value: timeLeft.seconds }
                 ].map((item, index) => (
                   <div key={index} className="space-y-2 text-center p-8 md:p-10 rounded-2xl bg-[#09090c] border border-white/[0.06] shadow-inner relative group">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#FFAA00]/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
@@ -711,10 +823,10 @@ export default function ArchitectOfOverflowPage() {
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[170vh] md:h-[220vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[110vh] md:h-[125vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sticky viewport frame to anchor the cinematic typography */}
-        <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10">
+        <div className="sticky top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden z-10">
           
           {/* Amber signal glow backdrop behind transmission/code */}
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[460px] md:h-[460px] mx-auto rounded-full bg-[#FFAA00]/[0.045] blur-[100px] md:blur-[140px] pointer-events-none" />
@@ -725,7 +837,7 @@ export default function ArchitectOfOverflowPage() {
 
           {/* Interactive instruction tag */}
           <div className="absolute top-24 font-mono text-[8px] text-neutral-500 tracking-[0.4em] uppercase">
-            SCROLL SLOWLY TO DECODE
+            {t.aooScrollSlowly}
           </div>
 
           {/* Sticky target anchor viewport */}
@@ -735,14 +847,30 @@ export default function ArchitectOfOverflowPage() {
               return (
                 <div
                   key={idx}
-                  style={getPhraseStyle(idx)}
-                  className="absolute font-display text-2.5xl sm:text-4xl md:text-6xl font-black text-center text-white tracking-[0.15em] uppercase select-none font-bold"
+                  style={{
+                    ...getPhraseStyle(idx),
+                    fontSize: "clamp(1.5rem, 5vw, 4.5rem)",
+                    maxWidth: "92vw",
+                    overflowWrap: "normal",
+                    wordBreak: "normal"
+                  }}
+                  className="absolute font-display font-black text-center text-white uppercase select-none font-bold tracking-[0.15em] leading-[1.05]"
                 >
                   <StaggeredPhrase phrase={phrase} isActive={isCurrentActive} />
                 </div>
               );
             })}
           </div>
+
+          {/* Subtle frequency signal line continuing downward from the center */}
+          <motion.div 
+            style={{ 
+              opacity: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 10.0) : 0,
+              scaleY: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 8.0) : 0,
+              originY: 0
+            }}
+            className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[1px] h-[35vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
+          />
 
           {/* Elegant HUD tracking meter */}
           <div className="absolute bottom-36 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
@@ -755,8 +883,8 @@ export default function ArchitectOfOverflowPage() {
           {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll */}
           <motion.div 
             style={{ 
-              opacity: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 6.5) : 0,
-              y: scrollProgress > 0.80 ? 0 : 25
+              opacity: scrollProgress > 0.86 ? Math.min(1, (scrollProgress - 0.86) * 8.0) : 0,
+              y: scrollProgress > 0.86 ? 0 : 25
             }}
             transition={{ ease: "easeOut" }}
             className="absolute bottom-8 flex flex-col items-center gap-3.5 z-20 pointer-events-auto"
@@ -773,7 +901,7 @@ export default function ArchitectOfOverflowPage() {
               onMouseEnter={() => triggerSound("tick")}
               className="font-mono text-[8.5px] tracking-[0.38em] text-[#FFAA00] hover:text-[#009DFF] uppercase font-bold pl-[0.38em] transition-all duration-300 bg-black/60 hover:bg-black/90 border border-[#FFAA00]/25 hover:border-[#009DFF]/50 px-4 py-2 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2"
             >
-              CONTINUE TO RELEASE NOTES
+              {t.aooContinueToReleaseNotes.toUpperCase()}
             </button>
             <div className="relative flex flex-col items-center h-16 w-8 pointer-events-none">
               {/* Vertical thin frequency line using the Metro Sul palette */}
@@ -820,7 +948,7 @@ export default function ArchitectOfOverflowPage() {
                 // EDITORIAL PROTOCOL
               </span>
               <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-                ABOUT THE RELEASE
+                {lang === "pt" ? "SOBRE O LANÇAMENTO" : lang === "es" ? "SOBRE EL LANZAMIENTO" : "ABOUT THE RELEASE"}
               </h2>
             </div>
           </ScrollReveal>
@@ -828,10 +956,10 @@ export default function ArchitectOfOverflowPage() {
           <ScrollReveal delay={0.25}>
             <div className="space-y-8 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
               <p className="font-semibold text-white">
-                Architect of Overflow opens a new creative chapter for Metro Sul.
+                {t.aooOpensNewCreative}
               </p>
               <p className="text-neutral-400">
-                Blending melodic electronic production with progressive movement and subtle trance-inspired energy, the release evolves from cinematic vocals into an uplifting electronic journey designed for immersive late-night listening.
+                {t.aooBlendingDescription}
               </p>
             </div>
           </ScrollReveal>
@@ -844,11 +972,11 @@ export default function ArchitectOfOverflowPage() {
                 <span className="text-neutral-300 font-bold">124 BPM</span>
               </div>
               <div className="space-y-1 border-x border-white/5">
-                <span className="block text-neutral-600">KEY</span>
-                <span className="text-neutral-300 font-bold">A MINOR</span>
+                <span className="block text-neutral-600">{lang === "pt" ? "TOM" : lang === "es" ? "TONALIDAD" : "KEY"}</span>
+                <span className="text-neutral-300 font-bold">{lang === "pt" ? "LÁ MENOR" : lang === "es" ? "LA MENOR" : "A MINOR"}</span>
               </div>
               <div className="space-y-1">
-                <span className="block text-neutral-600">RESOLUTION</span>
+                <span className="block text-neutral-600">{lang === "pt" ? "RESOLUÇÃO" : lang === "es" ? "RESOLUCIÓN" : "RESOLUTION"}</span>
                 <span className="text-neutral-300 font-bold">24-BIT / 96KHZ</span>
               </div>
             </div>
@@ -904,10 +1032,10 @@ export default function ArchitectOfOverflowPage() {
                   </div>
                   <div className="space-y-2">
                     <h3 className="font-mono text-xs tracking-[0.3em] font-bold text-white uppercase">
-                      AVAILABLE JULY 31
+                      {t.aooAvailableJuly31}
                     </h3>
                     <p className="font-sans text-[11px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
-                      The direct Spotify broadcast pipeline will connect automatically on the release date. Join the signal to pre-save now.
+                      {t.aooSpotifyNotice}
                     </p>
                   </div>
                   
@@ -919,7 +1047,13 @@ export default function ArchitectOfOverflowPage() {
                     onClick={() => triggerSound("confirm")}
                     className="px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-[10px] font-mono tracking-widest text-neutral-300 transition-all cursor-pointer inline-flex items-center gap-2"
                   >
-                    <span>NOTIFY VIA SMARTLINK</span>
+                    <span>
+                      {lang === "pt" 
+                        ? "NOTIFICAR VIA SMARTLINK" 
+                        : lang === "es" 
+                          ? "NOTIFICAR VÍA SMARTLINK" 
+                          : "NOTIFY VIA SMARTLINK"}
+                    </span>
                     <ExternalLink size={10} />
                   </a>
                 </motion.div>
@@ -955,7 +1089,11 @@ export default function ArchitectOfOverflowPage() {
                 Join the Signal
               </h2>
               <p className="font-mono text-[9px] text-neutral-400 tracking-[0.3em] uppercase max-w-xs mx-auto leading-relaxed">
-                Secure your direct link to the alignment sequence.
+                {lang === "pt" 
+                  ? "Garanta seu link direto para a sequência de alinhamento." 
+                  : lang === "es" 
+                    ? "Asegura tu enlace directo a la secuencia de alineación." 
+                    : "Secure your direct link to the alignment sequence."}
               </p>
             </div>
           </ScrollReveal>
@@ -970,7 +1108,9 @@ export default function ArchitectOfOverflowPage() {
               onClick={() => triggerSound("confirm")}
               className="inline-flex px-14 py-5 rounded-full text-xs font-mono tracking-widest font-bold bg-gradient-to-r from-[#FFAA00] to-[#FF5500] text-white hover:opacity-90 shadow-[0_0_30px_rgba(255,136,0,0.25)] hover:shadow-[0_0_45px_rgba(255,136,0,0.35),0_0_20px_rgba(0,157,255,0.15)] transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5 cursor-pointer border border-white/10"
             >
-              {isReleased || testReleased ? "LISTEN ON SPOTIFY" : "PRE-SAVE ON SPOTIFY"}
+              {isReleased || testReleased 
+                ? (lang === "pt" ? "OUVIR NO SPOTIFY" : lang === "es" ? "ESCUCHAR EN SPOTIFY" : "LISTEN ON SPOTIFY") 
+                : (lang === "pt" ? "SALVAR NO SPOTIFY" : lang === "es" ? "PRE-GUARDAR EN SPOTIFY" : "PRE-SAVE ON SPOTIFY")}
             </a>
           </ScrollReveal>
 
@@ -1060,13 +1200,21 @@ export default function ArchitectOfOverflowPage() {
                   </div>
 
                   <p className="font-mono text-[10px] text-neutral-400 tracking-wider">
-                    RESONANCE PHASE: COGNITIVE OVERFLOW DEEP BASS TRANSMISSION
+                    {lang === "pt" 
+                      ? "FASE DE RESSONÂNCIA: TRANSMISSÃO COGNITIVA DE OVERFLOW EM BAIXOS PROFUNDOS" 
+                      : lang === "es" 
+                        ? "FASE DE RESONANCIA: TRANSMISIÓN COGNITIVA DE OVERFLOW EN BAJOS PROFUNDOS" 
+                        : "RESONANCE PHASE: COGNITIVE OVERFLOW DEEP BASS TRANSMISSION"}
                   </p>
 
                   <div className="flex justify-center gap-6 font-mono text-[9px] text-neutral-500 uppercase tracking-widest pt-4">
-                    <span>AUDIO: LOSSLESS 24-BIT</span>
+                    <span>
+                      {lang === "pt" ? "ÁUDIO: 24-BIT LOSSLESS" : lang === "es" ? "AUDIO: 24-BIT LOSSLESS" : "AUDIO: LOSSLESS 24-BIT"}
+                    </span>
                     <span>•</span>
-                    <span>VISUALS: REAL-TIME SYNTHESIS</span>
+                    <span>
+                      {lang === "pt" ? "VISUAIS: SÍNTESE EM TEMPO REAL" : lang === "es" ? "VISUALES: SÍNTESIS EN TIEMPO REAL" : "VISUALS: REAL-TIME SYNTHESIS"}
+                    </span>
                   </div>
                 </div>
 
@@ -1075,7 +1223,13 @@ export default function ArchitectOfOverflowPage() {
               {/* Bottom technical parameters bar */}
               <div className="absolute bottom-0 left-0 w-full p-4 border-t border-white/5 bg-black/40 backdrop-blur-md z-20 flex justify-between items-center text-[8px] font-mono text-neutral-500 tracking-wider">
                 <span>PORTAL PIPELINE ID: CAT1927582</span>
-                <span className="text-neutral-400">STATUS: BROADCASTING REAL-TIME</span>
+                <span className="text-neutral-400">
+                  {lang === "pt" 
+                    ? "STATUS: TRANSMITINDO EM TEMPO REAL" 
+                    : lang === "es" 
+                      ? "ESTADO: TRANSMITIENDO EN TIEMPO REAL" 
+                      : "STATUS: BROADCASTING REAL-TIME"}
+                </span>
                 <span>SYSTEM VERSION 0.8B</span>
               </div>
 
