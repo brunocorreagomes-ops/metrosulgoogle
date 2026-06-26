@@ -11,7 +11,7 @@ const signals = [
 
 export function SignalLanguage() {
   return (
-    <section id="signals" className="scroll-mt-24 py-16 relative">
+    <section id="signals" className="scroll-mt-24 py-8 relative flex flex-col justify-center min-h-screen w-full">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Subtle background pulses */}
         <div className="absolute top-0 right-1/4 w-[40vw] h-[40vw] rounded-full blur-[120px] opacity-[0.03] bg-[#009DFF] animate-pulse" style={{ animationDuration: '8s' }} />

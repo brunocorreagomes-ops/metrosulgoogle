@@ -126,7 +126,7 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
       let bassAvg = 0;
       let highAvg = 0;
       let analyserActive = false;
-      const analyser = (window as any).__metroAnalyser;
+      const analyser = null; // Removed to disable sound-reactivity on the background canvas
       let dataArray: Uint8Array | null = null;
 
       if (analyser) {
@@ -189,35 +189,34 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
       }
 
       // Draw faint background grid segments coordinates (purely futuristic/minimalist)
-      // Slight mechanical jitter when deep bass hits!
-      const bassJitterFactor = smoothBass / 255;
-      const gridJitterX = (Math.random() - 0.5) * bassJitterFactor * 4;
-      const gridJitterY = (Math.random() - 0.5) * bassJitterFactor * 4;
+      // Jitter removed for premium aesthetic stability
+      const bassJitterFactor = 0;
+      const gridJitterX = 0;
+      const gridJitterY = 0;
 
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.012 + (bassJitterFactor * 0.02)})`;
-      ctx.lineWidth = 0.5 + bassJitterFactor * 0.5;
+      ctx.strokeStyle = `rgba(255, 255, 255, 0.012)`;
+      ctx.lineWidth = 0.5;
       const gridSize = 160;
       for (let x = 0; x < width; x += gridSize) {
         ctx.beginPath();
-        ctx.moveTo(x + gridJitterX, 0);
-        ctx.lineTo(x + gridJitterX, height);
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
         ctx.stroke();
       }
       for (let y = 0; y < height; y += gridSize) {
         ctx.beginPath();
-        ctx.moveTo(0, y + gridJitterY);
-        ctx.lineTo(width, y + gridJitterY);
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
         ctx.stroke();
       }
 
-      // Update and draw ultra-subtle autonomous ambient particles
+      // Update and draw ultra-subtle autonomous ambient particles (calm, stable)
       for (let i = 0; i < ambientParticles.length; i++) {
         const tp = ambientParticles[i];
         
-        // Let them drift and react tiny bit to high-frequency sparkles
-        const pSpeedCoeff = 1.0 + (smoothHigh / 255) * 3.5;
-        tp.y += tp.vy * tp.speedMult * audioParamIntensity * pSpeedCoeff;
-        tp.x += tp.vx * tp.speedMult * (1.0 + (audioParamIntensity - 1.0) * 0.5) * pSpeedCoeff;
+        // Let them drift slowly and elegantly
+        tp.y += tp.vy * tp.speedMult * 0.5;
+        tp.x += tp.vx * tp.speedMult * 0.5;
 
         // Wrap around when escaping viewport edges
         if (tp.y < -20) {
@@ -228,127 +227,17 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
           tp.x = Math.random() * width;
         }
 
-        // Pulse the speed and alphas with slow trig waves and high-end peaks
-        const pulseAlpha = tp.alpha * (0.8 + Math.sin(time + i) * 0.2) * (1.0 + (audioParamIntensity - 1.0) * 0.4) * (1.0 + (smoothHigh / 255) * 0.5);
+        // Pulse the speed and alphas with slow trig waves
+        const pulseAlpha = tp.alpha * (0.8 + Math.sin(time + i) * 0.2);
 
         // Render delicate micro-speck
         ctx.beginPath();
-        ctx.arc(tp.x, tp.y, tp.size * (1.0 + (smoothHigh / 255) * 0.5), 0, Math.PI * 2);
+        ctx.arc(tp.x, tp.y, tp.size, 0, Math.PI * 2);
         ctx.fillStyle = activePrimaryColor.replace("rgb", "rgba").replace(")", `, ${pulseAlpha})`);
         ctx.fill();
       }
 
-      // DRAW SYMMETRICAL FREQUENCY SPECTRUM WIDGET
-      // Sits beautifully at the bottom of the screen
-      const specWidth = Math.min(width * 0.6, 520);
-      if (specWidth > 180) { // Only render if we have enough screen space
-        const startX = (width - specWidth) / 2;
-        const baselineY = height - 100;
-
-        // Draw HUD Frame Panel Background & Borders
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        // Top border
-        ctx.moveTo(startX - 20, baselineY - 65);
-        ctx.lineTo(startX + specWidth + 20, baselineY - 65);
-        // Baseline
-        ctx.moveTo(startX - 20, baselineY);
-        ctx.lineTo(startX + specWidth + 20, baselineY);
-        ctx.stroke();
-
-        // Corner aesthetic bracket marks (left/right bounds)
-        ctx.strokeStyle = activePrimaryColor.replace("rgb", "rgba").replace(")", ", 0.2)");
-        ctx.beginPath();
-        // Left bracket
-        ctx.moveTo(startX - 15, baselineY - 55);
-        ctx.lineTo(startX - 20, baselineY - 55);
-        ctx.lineTo(startX - 20, baselineY - 10);
-        ctx.lineTo(startX - 15, baselineY - 10);
-        // Right bracket
-        ctx.moveTo(startX + specWidth + 15, baselineY - 55);
-        ctx.lineTo(startX + specWidth + 20, baselineY - 55);
-        ctx.lineTo(startX + specWidth + 20, baselineY - 10);
-        ctx.lineTo(startX + specWidth + 15, baselineY - 10);
-        ctx.stroke();
-
-        // Technical HUD tags
-        ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-        ctx.font = "6.5px var(--font-mono), monospace";
-        ctx.fillText("DECIBEL GAIN MAP [CH_01/A]", startX - 18, baselineY - 72);
-        
-        ctx.textAlign = "right";
-        ctx.fillText("REAL-TIME SPECTRUM // MTS-SYS", startX + specWidth + 18, baselineY - 72);
-        ctx.textAlign = "left"; // reset
-
-        // Draw Frequency markings below baseline
-        ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-        ctx.font = "5.5px var(--font-mono), monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("20Hz", startX + 5, baselineY + 12);
-        ctx.fillText("500Hz", startX + specWidth * 0.25, baselineY + 12);
-        ctx.fillText("1.5kHz", startX + specWidth * 0.5, baselineY + 12);
-        ctx.fillText("8kHz", startX + specWidth * 0.75, baselineY + 12);
-        ctx.fillText("22kHz", startX + specWidth - 5, baselineY + 12);
-        ctx.textAlign = "left"; // reset
-
-        // Draw individual bars
-        const barGap = 3;
-        const barWidth = (specWidth / N) - barGap;
-
-        for (let i = 0; i < N; i++) {
-          const bx = startX + i * (barWidth + barGap);
-
-          // Symmetrical distance from center: 0 at center, 1 at ends
-          const d = Math.abs(i - (N - 1) / 2) / ((N - 1) / 2);
-
-          let val = 0;
-          if (analyserActive && dataArray) {
-            // Map distance to specific spectrum indices (lows in center, highs on sides)
-            const binIndex = Math.min(dataArray.length - 1, Math.floor(d * dataArray.length));
-            val = dataArray[binIndex];
-          } else {
-            // Slower breathing wave movement when idle
-            const waveOffset = i * 0.25;
-            const speed = time * 3.2;
-            val = (Math.sin(speed + waveOffset) * 0.35 + 0.65) * 16;
-          }
-
-          const targetHeight = (val / 255) * 52; // Max height inside HUD is 52px
-          
-          // Audio visualizer decay dynamics
-          if (targetHeight > barHeights[i]) {
-            barHeights[i] = targetHeight;
-          } else {
-            barHeights[i] += (targetHeight - barHeights[i]) * 0.16;
-          }
-
-          const hVal = barHeights[i];
-
-          // Linear gradients matching active album theme colors
-          const barGrad = ctx.createLinearGradient(bx, baselineY, bx, baselineY - hVal);
-          barGrad.addColorStop(0, activeSecondaryColor.replace("rgb", "rgba").replace(")", ", 0.2)"));
-          barGrad.addColorStop(0.5, activePrimaryColor.replace("rgb", "rgba").replace(")", ", 0.6)"));
-          barGrad.addColorStop(1, activePrimaryColor);
-
-          // Draw vertical frequency bar
-          ctx.fillStyle = barGrad;
-          ctx.fillRect(bx, baselineY - hVal, barWidth, hVal);
-
-          // Peak indicator dot
-          if (hVal > 1) {
-            ctx.fillStyle = activePrimaryColor;
-            ctx.fillRect(bx, baselineY - hVal - 2, barWidth, 1.5);
-          }
-
-          // Faint downward glossy reflection
-          const reflectGrad = ctx.createLinearGradient(bx, baselineY + 2, bx, baselineY + 2 + hVal * 0.4);
-          reflectGrad.addColorStop(0, activePrimaryColor.replace("rgb", "rgba").replace(")", ", 0.12)"));
-          reflectGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
-          ctx.fillStyle = reflectGrad;
-          ctx.fillRect(bx, baselineY + 2, barWidth, hVal * 0.4);
-        }
-      }
+      // REMOVED SPECTRUM BARS DRAWING FOR CLEAN MINIMALIST DESIGN STYLE
 
       animationId = requestAnimationFrame(draw);
     };
@@ -365,7 +254,7 @@ export default function VisualizerCanvas({ theme, intensity = 1.0 }: VisualizerC
     <canvas
       id="gravity-canvas"
       ref={canvasRef}
-      className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
     />
   );
 }

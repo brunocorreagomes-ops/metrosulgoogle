@@ -30,8 +30,11 @@ import AboutProject from "./components/AboutProject";
 import SocialLinks from "./components/SocialLinks";
 import ArchitectCover from "./components/ArchitectCover";
 import { SignalLanguage } from "./components/SignalLanguage";
+import SignalConduit from "./components/SignalConduit";
+import ScrollSpyIndicator from "./components/ScrollSpyIndicator";
 import { translations, Language } from "./locales";
 import ArchitectOfOverflowPage from "./components/ArchitectOfOverflowPage";
+import { useAssetLoader } from "./hooks/useAssetLoader";
 
 export default function App() {
   // Set default initial active album to first album ("Beyond Gravity")
@@ -41,7 +44,9 @@ export default function App() {
   const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-  const [isBooting, setIsBooting] = useState<boolean>(true);
+  
+  const { progress, loadingStep, isReady } = useAssetLoader();
+  const isBooting = !isReady;
   
   // Custom router state to handle /architect-of-overflow standalone experience
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -95,7 +100,6 @@ export default function App() {
 
   const t = translations[lang];
 
-  const [bootText, setBootText] = useState<string>("");
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
@@ -236,33 +240,6 @@ export default function App() {
     setLang(selected);
     localStorage.setItem("metrosul_lang", selected);
   };
-
-  // Retro-cyber system boot simulation sequence
-  useEffect(() => {
-    const bootSteps = translations[lang].bootSeq;
-    const sequence = [
-      { delay: 0, text: bootSteps[0] },
-      { delay: 250, text: bootSteps[1] },
-      { delay: 550, text: bootSteps[2] },
-      { delay: 850, text: bootSteps[3] },
-      { delay: 1150, text: bootSteps[4] },
-      { delay: 1400, text: bootSteps[5] }
-    ];
-
-    sequence.forEach((step) => {
-      setTimeout(() => {
-        setBootText(step.text);
-      }, step.delay);
-    });
-
-    const endTimeout = setTimeout(() => {
-      setIsBooting(false);
-    }, 1600);
-
-    return () => {
-      clearTimeout(endTimeout);
-    };
-  }, []);
 
   // Track window scroll reading progress
   useEffect(() => {
@@ -463,25 +440,54 @@ export default function App() {
                 <span className="h-2 w-2 rounded-full bg-[#009DFF] animate-pulse" />
                 <span className="font-mono text-xs text-[#009DFF] tracking-[0.2em]">METROSUL_TELEMETRY_BUS</span>
               </div>
-              <span className="font-mono text-xs text-neutral-600">STATE: CONFIG</span>
+              <span className="font-mono text-xs text-neutral-600">STATE: INITIALIZING</span>
             </div>
 
             {/* Central scanning state display */}
-            <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-xl mx-auto z-10 my-auto">
+            <div className="flex flex-col items-center justify-center text-center space-y-8 max-w-xl w-full mx-auto z-10 my-auto">
               <div className="relative">
                 {/* Simulated retro scopes or modular pulse */}
-                <div className="h-16 w-16 rounded-full border-2 border-dashed border-[#009DFF]/30 animate-spin flex items-center justify-center mb-6" style={{ animationDuration: "12s" }}>
+                <div className="h-16 w-16 rounded-full border-2 border-dashed border-[#009DFF]/30 animate-spin flex items-center justify-center mb-2" style={{ animationDuration: "12s" }}>
                   <div className="h-10 w-10 rounded-full border-2 border-[#FF8800]/20 animate-pulse flex items-center justify-center">
                     <div className="h-4 w-4 rounded-full bg-gradient-to-tr from-[#009DFF] to-[#FF8800]" />
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <p className="font-mono text-[10px] text-[#FF8800] tracking-widest uppercase font-bold">BOOT SEQUENCE IN PROGRESS</p>
-                <h2 className="font-mono text-xs md:text-sm text-[#009DFF] tracking-wider min-h-[30px] font-medium transition-all duration-150">
-                  {bootText}
-                </h2>
+              <div className="space-y-4 w-full px-4">
+                <p className="font-mono text-[10px] text-[#FF8800] tracking-[0.25em] uppercase font-bold">BOOT SEQUENCE IN PROGRESS</p>
+                
+                {/* Responsive dynamic loading progress bar */}
+                <div className="relative w-full h-[3px] bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-[inset_0_0_4px_rgba(0,0,0,0.5)]">
+                  <motion.div 
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#009DFF] via-[#7C3AED] to-[#FFAA00] shadow-[0_0_8px_#009DFF]"
+                    style={{ width: `${progress}%` }}
+                    transition={{ ease: "easeOut" }}
+                  />
+                </div>
+
+                <div className="flex justify-between items-center font-mono text-[10px] text-neutral-400 gap-4">
+                  <span className="text-[#009DFF] tracking-wider truncate text-left">
+                    {loadingStep}
+                  </span>
+                  <span className="text-[#FFAA00] font-bold tracking-widest min-w-[45px] text-right">
+                    {progress}%
+                  </span>
+                </div>
+
+                {/* Pulsing "READY" flash indicator */}
+                {progress === 100 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: [0, 1, 0.5, 1], y: 0 }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="pt-2 text-center"
+                  >
+                    <span className="inline-block px-3 py-1 text-[10px] font-mono font-bold tracking-[0.25em] text-[#00FF66] bg-[#00FF66]/10 border border-[#00FF66]/30 rounded-md shadow-[0_0_12px_rgba(0,255,102,0.2)]">
+                      TRANSMISSION LINK SECURED &middot; READY
+                    </span>
+                  </motion.div>
+                )}
               </div>
             </div>
 
@@ -786,11 +792,21 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Scroll Spy Section Dot Indicator */}
+      <ScrollSpyIndicator lang={lang} />
+
       {/* Page wrapper */}
-      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-28 md:pt-36 space-y-36">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-28 md:pt-36">
         
         {/* HERO SECTION */}
-        <section id="hero" className="min-h-[72vh] flex flex-col justify-between items-start relative pb-6">
+        <motion.section 
+          id="hero" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="min-h-[72vh] flex flex-col justify-between items-start relative pb-6 mb-16 md:mb-24"
+        >
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center pt-4">
             
@@ -939,10 +955,17 @@ export default function App() {
               <ChevronDown size={14} className="animate-bounce" />
             </a>
           </div>
-        </section>
+        </motion.section>
 
         {/* UPCOMING RELEASE / LATEST SINGLE SECTION */}
-        <section id="upcoming" className="scroll-mt-24 space-y-12">
+        <motion.section 
+          id="upcoming" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="scroll-mt-24 space-y-12 mb-16 md:mb-24"
+        >
           <div className="relative p-8 md:p-12 rounded-3xl border border-white/5 hover:border-[#009DFF]/30 bg-[#050609]/90 backdrop-blur-md overflow-hidden group transition-all duration-700 hover:z-50 hover:shadow-[0_0_60px_rgba(0,157,255,0.15)] cursor-default">
             {/* Symmetrical left-blue right-amber ambient gradient background inside the card */}
             <div className="absolute -left-32 -top-32 w-80 h-80 rounded-full blur-[100px] opacity-20 pointer-events-none bg-[#009DFF]" />
@@ -1020,13 +1043,32 @@ export default function App() {
 
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* SIGNAL LANGUAGE MANIFESTO FRAGMENTS */}
-        <SignalLanguage />
+        <motion.div 
+          id="manifesto" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col justify-center min-h-screen scroll-mt-24"
+        >
+          <SignalLanguage />
+        </motion.div>
+
+        {/* CONNECTION CONDUIT */}
+        <SignalConduit />
 
         {/* SPOTIFY RELEASES SECTION */}
-        <section id="music" className="scroll-mt-24 space-y-12">
+        <motion.section 
+          id="music" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="scroll-mt-24 space-y-12 mb-16 md:mb-24"
+        >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -1052,10 +1094,17 @@ export default function App() {
             }} 
             lang={lang}
           />
-        </section>
+        </motion.section>
 
         {/* MODULAR SYNTHESIZER MODULE */}
-        <section id="synthesizer" className="scroll-mt-24 space-y-12">
+        <motion.section 
+          id="synthesizer" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="scroll-mt-24 space-y-12 mb-16 md:mb-24"
+        >
           <div className="max-w-2xl text-left space-y-3">
             <div className="flex items-center gap-2">
               <Sliders size={13} className="text-neon-sunset" />
@@ -1070,15 +1119,29 @@ export default function App() {
           </div>
 
           <InteractiveSynth isMuted={isMuted} lang={lang} />
-        </section>
+        </motion.section>
 
         {/* ABOUT THE PROJECT / MANIFESTO */}
-        <section id="about" className="scroll-mt-24">
+        <motion.section 
+          id="about" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="scroll-mt-24 mb-16 md:mb-24"
+        >
           <AboutProject lang={lang} />
-        </section>
+        </motion.section>
 
         {/* SOCIAL NETWORKS & INQUIRIES */}
-        <section id="contact" className="scroll-mt-24 space-y-12">
+        <motion.section 
+          id="contact" 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="scroll-mt-24 space-y-12 mb-16 md:mb-24"
+        >
           <div className="max-w-xl space-y-3">
             <div className="flex items-center gap-2">
               <Compass size={13} className="text-neon-blue" />
@@ -1093,7 +1156,7 @@ export default function App() {
           </div>
 
           <SocialLinks lang={lang} />
-        </section>
+        </motion.section>
 
       </main>
 

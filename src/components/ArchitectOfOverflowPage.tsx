@@ -875,7 +875,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
       {/* SECTION 04: Cinematic Scrolling Transmission */}
       <section 
         ref={transmissionContainerRef}
-        className="relative h-[290vh] w-full bg-black flex flex-col justify-start"
+        className="relative h-[130vh] w-full bg-black flex flex-col justify-start"
       >
         {/* Sentinels for IntersectionObserver tracking with -40% 0px -40% 0px rootMargin (middle 20% viewport band) */}
         {transmissionPhrases.map((_, idx) => (
@@ -885,13 +885,28 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
               sentinelsRef.current[idx] = el;
             }}
             className="absolute left-0 right-0 h-1 pointer-events-none"
-            style={{ top: `${50 + idx * 31}vh` }}
+            style={{ top: `${25 + idx * 10}vh` }}
           />
         ))}
 
         {/* Sticky viewport frame to anchor the cinematic typography */}
         <div className="sticky top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden z-10">
           
+          {/* Extremely thin, delicate continuous vertical wire (fio condutor) running through the whole screen */}
+          <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[0.5px] bg-gradient-to-b from-[#009DFF]/5 via-[#009DFF]/25 to-[#FFAA00]/15 pointer-events-none z-0" />
+
+          {/* Tiny glowing electric micro-pulses traveling down the wire to guide the user's scroll down through any empty space */}
+          <motion.div
+            animate={{ y: ["-5vh", "105vh"] }}
+            transition={{ duration: 4.0, repeat: Infinity, ease: "linear" }}
+            className="absolute left-1/2 -translate-x-1/2 w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-r from-[#009DFF] to-white shadow-[0_0_6px_#009DFF] z-0 pointer-events-none"
+          />
+          <motion.div
+            animate={{ y: ["-5vh", "105vh"] }}
+            transition={{ duration: 4.0, delay: 2.0, repeat: Infinity, ease: "linear" }}
+            className="absolute left-1/2 -translate-x-1/2 w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-r from-[#FFAA00] to-white shadow-[0_0_6px_#FFAA00] z-0 pointer-events-none"
+          />
+
           {/* Amber signal glow backdrop behind transmission/code */}
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[460px] md:h-[460px] mx-auto rounded-full bg-[#FFAA00]/[0.045] blur-[100px] md:blur-[140px] pointer-events-none" />
 
@@ -929,15 +944,15 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           {/* Subtle frequency signal line continuing downward from the center */}
           <motion.div 
             style={{ 
-              opacity: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 10.0) : 0,
-              scaleY: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 8.0) : 0,
+              opacity: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 5.0) : 0,
+              scaleY: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 5.0) : 0,
               originY: 0
             }}
             className="absolute top-[50%] left-1/2 -translate-x-1/2 w-[1px] h-[30vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
           />
 
           {/* Elegant HUD tracking meter - mathematically centered */}
-          <div className="absolute bottom-36 left-1/2 -translate-x-1/2 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] transition-all duration-100 ease-out" 
               style={{ width: `${scrollProgress * 100}%` }}
@@ -947,11 +962,11 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll - mathematically centered */}
           <motion.div 
             style={{ 
-              opacity: scrollProgress > 0.90 ? Math.min(1, (scrollProgress - 0.90) * 8.0) : 0,
-              y: scrollProgress > 0.90 ? 0 : 25
+              opacity: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 5.0) : 0,
+              y: scrollProgress > 0.80 ? 0 : 25
             }}
             transition={{ ease: "easeOut" }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3.5 z-20 pointer-events-auto"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center z-20 pointer-events-auto"
           >
             <button 
               onClick={(e) => {
@@ -963,45 +978,61 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
                 }
               }}
               onMouseEnter={() => triggerSound("tick")}
-              className="font-mono text-[11px] tracking-[0.18em] text-[#FFB31A] hover:text-[#009DFF] uppercase font-bold pl-[0.18em] transition-all duration-300 bg-black/70 hover:bg-black/90 border border-[#FFAA00]/35 hover:border-[#009DFF]/50 px-5 py-2.5 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2 whitespace-nowrap"
+              className="font-mono text-[11px] tracking-[0.18em] text-[#FFB31A] hover:text-[#009DFF] uppercase font-bold pl-[0.18em] transition-all duration-300 bg-black/70 hover:bg-black/90 border border-[#FFAA00]/35 hover:border-[#009DFF]/50 px-5 py-2.5 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2 whitespace-nowrap animate-pulse"
             >
               {t.aooContinueToReleaseNotes.toUpperCase()}
             </button>
-            <div className="relative flex flex-col items-center h-16 w-8 pointer-events-none">
-              {/* Vertical thin frequency line using the Metro Sul palette */}
-              <div className="w-[1px] h-16 bg-gradient-to-b from-[#FFAA00] via-[#009DFF] to-transparent" />
-              {/* Subtle pulsing dot moving downward along the line - mathematically centered */}
-              <motion.div 
-                animate={{ y: [0, 52, 0] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#FFAA00] to-[#009DFF] shadow-[0_0_10px_#009DFF] z-10"
-              />
-            </div>
           </motion.div>
         </div>
       </section>
-
+ 
       {/* SECTION 05: About the Release & Preview */}
       <section 
         id="editorial-section" 
-        className="min-h-screen w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-center relative z-10 py-16 md:py-24"
+        className="w-full bg-gradient-to-b from-black via-[#040407] to-black border-t border-white/[0.02] flex flex-col items-center justify-start relative z-10 pt-4 pb-12 md:pt-6 md:pb-16"
       >
         {/* Calmer white/blue glow backdrop in editorial/about section */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full bg-white/[0.02] blur-[90px] md:blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/3 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-[#009DFF]/[0.03] blur-[90px] md:blur-[120px] pointer-events-none" />
         
-        {/* Visual signal path thread continuation at the top of Section 05: Minimal "Signal Evolution" Connector */}
-        <div className="w-full flex flex-col items-center mb-8 relative z-20">
-          <div className="w-[1px] h-12 md:h-16 bg-gradient-to-b from-transparent via-[#009DFF]/30 to-[#FFAA00]/40" />
+        {/* Visual signal path thread continuation at the top of Section 05: Pulsing "Signal Evolution" Connector Wire */}
+        <div className="w-full flex flex-col items-center mb-2 relative z-20">
+          {/* Animated wire conduit carrying electricity down to the title */}
+          <div className="relative w-8 h-6 flex flex-col items-center justify-start overflow-hidden">
+            <div className="absolute inset-y-0 w-[0.5px] bg-gradient-to-b from-transparent via-[#009DFF]/40 to-[#FFAA00]" />
+            
+            <motion.div 
+              animate={{ y: [-5, 30] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-b from-white to-[#009DFF] shadow-[0_0_6px_#009DFF] opacity-90"
+            />
+            <motion.div 
+              animate={{ y: [-5, 30] }}
+              transition={{ duration: 1.8, delay: 0.6, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-b from-white to-[#FFAA00] shadow-[0_0_6px_#FFAA00] opacity-80"
+            />
+          </div>
+ 
+          {/* Core contact node receptor */}
           <motion.div 
-            animate={{ scale: [0.95, 1.15, 0.95], opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 2.2, repeat: Infinity }}
-            className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] shadow-[0_0_8px_#FFAA00]"
+            animate={{ scale: [0.9, 1.2, 0.9], opacity: [0.6, 1, 0.6], boxShadow: ["0 0 6px #FFAA00", "0 0 15px #FFAA00", "0 0 6px #FFAA00"] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] z-10"
           />
-          <span className="font-mono text-[14px] md:text-[17px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium mt-3 pl-[0.28em] text-center">
+ 
+          <span className="font-mono text-[14px] md:text-[17px] tracking-[0.32em] leading-[1.3] text-[#FFC14D] uppercase font-bold mt-2 pl-[0.32em] text-center filter drop-shadow-[0_0_8px_rgba(255,170,0,0.3)]">
             SIGNAL EVOLUTION
           </span>
-          <div className="w-[1px] h-8 md:h-10 bg-gradient-to-b from-[#FFAA00]/40 to-transparent mt-3" />
+ 
+          {/* Wire continuing downward from the title block */}
+          <div className="relative w-8 h-3 flex flex-col items-center mt-1">
+            <div className="absolute inset-y-0 w-[0.5px] bg-gradient-to-b from-[#FFAA00]/80 via-[#009DFF]/40 to-transparent" />
+            <motion.div 
+              animate={{ y: [-3, 15] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[1px] h-[1px] rounded-full bg-[#FFAA00] shadow-[0_0_4px_#FFAA00] opacity-80"
+            />
+          </div>
         </div>
 
         <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10 w-full">
