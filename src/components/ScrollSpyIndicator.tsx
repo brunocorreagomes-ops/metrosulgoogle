@@ -22,43 +22,11 @@ const SECTIONS: SectionItem[] = [
 
 interface ScrollSpyIndicatorProps {
   lang: Language;
+  activeSection: string;
 }
 
-export default function ScrollSpyIndicator({ lang }: ScrollSpyIndicatorProps) {
-  const [activeSection, setActiveSection] = useState<string>("hero");
+export default function ScrollSpyIndicator({ lang, activeSection }: ScrollSpyIndicatorProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-
-  useEffect(() => {
-    const observers = new Map<string, IntersectionObserver>();
-    
-    // We want to detect when sections cross the middle part of the screen
-    const options = {
-      root: null, // viewport
-      rootMargin: "-40% 0px -40% 0px", // Trigger when center of viewport is hit
-      threshold: 0,
-    };
-
-    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersection, options);
-
-    SECTIONS.forEach((sec) => {
-      const el = document.getElementById(sec.id);
-      if (el) {
-        observer.observe(el);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const handleScrollTo = (id: string) => {
     const el = document.getElementById(id);

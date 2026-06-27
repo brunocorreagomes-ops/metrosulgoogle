@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Monitor,
   Disc,
-  Smartphone
+  Smartphone,
+  ArrowUp
 } from "lucide-react";
 import { Language, translations } from "../locales";
 
@@ -154,6 +155,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
 
   // Intersection scroll tracking for Section 04: Transmission
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const transmissionContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Active phrase index for Section 04, controlled by IntersectionObserver with rootMargin: "-40% 0px -40% 0px"
@@ -225,8 +227,9 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
   }, []);
 
   useEffect(() => {
-    // Scroll progress handler for immersive text transitions
+    // Scroll progress handler for immersive text transitions and back-to-top detection
     const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
       if (!transmissionContainerRef.current) return;
       const rect = transmissionContainerRef.current.getBoundingClientRect();
       const elementHeight = rect.height;
@@ -951,38 +954,15 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
             className="absolute top-[50%] left-1/2 -translate-x-1/2 w-[1px] h-[30vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
           />
 
-          {/* Elegant HUD tracking meter - mathematically centered */}
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-44 h-[2px] bg-white/[0.04] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] transition-all duration-100 ease-out" 
-              style={{ width: `${scrollProgress * 100}%` }}
-            />
-          </div>
-
-          {/* Symmetrical vertical signal path / continuation indicator that fades in at the end of the scroll - mathematically centered */}
+          {/* Subtle frequency signal line continuing downward from the center */}
           <motion.div 
             style={{ 
               opacity: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 5.0) : 0,
-              y: scrollProgress > 0.80 ? 0 : 25
+              scaleY: scrollProgress > 0.80 ? Math.min(1, (scrollProgress - 0.80) * 5.0) : 0,
+              originY: 0
             }}
-            transition={{ ease: "easeOut" }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center z-20 pointer-events-auto"
-          >
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                triggerSound("confirm");
-                const target = document.getElementById("editorial-section");
-                if (target) {
-                  target.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
-              onMouseEnter={() => triggerSound("tick")}
-              className="font-mono text-[11px] tracking-[0.18em] text-[#FFB31A] hover:text-[#009DFF] uppercase font-bold pl-[0.18em] transition-all duration-300 bg-black/70 hover:bg-black/90 border border-[#FFAA00]/35 hover:border-[#009DFF]/50 px-5 py-2.5 rounded-full cursor-pointer hover:shadow-[0_0_15px_rgba(0,157,255,0.22)] active:scale-95 flex items-center gap-2 whitespace-nowrap animate-pulse"
-            >
-              {t.aooContinueToReleaseNotes.toUpperCase()}
-            </button>
-          </motion.div>
+            className="absolute top-[50%] left-1/2 -translate-x-1/2 w-[1px] h-[30vh] bg-gradient-to-b from-[#FFAA00] via-[#009DFF]/60 to-transparent z-15 pointer-events-none"
+          />
         </div>
       </section>
  
@@ -995,69 +975,59 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[240px] h-[240px] md:w-[380px] md:h-[380px] rounded-full bg-white/[0.02] blur-[90px] md:blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/3 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-[#009DFF]/[0.03] blur-[90px] md:blur-[120px] pointer-events-none" />
         
-        {/* Visual signal path thread continuation at the top of Section 05: Pulsing "Signal Evolution" Connector Wire */}
-        <div className="w-full flex flex-col items-center mb-2 relative z-20">
+        <div className="max-w-2xl mx-auto px-8 relative z-10 w-full flex flex-col items-center">
+          
           {/* Animated wire conduit carrying electricity down to the title */}
-          <div className="relative w-8 h-6 flex flex-col items-center justify-start overflow-hidden">
+          <div className="relative w-8 h-8 flex flex-col items-center justify-start overflow-hidden">
             <div className="absolute inset-y-0 w-[0.5px] bg-gradient-to-b from-transparent via-[#009DFF]/40 to-[#FFAA00]" />
             
             <motion.div 
-              animate={{ y: [-5, 30] }}
+              animate={{ y: [-5, 35] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
               className="absolute w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-b from-white to-[#009DFF] shadow-[0_0_6px_#009DFF] opacity-90"
             />
             <motion.div 
-              animate={{ y: [-5, 30] }}
-              transition={{ duration: 1.8, delay: 0.6, repeat: Infinity, ease: "linear" }}
+              animate={{ y: [-5, 35] }}
+              transition={{ duration: 1.8, delay: 0.9, repeat: Infinity, ease: "linear" }}
               className="absolute w-[1.5px] h-[1.5px] rounded-full bg-gradient-to-b from-white to-[#FFAA00] shadow-[0_0_6px_#FFAA00] opacity-80"
             />
           </div>
  
-          {/* Core contact node receptor */}
+          {/* Core contact node receptor (small glowing pulse) */}
           <motion.div 
             animate={{ scale: [0.9, 1.2, 0.9], opacity: [0.6, 1, 0.6], boxShadow: ["0 0 6px #FFAA00", "0 0 15px #FFAA00", "0 0 6px #FFAA00"] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#009DFF] to-[#FFAA00] z-10"
           />
  
-          <span className="font-mono text-[14px] md:text-[17px] tracking-[0.32em] leading-[1.3] text-[#FFC14D] uppercase font-bold mt-2 pl-[0.32em] text-center filter drop-shadow-[0_0_8px_rgba(255,170,0,0.3)]">
+          <span className="font-mono text-[14px] md:text-[17px] tracking-[0.32em] leading-[1.3] text-[#FFC14D] uppercase font-bold mt-2.5 pl-[0.32em] text-center filter drop-shadow-[0_0_8px_rgba(255,170,0,0.3)]">
             SIGNAL EVOLUTION
           </span>
  
-          {/* Wire continuing downward from the title block */}
-          <div className="relative w-8 h-3 flex flex-col items-center mt-1">
-            <div className="absolute inset-y-0 w-[0.5px] bg-gradient-to-b from-[#FFAA00]/80 via-[#009DFF]/40 to-transparent" />
-            <motion.div 
-              animate={{ y: [-3, 15] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[1px] h-[1px] rounded-full bg-[#FFAA00] shadow-[0_0_4px_#FFAA00] opacity-80"
-            />
+          {/* Thin horizontal separator */}
+          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-3 md:my-4" />
+
+          {/* EDITORIAL PROTOCOL heading block - tight vertical spacing */}
+          <div className="text-center w-full mb-6 md:mb-8">
+            <span className="font-mono text-[13px] md:text-[15px] tracking-[0.28em] leading-[1.3] text-[#FFC14D]/90 uppercase font-medium block pl-[0.28em] mb-1">
+              // EDITORIAL PROTOCOL
+            </span>
+            <h2 className="text-[10px] md:text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
+              {lang === "pt" ? "SOBRE O LANÇAMENTO" : lang === "es" ? "SOBRE EL LANZAMIENTO" : "ABOUT THE RELEASE"}
+            </h2>
           </div>
-        </div>
 
-        <div className="max-w-2xl mx-auto px-8 space-y-10 relative z-10 w-full">
-          
-          <ScrollReveal>
-            <div className="space-y-2 text-center md:text-left">
-              <span className="font-mono text-[14px] md:text-[17px] tracking-[0.28em] leading-[1.3] text-[#FFC14D] uppercase font-medium block pl-[0.28em] text-center md:text-left">
-                // EDITORIAL PROTOCOL
-              </span>
-              <h2 className="text-xs font-mono text-neutral-400 tracking-[0.25em] uppercase">
-                {lang === "pt" ? "SOBRE O LANÇAMENTO" : lang === "es" ? "SOBRE EL LANZAMIENTO" : "ABOUT THE RELEASE"}
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.25}>
-            <div className="space-y-6 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
-              <p className="font-semibold text-white">
-                {t.aooOpensNewCreative}
-              </p>
-              <p className="text-neutral-400">
-                {t.aooBlendingDescription}
-              </p>
-            </div>
-          </ScrollReveal>
+          <div className="space-y-10 w-full">
+            <ScrollReveal delay={0.1}>
+              <div className="space-y-6 font-sans font-light leading-relaxed text-neutral-300 text-base md:text-lg text-left border-l border-white/10 pl-6 md:pl-10">
+                <p className="font-semibold text-white">
+                  {t.aooOpensNewCreative}
+                </p>
+                <p className="text-neutral-400">
+                  {t.aooBlendingDescription}
+                </p>
+              </div>
+            </ScrollReveal>
 
           {/* Spec panel details */}
           <ScrollReveal delay={0.4}>
@@ -1153,6 +1123,7 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
               </AnimatePresence>
             </ScrollReveal>
           </div>
+          </div>
         </div>
       </section>
 
@@ -1225,6 +1196,26 @@ export default function ArchitectOfOverflowPage({ lang = "en", setLang }: Archit
           </div>
         </div>
       </section>
+
+      {/* Floating Scroll to Top Button for Architect Page */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            onClick={() => {
+              triggerSound("click");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-neutral-400 hover:text-white hover:border-[#FFB31A]/40 hover:bg-white/5 transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)] group cursor-pointer lg:bottom-10 lg:right-10"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp size={18} className="group-hover:-translate-y-0.5 transition-transform duration-300" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* TEASER CINEMATIC MODAL */}
       <AnimatePresence>

@@ -44,6 +44,7 @@ export default function App() {
   const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
+  const [activeSection, setActiveSection] = useState<string>("hero");
   
   const { progress, loadingStep, isReady } = useAssetLoader();
   const isBooting = !isReady;
@@ -254,6 +255,37 @@ export default function App() {
     // Run initial calculation
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Intersection Observer to track active section in viewport
+  useEffect(() => {
+    const sections = ["hero", "upcoming", "manifesto", "music", "synthesizer", "about", "contact"];
+    const options = {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px", // Trigger when crossing the center area
+      threshold: 0,
+    };
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        observer.observe(el);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   // Live real-time clock to emulate cyber/terminal telemetry
@@ -585,49 +617,105 @@ export default function App() {
               href="#music" 
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
-              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+              className={`hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap ${
+                activeSection === "music" ? "text-white font-semibold tracking-[0.24em]" : ""
+              }`}
             >
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
+              <span className={`text-neutral-600 transition-colors duration-[220ms] mr-1 ${
+                activeSection === "music" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>[</span>
               {t.navReleases}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
-              {/* Subtle electric blue glowing signal line */}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
+              <span className={`text-neutral-600 transition-colors duration-[220ms] ml-1 ${
+                activeSection === "music" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>]</span>
+              {/* Subtle dynamic glowing signal line */}
+              <span 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] transition-all duration-[220ms] ease-out rounded-full pointer-events-none" 
+                style={{
+                  backgroundColor: activeAlbum.colorTheme.primary,
+                  boxShadow: `0 0 8px ${activeAlbum.colorTheme.primary}cc`,
+                  opacity: activeSection === "music" ? 1 : 0,
+                  transform: activeSection === "music" ? "translateX(-50%) scaleX(1)" : "translateX(-50%) scaleX(0.5)"
+                }}
+              />
             </a>
             <a 
               href="#synthesizer" 
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
-              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+              className={`hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap ${
+                activeSection === "synthesizer" ? "text-white font-semibold tracking-[0.24em]" : ""
+              }`}
             >
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
+              <span className={`text-neutral-600 transition-colors duration-[220ms] mr-1 ${
+                activeSection === "synthesizer" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>[</span>
               {t.navSynth}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
-              {/* Subtle electric blue glowing signal line */}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
+              <span className={`text-neutral-600 transition-colors duration-[220ms] ml-1 ${
+                activeSection === "synthesizer" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>]</span>
+              {/* Subtle dynamic glowing signal line */}
+              <span 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] transition-all duration-[220ms] ease-out rounded-full pointer-events-none" 
+                style={{
+                  backgroundColor: activeAlbum.colorTheme.primary,
+                  boxShadow: `0 0 8px ${activeAlbum.colorTheme.primary}cc`,
+                  opacity: activeSection === "synthesizer" ? 1 : 0,
+                  transform: activeSection === "synthesizer" ? "translateX(-50%) scaleX(1)" : "translateX(-50%) scaleX(0.5)"
+                }}
+              />
             </a>
             <a 
               href="#about" 
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
-              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+              className={`hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap ${
+                (activeSection === "about" || activeSection === "manifesto") ? "text-white font-semibold tracking-[0.24em]" : ""
+              }`}
             >
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
+              <span className={`text-neutral-600 transition-colors duration-[220ms] mr-1 ${
+                (activeSection === "about" || activeSection === "manifesto") ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>[</span>
               {t.navManifesto}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
-              {/* Subtle electric blue glowing signal line */}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
+              <span className={`text-neutral-600 transition-colors duration-[220ms] ml-1 ${
+                (activeSection === "about" || activeSection === "manifesto") ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>]</span>
+              {/* Subtle dynamic glowing signal line */}
+              <span 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] transition-all duration-[220ms] ease-out rounded-full pointer-events-none" 
+                style={{
+                  backgroundColor: activeAlbum.colorTheme.primary,
+                  boxShadow: `0 0 8px ${activeAlbum.colorTheme.primary}cc`,
+                  opacity: (activeSection === "about" || activeSection === "manifesto") ? 1 : 0,
+                  transform: (activeSection === "about" || activeSection === "manifesto") ? "translateX(-50%) scaleX(1)" : "translateX(-50%) scaleX(0.5)"
+                }}
+              />
             </a>
             <a 
               href="#contact" 
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
-              className="hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap"
+              className={`hover:text-white hover:tracking-[0.24em] transition-all duration-[220ms] ease-out uppercase relative group py-1 whitespace-nowrap ${
+                activeSection === "contact" ? "text-white font-semibold tracking-[0.24em]" : ""
+              }`}
             >
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] mr-1 opacity-0 group-hover:opacity-100">[</span>
+              <span className={`text-neutral-600 transition-colors duration-[220ms] mr-1 ${
+                activeSection === "contact" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>[</span>
               {t.navInquiries}
-              <span className="text-neutral-600 group-hover:text-white transition-colors duration-[220ms] ml-1 opacity-0 group-hover:opacity-100">]</span>
-              {/* Subtle electric blue glowing signal line */}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] bg-[#009DFF] opacity-0 group-hover:opacity-100 scale-x-50 group-hover:scale-x-100 transition-all duration-[220ms] ease-out shadow-[0_0_8px_rgba(0,157,255,0.7)] rounded-full pointer-events-none" />
+              <span className={`text-neutral-600 transition-colors duration-[220ms] ml-1 ${
+                activeSection === "contact" ? "opacity-100 text-[#009DFF]" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
+              }`}>]</span>
+              {/* Subtle dynamic glowing signal line */}
+              <span 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1.5px] transition-all duration-[220ms] ease-out rounded-full pointer-events-none" 
+                style={{
+                  backgroundColor: activeAlbum.colorTheme.primary,
+                  boxShadow: `0 0 8px ${activeAlbum.colorTheme.primary}cc`,
+                  opacity: activeSection === "contact" ? 1 : 0,
+                  transform: activeSection === "contact" ? "translateX(-50%) scaleX(1)" : "translateX(-50%) scaleX(0.5)"
+                }}
+              />
             </a>
           </nav>
 
@@ -738,30 +826,62 @@ export default function App() {
             <a 
               href="#music" 
               onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
+              className={`transition-colors uppercase py-2 border-b border-white/[0.02] flex items-center justify-between whitespace-nowrap ${
+                activeSection === "music" ? "text-white font-bold" : "hover:text-white"
+              }`}
             >
-              {t.navReleases}
+              <span>{t.navReleases}</span>
+              {activeSection === "music" && (
+                <span 
+                  className="h-1.5 w-1.5 rounded-full animate-pulse shadow-[0_0_8px_currentColor]" 
+                  style={{ backgroundColor: activeAlbum.colorTheme.primary, color: activeAlbum.colorTheme.primary }}
+                />
+              )}
             </a>
             <a 
               href="#synthesizer" 
               onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
+              className={`transition-colors uppercase py-2 border-b border-white/[0.02] flex items-center justify-between whitespace-nowrap ${
+                activeSection === "synthesizer" ? "text-white font-bold" : "hover:text-white"
+              }`}
             >
-              {t.navSynth}
+              <span>{t.navSynth}</span>
+              {activeSection === "synthesizer" && (
+                <span 
+                  className="h-1.5 w-1.5 rounded-full animate-pulse shadow-[0_0_8px_currentColor]" 
+                  style={{ backgroundColor: activeAlbum.colorTheme.primary, color: activeAlbum.colorTheme.primary }}
+                />
+              )}
             </a>
             <a 
               href="#about" 
               onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
-              className="hover:text-white transition-colors uppercase py-2 border-b border-white/[0.02] block text-left whitespace-nowrap"
+              className={`transition-colors uppercase py-2 border-b border-white/[0.02] flex items-center justify-between whitespace-nowrap ${
+                (activeSection === "about" || activeSection === "manifesto") ? "text-white font-bold" : "hover:text-white"
+              }`}
             >
-              {t.navManifesto}
+              <span>{t.navManifesto}</span>
+              {(activeSection === "about" || activeSection === "manifesto") && (
+                <span 
+                  className="h-1.5 w-1.5 rounded-full animate-pulse shadow-[0_0_8px_currentColor]" 
+                  style={{ backgroundColor: activeAlbum.colorTheme.primary, color: activeAlbum.colorTheme.primary }}
+                />
+              )}
             </a>
             <a 
               href="#contact" 
               onClick={() => { setIsMobileMenuOpen(false); playClickSound(); }}
-              className="hover:text-white transition-colors uppercase py-2 block text-left border-b border-white/[0.02] whitespace-nowrap"
+              className={`transition-colors uppercase py-2 flex items-center justify-between border-b border-white/[0.02] whitespace-nowrap ${
+                activeSection === "contact" ? "text-white font-bold" : "hover:text-white"
+              }`}
             >
-              {t.navInquiries}
+              <span>{t.navInquiries}</span>
+              {activeSection === "contact" && (
+                <span 
+                  className="h-1.5 w-1.5 rounded-full animate-pulse shadow-[0_0_8px_currentColor]" 
+                  style={{ backgroundColor: activeAlbum.colorTheme.primary, color: activeAlbum.colorTheme.primary }}
+                />
+              )}
             </a>
 
             {/* Mobile language picker */}
@@ -793,7 +913,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Scroll Spy Section Dot Indicator */}
-      <ScrollSpyIndicator lang={lang} />
+      <ScrollSpyIndicator lang={lang} activeSection={activeSection} />
 
       {/* Page wrapper */}
       <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-28 md:pt-36">
